@@ -17,12 +17,12 @@ void createSampleContent() {
       '$defaultConfigEnvPath and sample files created in ${Directory.current}');
 
   if (which('code').found) {
-    var useOpen =
-        confirm(yellow('Do you wanna open VisualCode?'), defaultValue: false);
+    var useOpen = confirm(yellow('Do you wanna open VisualCode?'), defaultValue: false);
     if (useOpen) {
       trace('Opening current folder in VisualCode...');
       sleep(1);
-      'code .'.run;
+      'code .'.start(nothrow: true, terminal: true);
+      // 'code .'.run;
     }
   }
   exit(0);

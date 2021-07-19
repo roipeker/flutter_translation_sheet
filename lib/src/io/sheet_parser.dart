@@ -13,6 +13,20 @@ class SheetParser {
   late List<List<Cell>> _initialCellRows;
   late List<String> colsHeaders;
 
+  String get spritesheetUrl =>
+      'https://docs.google.com/spreadsheets/d/${config.sheetId!}';
+
+  String get credentialEmail =>
+      _api.credentials?.email ?? 'somesheet@someid.iam.gserviceaccount.com';
+
+  String get badCredentialsHelp {
+    return '''Make sure you shared the spreadsheet with your service account email:
+  1 - Open $spritesheetUrl.
+  2 - Click "Share" button at the top.
+  3 - Add "$credentialEmail" in "Share with people and groups" and click "Done".
+''';
+  }
+
   Future<void> _connect() async {
     if (!config.isValidSheet()) {
       throw 'Invalid GoogleSheet configuration';
@@ -24,22 +38,24 @@ class SheetParser {
         render: ValueRenderOption.unformattedValue,
       );
     } catch (e) {
-      trace('''Error $e
-Check if the Spritesheet ID is correct in config_env.yaml: [gsheets:spreadsheet_id:"${config.sheetId}"]''');
+      error('''Error $e
+- Check if the Spritesheet ID is correct in config_env.yaml: [gsheets:spreadsheet_id:"${config.sheetId}"]
+- $badCredentialsHelp
+''');
       exit(2);
     }
-
     var table = _sheet!.worksheetByTitle(config.tableId!);
     if (table != null) {
       _table = table;
     } else {
       final _availableTables =
           _sheet!.sheets.map((element) => "  - " + element.title).join('\n');
-
-      trace('''Worksheet "${config.tableId}" doesnt exists.
-Please check your sheet again and update your configuration @[gsheets:worksheet:].
+      error('''Worksheet "${config.tableId}" doesn't exists.
+Please check your sheet and update your configuration @[gsheets:worksheet:].
 Available worksheets:
 $_availableTables
+
+Open $spritesheetUrl and check the available tabs at the bottom.
 ''');
       exit(3);
     }
@@ -391,7 +407,17 @@ $_availableTables
         }
         trace('Inserting ${insertRows.length} records...');
         // await _table.values.insertRows(lastRow, insertRows);
-        await _table.values.appendRows(insertRows);
+        try {
+          await _table.values.appendRows(insertRows);
+        } catch (e) {
+          error('ERROR: $e');
+          if (e is GSheetsException) {
+            if (e.cause.toLowerCase().contains('not have permission')) {
+              error(badCredentialsHelp);
+            }
+          }
+          exit(3);
+        }
         trace('Appending complete :)');
       } else {
         for (var k in addedKeys) {

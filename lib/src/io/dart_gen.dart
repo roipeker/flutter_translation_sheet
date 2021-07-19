@@ -40,7 +40,6 @@ void createLocalesFiles(Map<String, Map<String, String>> localesMap) {
       var className = 'Locale${localeName.pascalCase}';
       var fileData = '''
 /// Translation for ${localeInfo.englishName} ("${localeInfo.key.toUpperCase()}")
- 
 abstract class $className {
   static const Map<String,String> data = $data;
 }
@@ -204,6 +203,9 @@ String _buildTKeyMap({
   final invalidCharsRegExp =
       RegExp(r'[^\w\.@-]', caseSensitive: false, dotAll: true, unicode: false);
   // final invalidCharsRegExp = ':';
+
+  var classCanBeConst = false;
+
   for (var k in map.keys) {
     final v = map[k];
 
@@ -213,8 +215,11 @@ String _buildTKeyMap({
     fieldName = fieldName.replaceAll(invalidCharsRegExp, '_');
     var localPath = path + k;
     String _fieldModifier;
+
+    /// no constants.
+      // _fieldModifier = 'static const';
     if (isRoot) {
-      _fieldModifier = 'static const';
+      _fieldModifier = 'static';
     } else {
       _fieldModifier = 'final';
     }
@@ -223,6 +228,7 @@ String _buildTKeyMap({
     // print('key: $k - ${v.runtimeType}');
     if (v is String) {
       tostrKeys.add('$fieldName');
+      classCanBeConst = false;
       fields.add('$_fieldModifier String $fieldName = \'$localPath\';');
     } else {
       if (v is Map) {
@@ -233,9 +239,9 @@ String _buildTKeyMap({
           toString: toString,
         );
         tostrFields.add('$fieldName');
-        final _modifier = isRoot ? '' : ' const';
+        final _modifier = isRoot || !classCanBeConst ? '' : ' const';
         fields.add(
-            '$_fieldModifier $fieldType $fieldName =$_modifier $fieldType._();');
+            '$_fieldModifier $fieldType $fieldName = $_modifier $fieldType._();');
       }
     }
   }
@@ -256,7 +262,8 @@ String _buildTKeyMap({
   }
 
   /// private constructor.
-  classStr += '  const $className._();\n';
+  var classModifier = classCanBeConst ? 'const ' : '';
+  classStr += ' $classModifier$className._();\n';
   for (var line in fields) {
     classStr += '  $line\n';
   }

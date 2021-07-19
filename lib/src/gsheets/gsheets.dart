@@ -70,6 +70,7 @@ class GSheets {
           credentialsJson,
           impersonatedUser: impersonatedUser,
         );
+  ServiceAccountCredentials? get credentials => _credentials;
 
   /// Creates an instance of [GSheets] with custom client
   ///
