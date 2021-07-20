@@ -4,3 +4,7 @@
 ## [1.0.1]
 - Some fixes and better messages for error exceptions.
 - more docs
+
+## [1.0.2]
+- separated the cli in commands: fetch and run
+- more docs

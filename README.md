@@ -15,7 +15,6 @@ flutter pub global activate -sgit https://github.com/roipeker/trcli.git
 
 Just run `trcli` in any folder to create a template config.
 
-
 #### Local install:
 clone the repo in your computer and replace <path> accordingly:
 ```bash
@@ -24,7 +23,8 @@ flutter pub global activate --source path <path>
 
 ### Usage:
 
-Go with your terminal in any folder (or Flutter project folder), and run `trcli`.
+Go with your terminal in any folder (or Flutter project folder), and run `trcli run`.
+
 First time will create a template for you, and you will have to get your [Google credentials json](https://medium.com/@a.marenkov/how-to-get-credentials-for-google-sheets-456b7e88c430)
 Follow the comments in `tfconfig.yaml` and fill the `gsheet:` section, and change the output folder as needed.
 
@@ -34,6 +34,24 @@ Take the sample data input as reference, and use it in your own project.
 
 After a while of not using it, Google Sheet performance slow down on every request, so it might take a little longer to get the output generated.
 Once it warms up (run 1 time) the sync performance is pretty solid.
+
+
+```bash
+trcli fetch
+```
+
+Unlike `trcli run`, `fetch` doesn't sync, nor validates the data structure.
+
+Uses the local strings as entry map, downloads the latest data from GoogleSheet and generates the files accordingly.
+Is a much faster process. Very useful when you made manual corrections in your sheets for the auto-translated locales.
+
+Do not manually modify the *master language* column on your Google Sheet, change the data in the string source file
+and let `trcli` do the upload.
+
+If there are differences of master lang strings between local and remote, the entire row will be cleared and regenerated with auto translation
+using the latest strings, and manual changes will get lost.
+
+Currently you have to be careful, and keep your manual translations backed up just in case you modify the master language string.
 
 
 ### Considerations:

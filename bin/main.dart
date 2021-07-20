@@ -1,89 +1,48 @@
 import 'dart:io';
 
 // import 'package:dcli/dcli.dart';
+import 'package:args/command_runner.dart';
 import 'package:dcli/dcli.dart';
 import 'package:trcli/translate_cli.dart';
 
+import '../lib/src/io/commands.dart';
+
 final _parser = ArgParser();
 
-void main(List<String> args) {
-  _parser.addFlag(
-    'help',
-    abbr: 'h',
-    negatable: false,
-    help: 'Shows the help.',
-  );
-  _parser.addOption(
-    'config',
-    abbr: 'c',
-    help: 'Set the trconfig.yaml path to process',
-  );
-  // ..addCommand('create')
-  // ..addCommand('download');
+Future<void> main(List<String> args) async {
+  var runner = CommandRunner(
+    'trcli',
+    'cli to make your app\'s l10n easy',
+  )
+    ..addCommand(FetchCommand(startFetch))
+    ..addCommand(RunCommand(startRun));
   try {
-    final res = _parser.parse(args);
-    if (res.wasParsed('help')) {
-      _showUsage();
-      exit(0);
-    }
-    startConfig(res['config'] ?? 'trconfig.yaml');
+    var res = await runner.run(args).onError((err, stackTrace) {
+      error(err);
+    });
   } catch (e) {
-    error('ERROR: $e');
-  }
-  // if (res.command?.name == 'create') {
-  //   _runCreate();
-  // } else if (res.command?.name == 'download') {
-  //   _runDownload();
-  // } else {
-  //
-  // }
-}
-
-void _showUsage() {
-  trace('''Usage: 
-    ${_parser.usage}
-''');
-}
-
-void startConfig(String path) {
-  // trace('start config on: ', path);
-  if (path.isEmpty) {
-    error('Pass the trconfig.yaml path to -c');
-    exit(1);
-  }
-  var f = File(path);
-  if (!f.existsSync()) {
-    error('Error: $path config file not found');
-
-    /// ask to create from template.
-    var useCreateTemplate = confirm(
-        yellow(
-            'Do you wanna create the template trconfig.yaml in the current directory?'),
-        defaultValue: true);
-    if (!useCreateTemplate) {
-      var m1 = grey('trcli', background: AnsiColor.black);
-      var m2 = grey('trcli -h', background: AnsiColor.black);
-      var msg =
-          'run $m1 again with a configuration file or check $m2 for more help.';
-      print(msg);
-      // trace(' trcli again with a configuration file or check trcli -h for more help.');
-      exit(0);
-    } else {
-      /// create template!
-      createSampleContent();
-    }
-  } else {
-    loadEnv(path);
-    build();
+    error(e);
   }
 }
 
-void _runCreate() {
-  trace('run create!');
+void startRun() {
+  // trace("Start run!");
+  build();
 }
 
-void _runDownload() {
-  trace('run download!');
+Future<void> startFetch() async {
+  trace('Creating local canonical json');
+  var map = buildLocalYamlMap();
+  var canoMap = buildCanoMap(map);
+  trace('Fetching data from Google sheets...');
+  final localesMap = await sheet.getData();
+  localesMap[config.masterLocale] = canoMap;
+  if (config.validTKeyFile) {
+    createTKeyFileFromMap(map, save: true, includeToString: false);
+  }
+  createLocalesFiles(localesMap);
+  formatDartFiles();
+  exit(1);
 }
 
 Future<void> build() async {
@@ -107,16 +66,6 @@ Future<void> build() async {
     createTKeyFileFromMap(map, save: true, includeToString: false);
   }
   createLocalesFiles(localesMap);
-
   formatDartFiles();
   exit(1);
-
-  //   var hasData = await sheet.hasData();
-  // if(!hasData){
-  //   /// setup table.
-  //   await sheet.buildStructure(config.locales, map);
-  //   // trace(config.locales);
-  //   trace(map);
-  // }
-  // trace('Sheet result: \n', dataResult);
 }

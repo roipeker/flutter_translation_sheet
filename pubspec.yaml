@@ -1,6 +1,6 @@
 name: trcli
 description: A super simple l10n tool with auto translations via GoogleSheet.
-version: 1.0.1
+version: 1.0.2
 
 executables:
   trcli:
@@ -11,6 +11,7 @@ environment:
 dependencies:
   dcli: ^1.7.1
   recase: ^4.0.0
+  args: any
   csv: ^5.0.0
   http: ^0.13.3
   googleapis: ^4.0.0

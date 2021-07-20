@@ -142,8 +142,9 @@ void _parseSheets(YamlMap doc) {
     config.sheetCredentials = credentials;
   } else if (credentialsPath != null) {
     var credentialsString = openString(credentialsPath);
-    if( credentialsString.isEmpty ){
-      error("ERROR: [gsheets:credentials_path:$credentialsPath] doesn\'t exists or is empty.");
+    if (credentialsString.isEmpty) {
+      error(
+          "ERROR: [gsheets:credentials_path:$credentialsPath] doesn\'t exists or is empty.");
       exit(2);
     }
     config.sheetCredentials = credentialsString;
