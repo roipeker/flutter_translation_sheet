@@ -8,3 +8,7 @@
 ## [1.0.2]
 - separated the cli in commands: fetch and run
 - more docs
+
+## [1.0.3]
+- string tokens support!! {{name}}
+- more docs

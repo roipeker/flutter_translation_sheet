@@ -53,6 +53,15 @@ using the latest strings, and manual changes will get lost.
 
 Currently you have to be careful, and keep your manual translations backed up just in case you modify the master language string.
 
+### Variables:
+
+To store "variables" or placeholders in your strings to be replaced later in your code, use the follow notation:
+```
+"Welcome back {{user}}, today is {{date}}."
+```
+
+It will store the values in the sheet as {{0}} {{1}} and so on, to avoid complications with GoogleTranslate, and it will
+generate a *vars.lock* file in the directory where you point your "entry_file" in config.
 
 ### Considerations:
 

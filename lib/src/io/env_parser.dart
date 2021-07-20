@@ -230,6 +230,8 @@ class EnvConfig {
 
   bool get validTranslationFile => dartTranslationsId.isNotEmpty;
 
+  String get inputVarsFile => joinDir([config.inputYamlDir, 'vars.lock'] );
+
   bool isValidSheet() =>
       sheetId != null && tableId != null && sheetCredentials != null;
 

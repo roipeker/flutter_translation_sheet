@@ -104,3 +104,102 @@ KeyMap _canoMap(Map content) {
 
   return output;
 }
+
+// final _matchParamsRegExp1 = RegExp(r'(?<=\{\{)(.+?)(?=\}\})');
+final _matchParamsRegExp2 = RegExp(r'\{\{(.+?)\}\}');
+// final _matchParamsRegExp2 = RegExp(r'\{(.+?)\}');
+
+class _VarsCap {
+  final Map<String, String> vars;
+  final String text;
+
+  _VarsCap(this.text, this.vars);
+}
+
+void putVarsInMap(Map<String, Map<String, String>> map) {
+  var varsContent = openString(config.inputVarsFile);
+  if (varsContent.trim().isEmpty) return;
+  var varsYaml = loadYaml(varsContent);
+  if (varsYaml is! YamlMap) return;
+  //// convert to regular map.
+  final varsMap = <String, Map<String, String>>{};
+  varsYaml.forEach((key, value) {
+    varsMap['$key'] =
+        Map.from(value).map((key, value) => MapEntry('$key', '$value'));
+  });
+  for (var localeKey in map.keys) {
+    final localeMap = map[localeKey]! as Map<String, String>;
+    for (var key in localeMap.keys) {
+      if (varsMap.containsKey(key)) {
+        var text = localeMap[key]!;
+        localeMap[key] = replaceVars(_VarsCap(text, varsMap[key]!));
+      }
+    }
+  }
+}
+
+void buildVarsInMap(Map<String, String> map) {
+  var varsKeys = <String, Map<String, String>>{};
+  for (var key in map.keys) {
+    var val = map[key]!;
+    // trace(key, ': ', );
+    if (val.contains('{{')) {
+      var res = _captureVars(val);
+      if (res.vars.isNotEmpty) {
+        varsKeys[key] = res.vars;
+
+        /// replace contents of file for upload.
+        map[key] = res.text;
+      }
+    }
+  }
+
+  if (varsKeys.isNotEmpty) {
+    var varsContent = json2yaml(varsKeys, yamlStyle: YamlStyle.pubspecYaml);
+    saveString(config.inputVarsFile, varsContent);
+    trace(
+        'Found ${varsKeys.keys.length} keys with variables, saved at ${config.inputVarsFile}');
+  } else {
+    /// clear file ?
+  }
+}
+
+String replaceVars(_VarsCap vars) {
+  var str = vars.text;
+  if (_matchParamsRegExp2.hasMatch(str)) {
+    final wordset = <String>{};
+    final matches = _matchParamsRegExp2.allMatches(str);
+    for (var match in matches) {
+      wordset.add(str.substring(match.start, match.end));
+    }
+    // Replacing
+    var words = wordset.toList();
+    for (var i = 0; i < words.length; i++) {
+      var _key = words[i];
+      var key = _key.substring(2, _key.length - 2);
+      var value = vars.vars[key];
+      str = str.replaceAll(_key, '{{$value}}');
+    }
+  }
+  return str;
+}
+
+_VarsCap _captureVars(String str) {
+  var out = <String, String>{};
+  if (_matchParamsRegExp2.hasMatch(str)) {
+    final wordset = <String>{};
+    final matches = _matchParamsRegExp2.allMatches(str);
+    for (var match in matches) {
+      wordset.add(str.substring(match.start, match.end));
+    }
+    // Replacing
+    var words = wordset.toList();
+    for (var i = 0; i < words.length; i++) {
+      var key = '$i';
+      var value = words[i];
+      out[key] = value.substring(2, value.length - 2);
+      str = str.replaceAll(value, '{{$key}}');
+    }
+  }
+  return _VarsCap(str, out);
+}

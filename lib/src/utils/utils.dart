@@ -5,6 +5,7 @@ import '../common.dart';
 import 'logger.dart';
 
 export 'logger.dart';
+export 'json2yaml.dart';
 
 String prettyJson(dynamic json) {
   return JsonEncoder.withIndent('  ' * 2).convert(json);
