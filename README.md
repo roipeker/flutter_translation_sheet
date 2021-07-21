@@ -3,7 +3,7 @@
 Command line application to make your l10n super fast.
 Compose your strings in yaml/json format and use GoogleSheet for auto translate.
 
-### Install:
+### 🧰 Install:
 
 > You need to have `flutter` or `dart` SDK in your System PATH.
 
@@ -21,12 +21,45 @@ clone the repo in your computer and replace <path> accordingly:
 flutter pub global activate --source path <path>
 ```
 
-### Usage:
+### ⚙️ Usage:
 
 Go with your terminal in any folder (or Flutter project folder), and run `trcli run`.
 
-First time will create a template for you, and you will have to get your [Google credentials json](https://medium.com/@a.marenkov/how-to-get-credentials-for-google-sheets-456b7e88c430)
-Follow the comments in `tfconfig.yaml` and fill the `gsheet:` section, and change the output folder as needed.
+First time will create a template for you, and you will have to get your [Google credentials json](https://medium.com/@a.marenkov/how-to-get-credentials-for-google-sheets-456b7e88c430).
+
+Once you get the json, go to `tfconfig.yaml` and in the `gsheet:` there are two ways to fill the credentials (you only need to use one):
+
+1. Add `credentials_path:` followed by the path of your json. You can copy the json file to the root folder of your project. The path can be absolute or relative.
+
+Example:
+```yaml
+gsheets:
+  credentials_path: c:/my_project/credentials.json or ./credentials.json
+```
+#### ⚠️ NOTE TO WINDOWS USERS: paths should be either in the form "C:\\\Users\\\etc", with two backslash characters, or using forwardslash characters instead such as "C:/Users/etc". 
+
+2. Add `credentials:` followed by the whole credentials json content
+
+Example:
+```yaml
+gsheets:
+  credentials: {
+    "type": "service_account",
+    "project_id": "project-id",
+    "private_key_id": "",
+    "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCB-----END PRIVATE KEY-----\n",
+    "client_email": "gsheets@project.iam.gserviceaccount.com",
+    "client_id": "123456",
+    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+    "token_uri": "https://oauth2.googleapis.com/token",
+    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+    "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/gsheets%40evolution-cp-calculator.iam.gserviceaccount.com"
+  }
+```
+
+You can find more information in the comments in `tfconfig.yaml` and fill the `gsheet:` section, and change the output folder as needed.
+
+Once you have your configuration file ready, run `trcli` to generate your sample google sheets.
 
 Take the sample data input as reference, and use it in your own project.
 
@@ -68,7 +101,7 @@ param_output_pattern: "{{*}}"
 ```
 
 
-### Considerations:
+### 📝 Considerations:
 
 - In your spreadsheet, the first column will always be your "keys", don't change that, don't move the column.
 
@@ -90,7 +123,3 @@ locales:
 - If *trcli* finds the 2nd ROW empty in any column, it will take the data corrupted, and will re-upload for translation.
 
 - If the row count from keys is different from the master language, it will invalidate the entire sheet.
-
-
-
-
