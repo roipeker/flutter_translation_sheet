@@ -3,7 +3,7 @@ import 'dart:io';
 // import 'package:dcli/dcli.dart';
 import 'package:args/command_runner.dart';
 import 'package:dcli/dcli.dart';
-import 'package:trcli/translate_cli.dart';
+import 'package:translate_cli/translate_cli.dart';
 
 import '../lib/src/io/commands.dart';
 
