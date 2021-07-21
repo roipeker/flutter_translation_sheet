@@ -29,12 +29,12 @@ First time will create a template for you, and you will have to get your [Google
 
 Once you get the json, go to `tfconfig.yaml` and in the `gsheet:` there are two ways to fill the credentials (you only need to use one):
 
-1. Add `credentials_path:` followed by the path of your json. You can copy the json file to the root folder of your project. 
+1. Add `credentials_path:` followed by the path of your json. You can copy the json file to the root folder of your project. The path can be absolute or relative.
 
 Example:
 ```yaml
 gsheets:
-  credentials_path: c:/my_project/credentials.json
+  credentials_path: c:/my_project/credentials.json or ./credentials.json
 ```
 #### ⚠️ NOTE TO WINDOWS USERS: paths should be either in the form "C:\\\Users\\\etc", with two backslash characters, or using forwardslash characters instead such as "C:/Users/etc". 
 
