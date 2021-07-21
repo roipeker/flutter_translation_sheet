@@ -109,11 +109,11 @@ KeyMap _canoMap(Map content) {
 final _matchParamsRegExp2 = RegExp(r'\{\{(.+?)\}\}');
 // final _matchParamsRegExp2 = RegExp(r'\{(.+?)\}');
 
-class _VarsCap {
+class VarsCap {
   final Map<String, String> vars;
   final String text;
 
-  _VarsCap(this.text, this.vars);
+  VarsCap(this.text, this.vars);
 }
 
 void putVarsInMap(Map<String, Map<String, String>> map) {
@@ -132,7 +132,7 @@ void putVarsInMap(Map<String, Map<String, String>> map) {
     for (var key in localeMap.keys) {
       if (varsMap.containsKey(key)) {
         var text = localeMap[key]!;
-        localeMap[key] = replaceVars(_VarsCap(text, varsMap[key]!));
+        localeMap[key] = replaceVars(VarsCap(text, varsMap[key]!));
       }
     }
   }
@@ -144,7 +144,7 @@ void buildVarsInMap(Map<String, String> map) {
     var val = map[key]!;
     // trace(key, ': ', );
     if (val.contains('{{')) {
-      var res = _captureVars(val);
+      var res = captureVars(val);
       if (res.vars.isNotEmpty) {
         varsKeys[key] = res.vars;
 
@@ -164,8 +164,10 @@ void buildVarsInMap(Map<String, String> map) {
   }
 }
 
-String replaceVars(_VarsCap vars) {
+String replaceVars(VarsCap vars) {
   var str = vars.text;
+  var start = config.paramOutputPattern1;
+  var end = config.paramOutputPattern2;
   if (_matchParamsRegExp2.hasMatch(str)) {
     final wordset = <String>{};
     final matches = _matchParamsRegExp2.allMatches(str);
@@ -178,13 +180,13 @@ String replaceVars(_VarsCap vars) {
       var _key = words[i];
       var key = _key.substring(2, _key.length - 2);
       var value = vars.vars[key];
-      str = str.replaceAll(_key, '{{$value}}');
+      str = str.replaceAll(_key, '$start$value$end');
     }
   }
   return str;
 }
 
-_VarsCap _captureVars(String str) {
+VarsCap captureVars(String str) {
   var out = <String, String>{};
   if (_matchParamsRegExp2.hasMatch(str)) {
     final wordset = <String>{};
@@ -201,5 +203,5 @@ _VarsCap _captureVars(String str) {
       str = str.replaceAll(value, '{{$key}}');
     }
   }
-  return _VarsCap(str, out);
+  return VarsCap(str, out);
 }

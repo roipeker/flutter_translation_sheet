@@ -63,6 +63,11 @@ To store "variables" or placeholders in your strings to be replaced later in you
 It will store the values in the sheet as {{0}} {{1}} and so on, to avoid complications with GoogleTranslate, and it will
 generate a *vars.lock* file in the directory where you point your "entry_file" in config.
 
+```yaml
+param_output_pattern: "{{*}}"
+```
+
+
 ### Considerations:
 
 - In your spreadsheet, the first column will always be your "keys", don't change that, don't move the column.

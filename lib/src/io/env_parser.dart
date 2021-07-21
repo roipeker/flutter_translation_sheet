@@ -35,6 +35,8 @@ void loadEnv([String path = defaultConfigEnvPath]) {
   config.dartTKeysId = doc?['dart']?['keys_id'] ?? '';
   config.useDartMaps = doc?['dart']?['use_maps'] ?? false;
   config.dartTranslationsId = doc?['dart']?['translations_id'] ?? '';
+  config.paramOutputPattern = doc?['param_output_pattern'] ?? '';
+  _configParamOutput();
 
   if (config.entryFile.isNotEmpty) {
     var f = File(config.entryFile);
@@ -113,7 +115,6 @@ See https://cloud.google.com/translate/docs/languages for a list of supported tr
   } else {
     trace('[config:gsheet:use_iterative_cache:] is disabled.');
   }
-
   // config.locales = doc?['locales'] ?? ['en'];
   // trace('env output path: ', config.outputDir);
   // if (config.outputDir.isEmpty) {
@@ -131,8 +132,47 @@ See https://cloud.google.com/translate/docs/languages for a list of supported tr
   if (!config._isValidDartConfig()) {
     exit(3);
   }
-
   _createDir();
+}
+
+void _configParamOutput() {
+  /// fix param output to valid string.
+  var _paramOutput = config.paramOutputPattern;
+  if(_paramOutput.isEmpty){
+    _paramOutput = '{*}';
+  }
+  if (_paramOutput.isNotEmpty && !_paramOutput.contains('*')) {
+    trace('''Wrong usage of config:[param_output_pattern:], has to enclose *.
+Example: using "name":
+(*) = (name) 
+%* = %name
+
+If you need the "*" char in your pattern use "*?" as splitter:
+***?** = **name** 
+Using default {*}''');
+    _paramOutput = '{*}';
+  }
+
+  /// check if its special split?
+  late List<String> _params;
+  if (_paramOutput.contains('*?')) {
+    _params = _paramOutput.split('*?');
+  } else {
+    _params = _paramOutput.split('*');
+  }
+  if (_params.length == 1) {
+    /// using empty string.
+    config.paramOutputPattern1 = '';
+    config.paramOutputPattern2 = '';
+  } else {
+    if (_params.length == 2) {
+      config.paramOutputPattern1 = _params[0];
+      config.paramOutputPattern2 = _params[1] == '*' ? '' : _params[1];
+    } else {
+      config.paramOutputPattern1 = _params[0];
+      config.paramOutputPattern2 = _params[2];
+    }
+  }
 }
 
 void _parseSheets(YamlMap doc) {
@@ -181,6 +221,11 @@ class EnvConfig {
   String dartOutputDir = '';
   String outputJsonDir = '';
   String entryFile = '';
+  String paramOutputPattern = '{*}';
+  String paramOutputPattern1 = '{{';
+  String paramOutputPattern2 = '}}';
+
+  // param_output_pattern
   bool useDartMaps = false;
 
   String get inputYamlDir {
@@ -230,7 +275,7 @@ class EnvConfig {
 
   bool get validTranslationFile => dartTranslationsId.isNotEmpty;
 
-  String get inputVarsFile => joinDir([config.inputYamlDir, 'vars.lock'] );
+  String get inputVarsFile => joinDir([config.inputYamlDir, 'vars.lock']);
 
   bool isValidSheet() =>
       sheetId != null && tableId != null && sheetCredentials != null;
@@ -263,6 +308,15 @@ output_json_dir: data/output/assets/i18n
 
 ## main entry file to generate the unique translation json.
 entry_file: data/entry/sample.yaml
+
+## pattern to applies final variables in the generated json/dart Strings.
+## Enclose * in the pattern you need.
+## {*} = {{name}} becomes {name}
+## %* = {{name}} becomes %name
+## (*) = {{name}} becomes (name)
+## - Special case when you need * as prefix or suffix, use *? as splitter
+## ***?** = {{name}} becomes **name**
+param_output_pattern: "{*}"
 
 dart:
   ## Output dir for dart files

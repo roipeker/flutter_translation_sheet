@@ -12,3 +12,8 @@
 ## [1.0.3]
 - string tokens support!! {{name}}
 - more docs
+
+## [1.0.4]
+- dynamic string tokens support!! type {{name}},
+   and define how to transform the output in config.yaml
+- more docs
