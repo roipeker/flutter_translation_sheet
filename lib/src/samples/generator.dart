@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:dcli/dcli.dart';
-import 'package:fts_cli/src/utils/utils.dart';
 import 'package:fts_cli/fts_cli.dart';
+import 'package:fts_cli/src/utils/utils.dart';
 
 import 'samples.dart';
 
@@ -17,7 +17,8 @@ void createSampleContent() {
       '$defaultConfigEnvPath and sample files created in ${Directory.current}');
 
   if (which('code').found) {
-    var useOpen = confirm(yellow('Do you wanna open VisualCode?'), defaultValue: false);
+    var useOpen =
+        confirm(yellow('Do you wanna open VisualCode?'), defaultValue: false);
     if (useOpen) {
       trace('Opening current folder in VisualCode...');
       sleep(1);

@@ -2,6 +2,8 @@
 - rebranded to "Flutter Translation Sheet Generator"
 - changed cli program to `fts` 
 - clean docs.
+- added `AppLocales.of(locale)` to search for `LangVo` (contains native and english name of the locale).
+- added `toString()` methods in Keys classes... that returns the keys 'path.' (might be useful to resolve gender, plurals based on the base key string).
 
 ## [1.0.4]
 - dynamic string tokens support!! type {{name}},

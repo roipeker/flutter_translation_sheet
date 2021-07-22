@@ -35,7 +35,7 @@ Future<void> startFetch() async {
   putVarsInMap(localesMap);
 
   if (config.validTKeyFile) {
-    createTKeyFileFromMap(map, save: true, includeToString: false);
+    createTKeyFileFromMap(map, save: true, includeToString: true);
   }
   createLocalesFiles(localesMap);
   formatDartFiles();
@@ -61,7 +61,7 @@ Future<void> build() async {
 
   /// create tkey file
   if (config.validTKeyFile) {
-    createTKeyFileFromMap(map, save: true, includeToString: false);
+    createTKeyFileFromMap(map, save: true, includeToString: true);
   }
   createLocalesFiles(localesMap);
   formatDartFiles();

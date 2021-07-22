@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/trcli.iml" filepath="$PROJECT_DIR$/.idea/trcli.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/fts_cli.iml" filepath="$PROJECT_DIR$/.idea/fts_clifts_cli.iml" />
     </modules>
   </component>
 </project>
