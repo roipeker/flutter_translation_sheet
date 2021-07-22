@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:dcli/dcli.dart';
-import 'package:translate_cli/translate_cli.dart';
+import 'package:fts_cli/fts_cli.dart';
 
 int _classCounter = 0;
 final _translateKeyClasses = [];

@@ -2,14 +2,11 @@ import 'dart:io';
 
 // import 'package:dcli/dcli.dart';
 import 'package:args/command_runner.dart';
-import 'package:dcli/dcli.dart';
-import 'package:translate_cli/translate_cli.dart';
-
-import '../lib/src/io/commands.dart';
+import 'package:fts_cli/fts_cli.dart';
 
 Future<void> main(List<String> args) async {
   var runner = CommandRunner(
-    'trcli',
+    AppStrings.cliName,
     'cli to make your app\'s l10n easy',
   )
     ..addCommand(FetchCommand(startFetch))

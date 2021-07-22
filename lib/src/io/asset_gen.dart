@@ -1,4 +1,4 @@
-import 'package:translate_cli/translate_cli.dart';
+import 'package:fts_cli/fts_cli.dart';
 
 void saveLocaleAsset(String localeName, KeyMap map, {bool beautify = false}) {
   if (!localeName.endsWith('.json')) {

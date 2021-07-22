@@ -3,7 +3,7 @@ import 'package:args/args.dart';
 import 'package:args/command_runner.dart';
 import 'package:args/src/arg_parser.dart';
 import 'package:dcli/dcli.dart';
-import 'package:translate_cli/translate_cli.dart';
+import 'package:fts_cli/fts_cli.dart';
 
 class FetchCommand extends Command {
   @override
@@ -75,8 +75,8 @@ void startConfig(String path) {
             'Do you wanna create the template trconfig.yaml in the current directory?'),
         defaultValue: true);
     if (!useCreateTemplate) {
-      var m1 = grey('trcli run', background: AnsiColor.black);
-      var m2 = grey('trcli -h', background: AnsiColor.black);
+      var m1 = grey('${AppStrings.cliName} run', background: AnsiColor.black);
+      var m2 = grey('${AppStrings.cliName} -h', background: AnsiColor.black);
       var msg =
           '$m1 with a configuration file or see $m2 for more help.';
       print(msg);
@@ -90,3 +90,5 @@ void startConfig(String path) {
     loadEnv(path);
   }
 }
+
+

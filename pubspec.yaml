@@ -1,9 +1,9 @@
-name: translate_cli
-description: A super simple l10n tool with auto translations via GoogleSheet and generation of json and dart files.
-version: 1.0.4
+name: fts_cli
+description: Flutter Translation Sheet Generator is a super simple tool to help you deal with localization (l10n), using automatic GoogleSheet translations (via Google Translate) and the generation of json and dart files.
+version: 1.0.5
 
 executables:
-  translate_cli:
+  fts: main
 
 environment:
   sdk: ">=2.13.0 <3.0.0"

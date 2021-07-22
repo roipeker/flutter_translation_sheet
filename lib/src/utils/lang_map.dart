@@ -1,4 +1,4 @@
-import 'package:translate_cli/src/utils/utils.dart';
+import 'package:fts_cli/src/utils/utils.dart';
 
 LangInfo langInfoFromKey(String key) {
   key = normLocale(key);

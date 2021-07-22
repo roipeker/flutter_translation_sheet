@@ -1,6 +1,6 @@
 import 'dart:io' as io;
 
-import 'package:translate_cli/translate_cli.dart';
+import 'package:fts_cli/fts_cli.dart';
 import 'package:yaml/yaml.dart';
 
 const kRef = '\$ref';
