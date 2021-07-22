@@ -12,7 +12,6 @@ dependencies:
   dcli: ^1.7.1
   recase: ^4.0.0
   args: any
-  csv: ^5.0.0
   http: ^0.13.3
   googleapis: ^4.0.0
   googleapis_auth: ^1.1.0
