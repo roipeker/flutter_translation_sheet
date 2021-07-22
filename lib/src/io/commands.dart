@@ -3,7 +3,7 @@ import 'package:args/args.dart';
 import 'package:args/command_runner.dart';
 import 'package:args/src/arg_parser.dart';
 import 'package:dcli/dcli.dart';
-import 'package:trcli/translate_cli.dart';
+import 'package:translate_cli/translate_cli.dart';
 
 class FetchCommand extends Command {
   @override

@@ -1,9 +1,9 @@
-name: trcli
-description: A super simple l10n tool with auto translations via GoogleSheet.
+name: translate_cli
+description: A super simple l10n tool with auto translations via GoogleSheet and generation of json and dart files.
 version: 1.0.4
 
 executables:
-  trcli:
+  translate_cli:
 
 environment:
   sdk: ">=2.13.0 <3.0.0"

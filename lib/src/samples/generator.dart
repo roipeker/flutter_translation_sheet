@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:dcli/dcli.dart';
-import 'package:trcli/src/utils/utils.dart';
-import 'package:trcli/translate_cli.dart';
+import 'package:translate_cli/src/utils/utils.dart';
+import 'package:translate_cli/translate_cli.dart';
 
 import 'samples.dart';
 
