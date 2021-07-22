@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:fts_cli/fts_cli.dart';
+import 'package:flutter_translation_sheet/flutter_translation_sheet.dart';
 import 'package:yaml/yaml.dart';
 
 import '../utils/utils.dart';

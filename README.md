@@ -3,23 +3,28 @@
 Command line application to make your l10n super fast.
 Compose your strings in yaml/json format and use GoogleSheet for auto translate.
 
+[![pub package](https://img.shields.io/pub/v/flutter_translation_sheet.svg?label=fts&logo=Dart&color=blue&style=flat)](https://pub.dev/packages/flutter_translation_sheet)
+[![likes](https://badges.bar/sentry/likes?label:likes&color=blue&style=flat)](https://pub.dev/packages/sentry/score)
+[![style: pedantic](https://img.shields.io/badge/style-pedantic-blue.svg?&style=flat)](https://pub.dev/packages/pedantic)
+[![buy me a coffee](https://img.shields.io/badge/buy%20me%20a%20coffee-grey.svg?logo=buy-me-a-coffee&style=flat)](https://www.buymeacoffee.com/roipeker)
+![GitHub last commit](https://img.shields.io/github/last-commit/roipeker/flutter_translation_sheet?color=blue&logo=GitHub&style=flat)
+
+
+![GitHub stars](https://img.shields.io/github/stars/roipeker/flutter_translation_sheet?style=social)
+![GitHub forks](https://img.shields.io/github/forks/roipeker/flutter_translation_sheet?style=social)
+![GitHub watchers](https://img.shields.io/github/watchers/roipeker/flutter_translation_sheet?style=social)
+![GitHub followers](https://img.shields.io/github/followers/roipeker?style=social)
+
 ### 🧰 Install:
 
 > You need to have `flutter` or `dart` SDK in your System PATH.
 
-#### Github install:
-
 ```bash
-flutter pub global activate -sgit https://github.com/roipeker/fts_cli.git
+flutter pub global activate flutter_translation_sheet
 ```
 
-Just run `fts` in any folder to create a template config.
+Now just run `fts` in any folder to create a template configuration file.
 
-#### Local install:
-clone the repo in your computer and replace <path> accordingly:
-```bash
-flutter pub global activate --source path <path>
-```
 
 ### ⚙️ Usage:
 
@@ -123,3 +128,11 @@ locales:
 - If *fts* finds the 2nd ROW empty in any column, it will take the data corrupted, and will re-upload for translation.
 
 - If the row count from keys is different from the master language, it will invalidate the entire sheet.
+ 
+
+----
+
+Thanks for passing by!
+
+
+![](https://estruyf-github.azurewebsites.net/api/VisitorHit?user=roipeker&repo=flutter_translation_sheet&countColorcountColor&countColor=%23323232)

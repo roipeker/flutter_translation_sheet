@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:dcli/dcli.dart';
-import 'package:fts_cli/fts_cli.dart';
-import 'package:fts_cli/src/utils/utils.dart';
+import 'package:flutter_translation_sheet/flutter_translation_sheet.dart';
+import 'package:flutter_translation_sheet/src/utils/utils.dart';
 
 import 'samples.dart';
 
