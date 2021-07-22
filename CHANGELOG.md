@@ -1,3 +1,6 @@
+## [1.0.5+11]
+- fixed README issues
+
 ## [1.0.5+10]
 - changed repo name and package name to **flutter_translation_sheet**
 - improved README with badges.
