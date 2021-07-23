@@ -6,25 +6,26 @@ import 'package:path/path.dart' as p;
 
 String libFolder = '';
 String extractStringOutputFile = '';
+bool extractPermissive = false;
+String extractAllowedExtensions = 'dart';
 
 void extractStrings() {
-  var warn = false;
   if (libFolder.isEmpty) {
-    warn = true;
     libFolder = p.absolute('.');
   }
+  // trace("Extracting permissive: ", extractPermissive, ' files:',
+  //     extractAllowedExtensions);
   libFolder = p.canonicalize(libFolder);
-  // if (!p.isWithin(libFolder, 'lib')) {
   if (!p.split(libFolder).contains('lib')) {
     trace('''WARNING: fts is not finding /lib in the current search path. 
 As it uses brute-force approach for String matching and file access, if the program takes much time,
 cancel the operation and pass --path argument to run a faster analysis.
 Or change the current working directory to /lib or some sub-folder. 
-''' );
+''');
   }
   if (!exists(libFolder)) {
     error(
-        'Folder $libFolder doesnt exists. Please select a valid /lib folder to extract Strings.');
+        'Folder $libFolder doesn\'t exists. Please select a valid /lib folder to extract Strings.');
     exit(3);
   }
   if (extractStringOutputFile.isEmpty) {
@@ -37,9 +38,24 @@ Or change the current working directory to /lib or some sub-folder.
 void _inspectRecursive(String path) {
   trace('Looking for strings in ', path);
   var dir = Directory(path);
+  var allowedExtensions = extractAllowedExtensions.split(',').map((e) {
+    var ext = e.trim();
+    if (!ext.startsWith('.')) return '.$ext';
+    return ext;
+  }).toList(growable: false);
+  trace('Accepting extensions: ', allowedExtensions.join(', '));
+  if (extractPermissive) {
+    trace('Running in permissive move, strings without spaces are captured');
+  }
   var allFileEntities = dir.listSync(recursive: true);
   final files = allFileEntities
-      .where((e) => e is File && e.path.endsWith('.dart'))
+      .where((e) {
+        if (e is File) {
+          var ext = p.extension(e.path, 1);
+          return allowedExtensions.contains(ext);
+        }
+        return false;
+      })
       .toList(growable: false)
       .cast<File>();
 
@@ -112,7 +128,7 @@ void _takeFile(File f, List<String> populate) {
     var str = m.group(0)!;
     str = str.substring(3, str.length - 3);
     str = str.trim();
-    var hasSpace = str.contains(' ');
+    var hasSpace = extractPermissive || str.contains(' ');
     if (str.isNotEmpty && hasSpace && !str.contains(_pathRegExp)) {
       populate.add(str);
     }
@@ -122,7 +138,8 @@ void _takeFile(File f, List<String> populate) {
     var str = m.group(0)!;
     str = str.substring(1, str.length - 1);
     str = str.trim();
-    var hasSpace = str.contains(' ');
+    // var hasSpace = str.contains(' ');
+    var hasSpace = extractPermissive || str.contains(' ');
     if (str.isNotEmpty && hasSpace && !str.contains(_pathRegExp)) {
       populate.add(str);
     }

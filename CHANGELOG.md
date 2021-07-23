@@ -1,3 +1,11 @@
+## [1.0.7+15]
+- improved `extract` with --ext and --permissive options to search for more file types, and allow capturing strings without spaces.
+- new [intl:enabled:true] option in trconfig.yaml to output `arb` files in lib.
+- other minor improvements. Still need to add docs and test new features. 
+
+argParser.addOption('ext', defaultsTo: 'dart', abbr: 'e', help: 'Comma separated list of allowed file extensions types to analyze for strings.');
+    argParser.addFlag('permissive', abbr: 's', help: 'Toggles permissive mode, capturing strings without spaces in it.');
+    
 ## [1.0.6+14]
 - small README fixes.
 

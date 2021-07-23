@@ -1,12 +1,18 @@
 import 'dart:io';
 
 import 'package:flutter_translation_sheet/flutter_translation_sheet.dart';
+import 'package:path/path.dart' as p;
 import 'package:yaml/yaml.dart';
 
 import '../utils/utils.dart';
 
 const defaultConfigEnvPath = 'trconfig.yaml';
 EnvConfig config = EnvConfig._();
+String configPath = '';
+
+String get configProjectDir {
+  return p.dirname(configPath);
+}
 
 void createSampleConfig() {
   saveString(defaultConfigEnvPath, _kSampleConfig);
@@ -28,7 +34,9 @@ void loadEnv([String path = defaultConfigEnvPath]) {
     createSampleConfig();
     exit(0);
   }
+  configPath = p.canonicalize(path);
   var doc = loadYaml(data);
+  config.intlEnabled = doc['intl']?['enabled'] ?? false;
   config.outputJsonDir = doc['output_json_dir'] ?? 'output/assets/l10n';
   config.entryFile = doc['entry_file'] ?? '';
   config.dartOutputDir = doc?['dart']?['output_dir'] ?? '';
@@ -138,7 +146,7 @@ See https://cloud.google.com/translate/docs/languages for a list of supported tr
 void _configParamOutput() {
   /// fix param output to valid string.
   var _paramOutput = config.paramOutputPattern;
-  if(_paramOutput.isEmpty){
+  if (_paramOutput.isEmpty) {
     _paramOutput = '{*}';
   }
   if (_paramOutput.isNotEmpty && !_paramOutput.contains('*')) {
@@ -224,9 +232,13 @@ class EnvConfig {
   String paramOutputPattern = '{*}';
   String paramOutputPattern1 = '{{';
   String paramOutputPattern2 = '}}';
-
+  bool intlEnabled = false;
   // param_output_pattern
   bool useDartMaps = false;
+
+  String get intlYamlPath {
+    return !intlEnabled ? '' : joinDir([configProjectDir,'l10n.yaml']);
+  }
 
   String get inputYamlDir {
     if (entryFile.contains('/')) {

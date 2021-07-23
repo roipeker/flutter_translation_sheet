@@ -16,6 +16,8 @@ class ExtractStringCommand extends Command {
   ExtractStringCommand(this.exec) {
     argParser.addOption('path', abbr: 'p', help: 'Set the /lib folder to search for Strings in dart files.');
     argParser.addOption('output', defaultsTo: 'strings.json', abbr: 'o', help: 'Sets the output path for the generated json map.');
+    argParser.addOption('ext', defaultsTo: 'dart', abbr: 'e', help: 'Comma separated list of allowed file extensions types to analyze for strings.');
+    argParser.addFlag('permissive', abbr: 's', help: 'Toggles permissive mode, capturing strings without spaces in it.');
     addConfigOption(argParser);
   }
 
@@ -25,6 +27,12 @@ class ExtractStringCommand extends Command {
     extractStringOutputFile = absolute('strings.json');
     if(argResults!.wasParsed('output')){
       extractStringOutputFile = argResults!['output']!.trim();
+    }
+    if(argResults!.wasParsed('ext')){
+      extractAllowedExtensions = argResults!['ext']!.trim();
+    }
+    if(argResults!.wasParsed('permissive')){
+      extractPermissive = argResults!['permissive']!;
     }
     if(argResults!.wasParsed('path')){
       libFolder = argResults!['path']!.trim();
