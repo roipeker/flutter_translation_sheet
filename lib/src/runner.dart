@@ -1,6 +1,8 @@
 import 'dart:io';
 
+import 'package:args/args.dart';
 import 'package:args/command_runner.dart';
+import 'package:dcli/dcli.dart';
 
 import 'package:io/io.dart';
 
@@ -17,21 +19,36 @@ class FTSCommandRunner extends CommandRunner<int> {
     addCommand(FetchCommand(startFetch));
     addCommand(RunCommand(startRun));
     addCommand(UpgradeCommand(checkUpdate));
+    argParser.addFlag(
+      'version',
+      help: 'current version',
+      negatable: false,
+    );
   }
   @override
   Future<int> run(Iterable<String> args) async {
     try {
       final _args = parse(args);
       final cmd = _args.command?.name;
-      final res = await super.runCommand(_args) ?? ExitCode.success.code;
+      final res = await runCommand(_args) ?? ExitCode.success.code;
       if (cmd != 'upgrade') {
-         await checkUpdate(false);
+        await checkUpdate(false);
       }
       return res;
     } catch (e) {
       error(e);
     }
     return ExitCode.usage.code;
+  }
+
+  @override
+  Future<int?> runCommand(ArgResults topLevelResults) async {
+    if (topLevelResults['version'] == true) {
+      trace(green(CliConfig.version));
+      return ExitCode.success.code;
+    }
+
+    return super.runCommand(topLevelResults);
   }
 
   Future<void> startRun() async {
