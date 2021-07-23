@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:translate_cli/src/gsheets/gsheets.dart';
-import 'package:translate_cli/translate_cli.dart';
+import 'package:flutter_translation_sheet/src/gsheets/gsheets.dart';
+import 'package:flutter_translation_sheet/flutter_translation_sheet.dart';
 
 final sheet = SheetParser();
 

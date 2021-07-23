@@ -1,17 +1,13 @@
 import 'dart:io';
-
-// import 'package:dcli/dcli.dart';
 import 'package:args/command_runner.dart';
-import 'package:dcli/dcli.dart';
-import 'package:translate_cli/translate_cli.dart';
-
-import '../lib/src/io/commands.dart';
+import 'package:flutter_translation_sheet/flutter_translation_sheet.dart';
 
 Future<void> main(List<String> args) async {
   var runner = CommandRunner(
-    'trcli',
+    AppStrings.cliName,
     'cli to make your app\'s l10n easy',
   )
+    ..addCommand(ExtractStringCommand(extractStrings))
     ..addCommand(FetchCommand(startFetch))
     ..addCommand(RunCommand(startRun));
   try {
@@ -24,7 +20,6 @@ Future<void> main(List<String> args) async {
 }
 
 void startRun() {
-  // trace("Start run!");
   build();
 }
 
@@ -38,7 +33,7 @@ Future<void> startFetch() async {
   putVarsInMap(localesMap);
 
   if (config.validTKeyFile) {
-    createTKeyFileFromMap(map, save: true, includeToString: false);
+    createTKeyFileFromMap(map, save: true, includeToString: true);
   }
   createLocalesFiles(localesMap);
   formatDartFiles();
@@ -64,7 +59,7 @@ Future<void> build() async {
 
   /// create tkey file
   if (config.validTKeyFile) {
-    createTKeyFileFromMap(map, save: true, includeToString: false);
+    createTKeyFileFromMap(map, save: true, includeToString: true);
   }
   createLocalesFiles(localesMap);
   formatDartFiles();

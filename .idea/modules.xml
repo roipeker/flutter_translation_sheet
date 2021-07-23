@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/trcli.iml" filepath="$PROJECT_DIR$/.idea/trcli.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/flutter_translation_sheet.iml" filepath="$PROJECT_DIR$/.idea/flutter_translation_sheet.iml" />
     </modules>
   </component>
 </project>

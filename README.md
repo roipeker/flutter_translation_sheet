@@ -1,29 +1,37 @@
-## translator cli [trcli]
+## Flutter Translation Sheet Generator [fts]
 
 Command line application to make your l10n super fast.
 Compose your strings in yaml/json format and use GoogleSheet for auto translate.
+
+[![pub package](https://img.shields.io/pub/v/flutter_translation_sheet.svg?label=fts&logo=Dart&color=blue&style=flat)](https://pub.dev/packages/flutter_translation_sheet)
+[![likes](https://badges.bar/flutter_translation_sheet/likes?label:likes&color=blue&style=flat)](https://pub.dev/packages/flutter_translation_sheet/score)
+[![style: pedantic](https://img.shields.io/badge/style-pedantic-blue.svg?&style=flat)](https://pub.dev/packages/pedantic)
+[![buy me a coffee](https://img.shields.io/badge/buy%20me%20a%20coffee-grey.svg?logo=buy-me-a-coffee&style=flat)](https://www.buymeacoffee.com/roipeker)
+![GitHub last commit](https://img.shields.io/github/last-commit/roipeker/flutter_translation_sheet?color=blue&logo=GitHub&style=flat)
+
+![GitHub stars](https://img.shields.io/github/stars/roipeker/flutter_translation_sheet?style=social)
+![GitHub forks](https://img.shields.io/github/forks/roipeker/flutter_translation_sheet?style=social)
+![GitHub watchers](https://img.shields.io/github/watchers/roipeker/flutter_translation_sheet?style=social)
+![GitHub followers](https://img.shields.io/github/followers/roipeker?style=social)
 
 ### 🧰 Install:
 
 > You need to have `flutter` or `dart` SDK in your System PATH.
 
-#### Github install:
-
 ```bash
-flutter pub global activate -sgit https://github.com/roipeker/trcli.git
+flutter pub global activate flutter_translation_sheet
 ```
 
-Just run `trcli` in any folder to create a template config.
+Now just run `fts` in any folder to create a template configuration file.
 
-#### Local install:
-clone the repo in your computer and replace <path> accordingly:
-```bash
-flutter pub global activate --source path <path>
-```
+Check `--help` on any sub-command of `fts`:
+- `fts run`
+- `fts fetch`
+- `fts extract`
 
 ### ⚙️ Usage:
 
-Go with your terminal in any folder (or Flutter project folder), and run `trcli run`.
+Go with your terminal in any folder (or Flutter project folder), and run `fts run`.
 
 First time will create a template for you, and you will have to get your [Google credentials json](https://medium.com/@a.marenkov/how-to-get-credentials-for-google-sheets-456b7e88c430).
 
@@ -59,27 +67,27 @@ gsheets:
 
 You can find more information in the comments in `tfconfig.yaml` and fill the `gsheet:` section, and change the output folder as needed.
 
-Once you have your configuration file ready, run `trcli` to generate your sample google sheets.
+Once you have your configuration file ready, run `fts` to generate your sample google sheets.
 
 Take the sample data input as reference, and use it in your own project.
 
-**trcli** will try to keep the local input and the remote sheet in sync, and automatically generate the locales for you every time you run it.
+**fts** will try to keep the local input and the remote sheet in sync, and automatically generate the locales for you every time you run it.
 
 After a while of not using it, Google Sheet performance slow down on every request, so it might take a little longer to get the output generated.
 Once it warms up (run 1 time) the sync performance is pretty solid.
 
 
 ```bash
-trcli fetch
+fts fetch
 ```
 
-Unlike `trcli run`, `fetch` doesn't sync, nor validates the data structure.
+Unlike `fts run`, `fetch` doesn't sync, nor validates the data structure.
 
 Uses the local strings as entry map, downloads the latest data from GoogleSheet and generates the files accordingly.
 Is a much faster process. Very useful when you made manual corrections in your sheets for the auto-translated locales.
 
 Do not manually modify the *master language* column on your Google Sheet, change the data in the string source file
-and let `trcli` do the upload.
+and let `fts` do the upload.
 
 If there are differences of master lang strings between local and remote, the entire row will be cleared and regenerated with auto translation
 using the latest strings, and manual changes will get lost.
@@ -89,6 +97,7 @@ Currently you have to be careful, and keep your manual translations backed up ju
 ### Variables:
 
 To store "variables" or placeholders in your strings to be replaced later in your code, use the follow notation:
+
 ```
 "Welcome back {{user}}, today is {{date}}."
 ```
@@ -96,10 +105,31 @@ To store "variables" or placeholders in your strings to be replaced later in you
 It will store the values in the sheet as {{0}} {{1}} and so on, to avoid complications with GoogleTranslate, and it will
 generate a *vars.lock* file in the directory where you point your "entry_file" in config.
 
+So you can define your own pattern for the code/json generation:
+
 ```yaml
+## pattern to applies final variables in the generated json/dart Strings.
+## Enclose * in the pattern you need.
+## {*} = {{name}} becomes {name}
+## %* = {{name}} becomes %name
+## (*) = {{name}} becomes (name)
+## - Special case when you need * as prefix or suffix, use *? as splitter
+## ***?** = {{name}} becomes **name**
 param_output_pattern: "{{*}}"
 ```
+Warning: Do not confuse the data source placeholder format with `param_output_pattern` configuration.
+Data-source (your yaml strings) must have this form `{{variable}}` to be interpreted as variables.
+The generated output strings uses `param_output_pattern` configuration to render the variables as you please.
 
+### Utilities:
+
+- `fts extract [--path] [--output]`: This tiny utility command performs a shallow search (no syslinks) of your dart classes and uses a basic pattern matching to capture your code's Strings.
+Might come in handy when you wanna localize an app with hardcoded texts. It only process '.dart' files, and the String matching isn't very permissive (single words Strings are skipped).
+Pass the folder to analyse in `--path` and the folder (or json file) path to save in `--output`.
+It will output a single json file cloning the structure of the source code folder tree for easy manual search.
+It's up to you to clean it up, adjust keys, split it up in other data source files, and USE it with "Flutter Translate Sheet".
+This command tool is in alpha state, but don't worry, as it doesn't touch any of analyzed files, so is safe.
+   
 
 ### 📝 Considerations:
 
@@ -120,6 +150,14 @@ locales:
 
 - The 1st ROW in your sheet are the "headers", don't change the autogenerated names.
 
-- If *trcli* finds the 2nd ROW empty in any column, it will take the data corrupted, and will re-upload for translation.
+- If *fts* finds the 2nd ROW empty in any column, it will take the data corrupted, and will re-upload for translation.
 
 - If the row count from keys is different from the master language, it will invalidate the entire sheet.
+ 
+
+----
+
+Thanks for passing by!
+
+
+![](https://estruyf-github.azurewebsites.net/api/VisitorHit?user=roipeker&repo=flutter_translation_sheet&countColorcountColor&countColor=%23323232)

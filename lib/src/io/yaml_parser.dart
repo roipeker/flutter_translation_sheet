@@ -1,6 +1,6 @@
 import 'dart:io' as io;
 
-import 'package:translate_cli/translate_cli.dart';
+import 'package:flutter_translation_sheet/flutter_translation_sheet.dart';
 import 'package:yaml/yaml.dart';
 
 const kRef = '\$ref';

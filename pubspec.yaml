@@ -1,9 +1,10 @@
-name: translate_cli
-description: A super simple l10n tool with auto translations via GoogleSheet and generation of json and dart files.
-version: 1.0.4
+name: flutter_translation_sheet
+description: Flutter Translation Sheet Generator is a super simple tool to help you deal with localization (l10n), using automatic GoogleSheet translations (via Google Translate) and the generation of json and dart files.
+version: 1.0.6+14
+homepage: https://github.com/roipeker/flutter_translation_sheet
 
 executables:
-  translate_cli:
+  fts: main
 
 environment:
   sdk: ">=2.13.0 <3.0.0"
@@ -11,12 +12,13 @@ environment:
 dependencies:
   dcli: ^1.7.1
   recase: ^4.0.0
-  args: any
-  csv: ^5.0.0
+  args: ^2.2.0
   http: ^0.13.3
   googleapis: ^4.0.0
   googleapis_auth: ^1.1.0
   yaml: ^3.1.0
+  collection: ^1.15.0
+  path: ^1.8.0
 
 dev_dependencies:
   pedantic: ^1.11.1

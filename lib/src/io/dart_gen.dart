@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:dcli/dcli.dart';
-import 'package:translate_cli/translate_cli.dart';
+import 'package:flutter_translation_sheet/flutter_translation_sheet.dart';
 
 int _classCounter = 0;
 final _translateKeyClasses = [];
@@ -141,6 +141,19 @@ abstract class AppLocales {
   fileContent += '  static const available = <LangVo>[$_availableLang];\n';
   fileContent +=
       '  static final supportedLocales = <Locale>[$_supportedLocales];\n';
+
+  fileContent += '''
+  static LangVo? of(Locale locale, [bool fullMatch = false]) {
+    for (final langVo in AppLocales.available) {
+      if ((!fullMatch && langVo.locale.languageCode == locale.languageCode) ||
+          langVo.locale == locale) {
+        return langVo;
+      }
+    }
+    return null;
+  }  
+''';
+
   fileContent += '}';
 
   return fileContent;
@@ -217,7 +230,7 @@ String _buildTKeyMap({
     String _fieldModifier;
 
     /// no constants.
-      // _fieldModifier = 'static const';
+    // _fieldModifier = 'static const';
     if (isRoot) {
       _fieldModifier = 'static';
     } else {
@@ -246,20 +259,28 @@ String _buildTKeyMap({
     }
   }
 
-  final tostrName = className;
   if (path.isNotEmpty && toString) {
     classStr += '''
   @override
-  String toString() => """\\$tostrName:$path''';
-    if (tostrFields.isNotEmpty) {
-      classStr += '\n  -fields: ' + tostrFields.join(', ');
-    }
-    if (tostrKeys.isNotEmpty) {
-      classStr += '\n  -keys: ' + tostrKeys.join(', ');
-    }
-    classStr += '''""";
+  String toString() => "$path";
+
 ''';
   }
+
+//   final tostrName = className;
+//   if (path.isNotEmpty && toString) {
+//     classStr += '''
+//   @override
+//   String toString() => """\\$tostrName:$path''';
+//     if (tostrFields.isNotEmpty) {
+//       classStr += '\n  -fields: ' + tostrFields.join(', ');
+//     }
+//     if (tostrKeys.isNotEmpty) {
+//       classStr += '\n  -keys: ' + tostrKeys.join(', ');
+//     }
+//     classStr += '''""";
+// ''';
+//   }
 
   /// private constructor.
   var classModifier = classCanBeConst ? 'const ' : '';

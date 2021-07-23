@@ -1,4 +1,4 @@
-import 'package:translate_cli/translate_cli.dart';
+import 'package:flutter_translation_sheet/flutter_translation_sheet.dart';
 
 void saveLocaleAsset(String localeName, KeyMap map, {bool beautify = false}) {
   if (!localeName.endsWith('.json')) {

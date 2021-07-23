@@ -3,7 +3,35 @@ import 'package:args/args.dart';
 import 'package:args/command_runner.dart';
 import 'package:args/src/arg_parser.dart';
 import 'package:dcli/dcli.dart';
-import 'package:translate_cli/translate_cli.dart';
+import 'package:flutter_translation_sheet/flutter_translation_sheet.dart';
+
+
+class ExtractStringCommand extends Command {
+  @override
+  final String description = 'Extract Strings from dart files';
+
+  @override
+  final String name = 'extract';
+  final Function exec;
+  ExtractStringCommand(this.exec) {
+    argParser.addOption('path', abbr: 'p', help: 'Set the /lib folder to search for Strings in dart files.');
+    argParser.addOption('output', defaultsTo: 'strings.json', abbr: 'o', help: 'Sets the output path for the generated json map.');
+    addConfigOption(argParser);
+  }
+
+  @override
+  void run() {
+    libFolder = '';
+    extractStringOutputFile = absolute('strings.json');
+    if(argResults!.wasParsed('output')){
+      extractStringOutputFile = argResults!['output']!.trim();
+    }
+    if(argResults!.wasParsed('path')){
+      libFolder = argResults!['path']!.trim();
+    }
+    exec();
+  }
+}
 
 class FetchCommand extends Command {
   @override
@@ -75,8 +103,8 @@ void startConfig(String path) {
             'Do you wanna create the template trconfig.yaml in the current directory?'),
         defaultValue: true);
     if (!useCreateTemplate) {
-      var m1 = grey('trcli run', background: AnsiColor.black);
-      var m2 = grey('trcli -h', background: AnsiColor.black);
+      var m1 = grey('${AppStrings.cliName} run', background: AnsiColor.black);
+      var m2 = grey('${AppStrings.cliName} -h', background: AnsiColor.black);
       var msg =
           '$m1 with a configuration file or see $m2 for more help.';
       print(msg);
@@ -90,3 +118,5 @@ void startConfig(String path) {
     loadEnv(path);
   }
 }
+
+

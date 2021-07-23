@@ -1,3 +1,9 @@
+/// Slightly modified version of GSheets by a-marenkov.
+///
+/// pub lib: https://pub.dev/packages/gsheets
+///
+/// All credits to him.
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:math';

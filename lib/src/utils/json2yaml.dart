@@ -1,3 +1,10 @@
+/// Original package "json2yaml" by alexei-sintotski
+///
+/// pubdev: https://pub.dev/packages/json2yaml
+///
+/// This is a slightly modified version for the cli.
+///
+///
 /*
  * MIT License
  *
