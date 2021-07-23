@@ -1,4 +1,11 @@
 import 'dart:io';
+// <<<<<<< main
+// // 
+import 'package:flutter_translation_sheet/src/runner.dart';
+
+Future<void> main(List<String> args) async {
+  exit(await FTSCommandRunner().run(args));
+// =======
 
 import 'package:args/command_runner.dart';
 import 'package:flutter_translation_sheet/flutter_translation_sheet.dart';
@@ -75,4 +82,5 @@ Future<void> build() async {
   }
   formatDartFiles();
   exit(1);
+// >>>>>>> main
 }
