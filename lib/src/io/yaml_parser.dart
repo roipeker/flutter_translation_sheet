@@ -128,7 +128,7 @@ void putVarsInMap(Map<String, Map<String, String>> map) {
         Map.from(value).map((key, value) => MapEntry('$key', '$value'));
   });
   for (var localeKey in map.keys) {
-    final localeMap = map[localeKey]! as Map<String, String>;
+    final localeMap = map[localeKey]!;
     for (var key in localeMap.keys) {
       if (varsMap.containsKey(key)) {
         var text = localeMap[key]!;
