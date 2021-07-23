@@ -1,3 +1,6 @@
+## [1.0.6+14]
+- small README fixes.
+
 ## [1.0.6+13]
 - added `extract` command to get find strings in your dart files.
 - added `extract` docs to README.
