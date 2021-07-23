@@ -87,12 +87,15 @@ KeyMap _canoMap(Map content) {
   final output = <String, String>{};
   void buildKeys(Map inner, String prop) {
     for (var k in inner.keys) {
+      if (inner[k] == null) {
+        trace('"$k" has a null value');
+      }
       var val = inner[k];
       var p2 = prop.isEmpty ? k : prop + '.' + k;
       if (val is Map) {
         buildKeys(val, p2);
       } else {
-        output[p2] = inner[k];
+        output[p2] = val ?? ' ';
       }
     }
   }
@@ -128,7 +131,7 @@ void putVarsInMap(Map<String, Map<String, String>> map) {
         Map.from(value).map((key, value) => MapEntry('$key', '$value'));
   });
   for (var localeKey in map.keys) {
-    final localeMap = map[localeKey]! as Map<String, String>;
+    final localeMap = map[localeKey]!;
     for (var key in localeMap.keys) {
       if (varsMap.containsKey(key)) {
         var text = localeMap[key]!;

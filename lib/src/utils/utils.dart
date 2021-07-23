@@ -4,6 +4,8 @@ import 'dart:io';
 import '../common.dart';
 import 'logger.dart';
 
+export 'version.dart';
+
 export 'logger.dart';
 export 'json2yaml.dart';
 
