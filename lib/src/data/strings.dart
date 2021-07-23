@@ -1,3 +1,4 @@
+
 import '../version.dart';
 
 class CliConfig {

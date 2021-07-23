@@ -6,6 +6,9 @@
 argParser.addOption('ext', defaultsTo: 'dart', abbr: 'e', help: 'Comma separated list of allowed file extensions types to analyze for strings.');
     argParser.addFlag('permissive', abbr: 's', help: 'Toggles permissive mode, capturing strings without spaces in it.');
     
+## [1.0.6+15]
+- small README fixes and formatting files.
+
 ## [1.0.6+14]
 - small README fixes.
 
