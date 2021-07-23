@@ -9,7 +9,7 @@ String extractStringOutputFile = '';
 bool extractPermissive = false;
 String extractAllowedExtensions = 'dart';
 
-void extractStrings() {
+Future<void> extractStrings() async {
   if (libFolder.isEmpty) {
     libFolder = p.absolute('.');
   }

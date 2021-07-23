@@ -19,6 +19,7 @@ class FTSCommandRunner extends CommandRunner<int> {
     addCommand(FetchCommand(startFetch));
     addCommand(RunCommand(startRun));
     addCommand(UpgradeCommand(checkUpdate));
+    addCommand(ExtractStringCommand(extractStrings));
     argParser.addFlag(
       'version',
       help: 'current version',
@@ -73,6 +74,9 @@ class FTSCommandRunner extends CommandRunner<int> {
       createTKeyFileFromMap(map, save: true, includeToString: true);
     }
     createLocalesFiles(localesMap);
+    if (config.intlEnabled) {
+      buildArb(localesMap);
+    }
     formatDartFiles();
     exit(1);
   }
@@ -81,15 +85,22 @@ class FTSCommandRunner extends CommandRunner<int> {
     trace('Creating local canonical json');
     var map = buildLocalYamlMap();
     var canoMap = buildCanoMap(map);
+    // trace("Map is: ", canoMap);
+    // exit(0);
+    buildVarsInMap(canoMap);
+    // var _tmp = {'en':canoMap};
+    // putVarsInMap(_tmp);
     trace('Fetching data from Google sheets...');
     final localesMap = await sheet.getData();
     localesMap[config.masterLocale] = canoMap;
     putVarsInMap(localesMap);
-
     if (config.validTKeyFile) {
       createTKeyFileFromMap(map, save: true, includeToString: true);
     }
     createLocalesFiles(localesMap);
+    if (config.intlEnabled) {
+      buildArb(localesMap);
+    }
     formatDartFiles();
     exit(1);
   }

@@ -5,53 +5,61 @@ import 'package:args/src/arg_parser.dart';
 import 'package:dcli/dcli.dart';
 import 'package:flutter_translation_sheet/flutter_translation_sheet.dart';
 
-// <<<<<<< main
-class FetchCommand extends Command<int> {
-// =======
-
-class ExtractStringCommand extends Command {
+class ExtractStringCommand extends Command<int> {
   @override
   final String description = 'Extract Strings from dart files';
 
   @override
   final String name = 'extract';
-  final Function exec;
+  final Future Function() exec;
   ExtractStringCommand(this.exec) {
-    argParser.addOption('path', abbr: 'p', help: 'Set the /lib folder to search for Strings in dart files.');
-    argParser.addOption('output', defaultsTo: 'strings.json', abbr: 'o', help: 'Sets the output path for the generated json map.');
-    argParser.addOption('ext', defaultsTo: 'dart', abbr: 'e', help: 'Comma separated list of allowed file extensions types to analyze for strings.');
-    argParser.addFlag('permissive', abbr: 's', help: 'Toggles permissive mode, capturing strings without spaces in it.');
+    argParser.addOption('path',
+        abbr: 'p',
+        help: 'Set the /lib folder to search for Strings in dart files.');
+    argParser.addOption('output',
+        defaultsTo: 'strings.json',
+        abbr: 'o',
+        help: 'Sets the output path for the generated json map.');
+    argParser.addOption('ext',
+        defaultsTo: 'dart',
+        abbr: 'e',
+        help:
+            'Comma separated list of allowed file extensions types to analyze for strings.');
+    argParser.addFlag('permissive',
+        abbr: 's',
+        help:
+            'Toggles permissive mode, capturing strings without spaces in it.');
     addConfigOption(argParser);
   }
 
   @override
-  void run() {
+  Future<int> run() async {
     libFolder = '';
     extractStringOutputFile = absolute('strings.json');
-    if(argResults!.wasParsed('output')){
+    if (argResults!.wasParsed('output')) {
       extractStringOutputFile = argResults!['output']!.trim();
     }
-    if(argResults!.wasParsed('ext')){
+    if (argResults!.wasParsed('ext')) {
       extractAllowedExtensions = argResults!['ext']!.trim();
     }
-    if(argResults!.wasParsed('permissive')){
+    if (argResults!.wasParsed('permissive')) {
       extractPermissive = argResults!['permissive']!;
     }
-    if(argResults!.wasParsed('path')){
+    if (argResults!.wasParsed('path')) {
       libFolder = argResults!['path']!.trim();
     }
-    exec();
+    await exec();
+    return 0;
   }
 }
 
-class FetchCommand extends Command {
-// >>>>>>> main
+class FetchCommand extends Command<int> {
   @override
   final String description = 'Fetches the data from the sheet';
 
   @override
   final String name = 'fetch';
-  final Function exec;
+  final Future Function() exec;
   FetchCommand(this.exec) {
     addConfigOption(argParser);
   }
@@ -59,7 +67,7 @@ class FetchCommand extends Command {
   @override
   Future<int> run() async {
     setConfig(argResults!);
-    exec();
+    await exec();
     return 0;
   }
 }
@@ -87,7 +95,7 @@ class RunCommand extends Command<int> {
 
   @override
   final String name = 'run';
-  final Function exec;
+  final Future Function() exec;
 
   RunCommand(this.exec) {
     addConfigOption(argParser);
@@ -96,7 +104,7 @@ class RunCommand extends Command<int> {
   @override
   Future<int> run() async {
     setConfig(argResults!);
-    exec();
+    await exec();
     return 0;
   }
 }
