@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter_translation_sheet/src/gsheets/gsheets.dart';
 import 'package:flutter_translation_sheet/flutter_translation_sheet.dart';
+import 'package:flutter_translation_sheet/src/gsheets/gsheets.dart';
 
 final sheet = SheetParser();
 
@@ -97,7 +97,10 @@ Open $spritesheetUrl and check the available tabs at the bottom.
       var label = fromColumnLetter + '$row';
       var cellData = '';
       if (!config.useIterativeCache) {
-        cellData = '=GOOGLETRANSLATE($label, "$fromLocale", "$toLocale")';
+        cellData = 'GOOGLETRANSLATE($label, "$fromLocale", "$toLocale")';
+        // cellData = 'IF(ISBLANK(TRIM($label)), "", $cellData)';
+        cellData = 'IF(LEN(TRIM($label)), $cellData, "")';
+        cellData = '=$cellData';
       } else {
         var formula = 'GOOGLETRANSLATE($label, "$fromLocale", "$toLocale")';
         var currentCell = toColumnLetter + '$row';
@@ -506,7 +509,8 @@ Open $spritesheetUrl and check the available tabs at the bottom.
       final localMap = output[headerKey] = <String, String>{};
       for (var i = 0; i < keys.length; ++i) {
         var key = keys[i];
-        var value = langCol[i];
+        // var value = langCol[i];
+        var value = i >= langCol.length ? '' : langCol[i];
         if (value.contains(loadingTranslation) &&
             mapLoading[headerKey] != false) {
           mapLoading[headerKey] = true;

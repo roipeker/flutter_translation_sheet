@@ -87,12 +87,15 @@ KeyMap _canoMap(Map content) {
   final output = <String, String>{};
   void buildKeys(Map inner, String prop) {
     for (var k in inner.keys) {
+      if (inner[k] == null) {
+        trace('"$k" has a null value');
+      }
       var val = inner[k];
       var p2 = prop.isEmpty ? k : prop + '.' + k;
       if (val is Map) {
         buildKeys(val, p2);
       } else {
-        output[p2] = inner[k];
+        output[p2] = val ?? ' ';
       }
     }
   }

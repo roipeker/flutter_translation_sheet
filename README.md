@@ -24,6 +24,10 @@ flutter pub global activate flutter_translation_sheet
 
 Now just run `fts` in any folder to create a template configuration file.
 
+Check `--help` on any sub-command of `fts`:
+- `fts run`
+- `fts fetch`
+- `fts extract`
 
 ### ⚙️ Usage:
 
@@ -93,6 +97,7 @@ Currently you have to be careful, and keep your manual translations backed up ju
 ### Variables:
 
 To store "variables" or placeholders in your strings to be replaced later in your code, use the follow notation:
+
 ```
 "Welcome back {{user}}, today is {{date}}."
 ```
@@ -100,10 +105,31 @@ To store "variables" or placeholders in your strings to be replaced later in you
 It will store the values in the sheet as {{0}} {{1}} and so on, to avoid complications with GoogleTranslate, and it will
 generate a *vars.lock* file in the directory where you point your "entry_file" in config.
 
+So you can define your own pattern for the code/json generation:
+
 ```yaml
+## pattern to applies final variables in the generated json/dart Strings.
+## Enclose * in the pattern you need.
+## {*} = {{name}} becomes {name}
+## %* = {{name}} becomes %name
+## (*) = {{name}} becomes (name)
+## - Special case when you need * as prefix or suffix, use *? as splitter
+## ***?** = {{name}} becomes **name**
 param_output_pattern: "{{*}}"
 ```
+Warning: Do not confuse the data source placeholder format with `param_output_pattern` configuration.
+Data-source (your yaml strings) must have this form `{{variable}}` to be interpreted as variables.
+The generated output strings uses `param_output_pattern` configuration to render the variables as you please.
 
+### Utilities:
+
+- `fts extract [--path] [--output]`: This tiny utility command performs a shallow search (no syslinks) of your dart classes and uses a basic pattern matching to capture your code's Strings.
+Might come in handy when you wanna localize an app with hardcoded texts. It only process '.dart' files, and the String matching isn't very permissive (single words Strings are skipped).
+Pass the folder to analyse in `--path` and the folder (or json file) path to save in `--output`.
+It will output a single json file cloning the structure of the source code folder tree for easy manual search.
+It's up to you to clean it up, adjust keys, split it up in other data source files, and USE it with "Flutter Translate Sheet".
+This command tool is in alpha state, but don't worry, as it doesn't touch any of analyzed files, so is safe.
+   
 
 ### 📝 Considerations:
 

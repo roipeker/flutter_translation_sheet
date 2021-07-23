@@ -5,7 +5,47 @@ import 'package:args/src/arg_parser.dart';
 import 'package:dcli/dcli.dart';
 import 'package:flutter_translation_sheet/flutter_translation_sheet.dart';
 
+// <<<<<<< main
 class FetchCommand extends Command<int> {
+// =======
+
+class ExtractStringCommand extends Command {
+  @override
+  final String description = 'Extract Strings from dart files';
+
+  @override
+  final String name = 'extract';
+  final Function exec;
+  ExtractStringCommand(this.exec) {
+    argParser.addOption('path', abbr: 'p', help: 'Set the /lib folder to search for Strings in dart files.');
+    argParser.addOption('output', defaultsTo: 'strings.json', abbr: 'o', help: 'Sets the output path for the generated json map.');
+    argParser.addOption('ext', defaultsTo: 'dart', abbr: 'e', help: 'Comma separated list of allowed file extensions types to analyze for strings.');
+    argParser.addFlag('permissive', abbr: 's', help: 'Toggles permissive mode, capturing strings without spaces in it.');
+    addConfigOption(argParser);
+  }
+
+  @override
+  void run() {
+    libFolder = '';
+    extractStringOutputFile = absolute('strings.json');
+    if(argResults!.wasParsed('output')){
+      extractStringOutputFile = argResults!['output']!.trim();
+    }
+    if(argResults!.wasParsed('ext')){
+      extractAllowedExtensions = argResults!['ext']!.trim();
+    }
+    if(argResults!.wasParsed('permissive')){
+      extractPermissive = argResults!['permissive']!;
+    }
+    if(argResults!.wasParsed('path')){
+      libFolder = argResults!['path']!.trim();
+    }
+    exec();
+  }
+}
+
+class FetchCommand extends Command {
+// >>>>>>> main
   @override
   final String description = 'Fetches the data from the sheet';
 
