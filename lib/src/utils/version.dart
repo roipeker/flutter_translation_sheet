@@ -39,7 +39,9 @@ Future<void> checkUpdate([bool fromCommand = true]) async {
     }
     final compare = compareSemver(CliConfig.version, latest);
     if (compare >= 0) {
-      trace(cyan('fts already on the latest version'));
+      if (fromCommand) {
+        trace(cyan('fts already on the latest version'));
+      }
       return;
     }
 
