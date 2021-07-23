@@ -5,6 +5,34 @@ import 'package:args/src/arg_parser.dart';
 import 'package:dcli/dcli.dart';
 import 'package:flutter_translation_sheet/flutter_translation_sheet.dart';
 
+
+class ExtractStringCommand extends Command {
+  @override
+  final String description = 'Extract Strings from dart files';
+
+  @override
+  final String name = 'extract';
+  final Function exec;
+  ExtractStringCommand(this.exec) {
+    argParser.addOption('path', abbr: 'p', help: 'Set the /lib folder to search for Strings in dart files.');
+    argParser.addOption('output', defaultsTo: 'strings.json', abbr: 'o', help: 'Sets the output path for the generated json map.');
+    addConfigOption(argParser);
+  }
+
+  @override
+  void run() {
+    libFolder = '';
+    extractStringOutputFile = absolute('strings.json');
+    if(argResults!.wasParsed('output')){
+      extractStringOutputFile = argResults!['output']!.trim();
+    }
+    if(argResults!.wasParsed('path')){
+      libFolder = argResults!['path']!.trim();
+    }
+    exec();
+  }
+}
+
 class FetchCommand extends Command {
   @override
   final String description = "Fetches the data from the sheet";

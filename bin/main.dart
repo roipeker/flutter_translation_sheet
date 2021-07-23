@@ -7,6 +7,7 @@ Future<void> main(List<String> args) async {
     AppStrings.cliName,
     'cli to make your app\'s l10n easy',
   )
+    ..addCommand(ExtractStringCommand(extractStrings))
     ..addCommand(FetchCommand(startFetch))
     ..addCommand(RunCommand(startRun));
   try {
@@ -19,7 +20,6 @@ Future<void> main(List<String> args) async {
 }
 
 void startRun() {
-  // trace("Start run!");
   build();
 }
 

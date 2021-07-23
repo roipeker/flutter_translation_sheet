@@ -24,6 +24,10 @@ flutter pub global activate flutter_translation_sheet
 
 Now just run `fts` in any folder to create a template configuration file.
 
+Check `--help` on any sub-command of `fts`:
+- `fts run`
+- `fts fetch`
+- `fts extract`
 
 ### ⚙️ Usage:
 
@@ -104,6 +108,15 @@ generate a *vars.lock* file in the directory where you point your "entry_file" i
 param_output_pattern: "{{*}}"
 ```
 
+### Utilities:
+
+- `fts extract [--path] [--output]`: This tiny utility command performs a shallow search (no syslinks) of your dart classes and uses a basic pattern matching to capture your code's Strings.
+Might come in handy when you wanna localize an app with hardcoded texts. It only process '.dart' files, and the String matching isn't very permissive (single words Strings are skipped).
+Pass the folder to analyse in `--path` and the folder (or json file) path to save in `--output`.
+It will output a single json file cloning the structure of the source code folder tree for easy manual search.
+It's up to you to clean it up, adjust keys, split it up in other data source files, and USE it with "Flutter Translate Sheet".
+This command tool is in alpha state, but don't worry, as it doesn't touch any of analyzed files, so is safe.
+   
 
 ### 📝 Considerations:
 
