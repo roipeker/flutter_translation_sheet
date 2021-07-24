@@ -1,3 +1,7 @@
+## [1.0.8+16]
+- Improved support for `arb` generation based on `intl` standards!
+- README improvements.
+
 ## [1.0.7+15]
 - improved `extract` with --ext and --permissive options to search for more file types, and allow capturing strings without spaces.
 - new [intl:enabled:true] option in trconfig.yaml to output `arb` files in lib.

@@ -129,9 +129,57 @@ Pass the folder to analyse in `--path` and the folder (or json file) path to sav
 It will output a single json file cloning the structure of the source code folder tree for easy manual search.
 It's up to you to clean it up, adjust keys, split it up in other data source files, and USE it with "Flutter Translate Sheet".
 This command tool is in alpha state, but don't worry, as it doesn't touch any of analyzed files, so is safe.
-   
+
+- New options added: [-s] captures all Strings (event without spaces), and [-e] allows you to define a comma separated list of file extensions to search for Strings, like `-e dart,java,kt,arb`
+
+Also... when you specify an --output that ends with `.yaml`, you will have a pretty cool template to plug into `fts run` :)
+
+### arb and Intl:
+
+We have an experimental support for arb generation. In config.yaml just set (or create if it doesnt exists) this field.
+```yaml
+intl:
+  enabled: true
+```
+
+Example of .arb readable metadata:
+```yaml
+  today: "Today is {{date}}, and is hot."
+  "@today":
+    description: Show today's message with temperature.
+    placeholders:
+      date:
+        type: DateTime
+        format: yMMMEd
+ ```
+
+For plurals, we have a custom way of writing the dictionary. Just use `plural:variableName:` so `fts` knows how to generate the String.
+Remember that `other` is mandatory (the default value) when you use plurals. 
+
+```yaml
+  ### not required, but you will be a much cooler dev if you provide context :)
+  "@messageCount":
+    {
+      "description": "New messages count on the Home screen",
+      "placeholders": { "count": {} },
+    }
+
+  messageCount:
+    plural:count:
+      =0: No new messages
+      =1: You have 1 new message
+      =2: You have a couple of messages
+      other: You have {{count}} new messages
+```
+
+Previous yaml will output in *lib/l10n/app_en.arb* (or the path you defined in arb-dir inside l10n.yaml) :
+`"messageCount": "{count,plural, =0{No new messages}=1{You have 1 new message}=2{You have a couple of messages}other{You have {count} new messages}}",` 
+
+We will try to provide a richer experience integrating more libraries outputs in the future.  
 
 ### 📝 Considerations:
+
+- When using arb output, make sure you have *l10n.yaml* next to the *trconfig.yaml* at the root of your project.
 
 - In your spreadsheet, the first column will always be your "keys", don't change that, don't move the column.
 
