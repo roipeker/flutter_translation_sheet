@@ -348,6 +348,7 @@ Open $spritesheetUrl and check the available tabs at the bottom.
           trace(
               '${clearRows.length} rows will be cleared ( ${clearRows.join((', '))} )');
           var result = await _table.batchClearRows(clearRows);
+          trace("Clear rows result:", result);
           if (result) {
             clearRows.forEach((row) {
               var k = remoteKeys[row - 1];

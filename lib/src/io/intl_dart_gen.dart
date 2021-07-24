@@ -70,20 +70,16 @@ counter:
         _addMetaKey(newKey, textValue, output);
       }
     }
-
     /// add pluralKeys
     for (var k in pluralMaps.keys) {
       output[k] = _resolvePluralTextFromMap(pluralMaps[k]);
       _addMetaKey(k, output[k], output);
-      // trace('plural key: ', k, 'output[k]: ', output[k]);
     }
-
     var jsonString = prettyJson(output);
     var outputFilename = 'app_' + localeKey + '.arb';
     var outputPath = joinDir([arbDir, outputFilename]);
     saveString(outputPath, jsonString);
   }
-
   trace('arb files generated');
   // runPubGet();
 }

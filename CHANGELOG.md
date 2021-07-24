@@ -1,3 +1,8 @@
+## [1.0.8+17]
+- Improved support for `arb` generation based on `intl` standards!
+- Fixed error for clearing unused rows when you have more than one worksheet.
+- README improvements.
+
 ## [1.0.8+16]
 - Improved support for `arb` generation based on `intl` standards!
 - README improvements.
