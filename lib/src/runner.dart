@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:args/args.dart';
 import 'package:args/command_runner.dart';
 import 'package:dcli/dcli.dart';
-
 import 'package:io/io.dart';
 
 import 'data/strings.dart';
@@ -26,6 +25,7 @@ class FTSCommandRunner extends CommandRunner<int> {
       negatable: false,
     );
   }
+
   @override
   Future<int> run(Iterable<String> args) async {
     try {
@@ -52,32 +52,34 @@ class FTSCommandRunner extends CommandRunner<int> {
     return super.runCommand(topLevelResults);
   }
 
+  var baseCanoMap = <String, String>{};
+
   Future<void> startRun() async {
     /// save json
     var map = buildLocalYamlMap();
-    var canoMap = buildCanoMap(map);
-    buildVarsInMap(canoMap);
+    baseCanoMap = buildCanoMap(map);
+    buildVarsInMap(baseCanoMap);
 
     /// master language?
     // saveLocaleAsset(config.masterLocale, canoMap);
-    await sheet.imtired(canoMap);
-
+    await sheet.imtired(baseCanoMap);
     trace('wait a sec to get the data translated');
     await Future.delayed(Duration(seconds: 1));
 
     final localesMap = await sheet.getData();
-    localesMap[config.masterLocale] = canoMap;
+    localesMap[config.masterLocale] = baseCanoMap;
     putVarsInMap(localesMap);
 
     /// create tkey file
     if (config.validTKeyFile) {
       createTKeyFileFromMap(map, save: true, includeToString: true);
     }
+
     createLocalesFiles(localesMap);
+    formatDartFiles();
     if (config.intlEnabled) {
       buildArb(localesMap);
     }
-    formatDartFiles();
     exit(1);
   }
 
@@ -88,8 +90,12 @@ class FTSCommandRunner extends CommandRunner<int> {
     // trace("Map is: ", canoMap);
     // exit(0);
     buildVarsInMap(canoMap);
-    // var _tmp = {'en':canoMap};
+    // var _tmp = {'en': canoMap};
     // putVarsInMap(_tmp);
+    // if (config.intlEnabled) {
+    //   buildArb(_tmp);
+    // }
+    // exit(0);
     trace('Fetching data from Google sheets...');
     final localesMap = await sheet.getData();
     localesMap[config.masterLocale] = canoMap;
@@ -98,10 +104,10 @@ class FTSCommandRunner extends CommandRunner<int> {
       createTKeyFileFromMap(map, save: true, includeToString: true);
     }
     createLocalesFiles(localesMap);
+    formatDartFiles();
     if (config.intlEnabled) {
       buildArb(localesMap);
     }
-    formatDartFiles();
     exit(1);
   }
 }

@@ -509,10 +509,9 @@ Open $spritesheetUrl and check the available tabs at the bottom.
       final localMap = output[headerKey] = <String, String>{};
       for (var i = 0; i < keys.length; ++i) {
         var key = keys[i];
-        // var value = langCol[i];
         var value = i >= langCol.length ? '' : langCol[i];
         if (value.contains(loadingTranslation) &&
-            mapLoading[headerKey] != false) {
+            mapLoading[headerKey] == false) {
           mapLoading[headerKey] = true;
           trace('$headerKey still is loading translations...');
           isLoadingTranslations = true;
