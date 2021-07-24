@@ -36,7 +36,7 @@ class ExtractStringCommand extends Command<int> {
   Future<int> run() async {
     libFolder = '';
     extractStringOutputFile = absolute('strings.json');
-    if (argResults!.wasParsed('output')) {
+    if(argResults!.wasParsed('output')){
       extractStringOutputFile = argResults!['output']!.trim();
     }
     if (argResults!.wasParsed('ext')) {

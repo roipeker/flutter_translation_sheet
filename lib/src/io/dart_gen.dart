@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:dcli/dcli.dart';
 import 'package:flutter_translation_sheet/flutter_translation_sheet.dart';
 
@@ -140,7 +138,9 @@ abstract class AppLocales {
 
   fileContent += '  static const available = <LangVo>[$_availableLang];\n';
   fileContent +=
-      '  static final supportedLocales = <Locale>[$_supportedLocales];\n';
+      '  static List<Locale> get supportedLocales => _supportedLocales;\n';
+  fileContent +=
+      '  static final _supportedLocales = <Locale>[$_supportedLocales];\n';
 
   fileContent += '''
   static LangVo? of(Locale locale, [bool fullMatch = false]) {
@@ -187,9 +187,6 @@ String createTKeyFileFromMap(JsonMap map,
 String createTKeyFileFromPath(String masterFile, {bool save = false}) {
   final map = openJson(masterFile);
   return createTKeyFileFromMap(KeyMap.from(map), save: save);
-  // ('i18n/tkeys.dart', keysFile);
-  // var outputFile = File('i18n/tkeys.dart');
-  // outputFile.writeAsString(keysFile, flush: true);
 }
 
 /// TKeys
@@ -211,21 +208,26 @@ String _buildTKeyMap({
   final fields = <String>[];
   final tostrKeys = <String>[];
   final tostrFields = <String>[];
-
   var classStr = 'class $className {\n';
   final invalidCharsRegExp =
       RegExp(r'[^\w\.@-]', caseSensitive: false, dotAll: true, unicode: false);
   // final invalidCharsRegExp = ':';
 
   var classCanBeConst = false;
-
   for (var k in map.keys) {
     final v = map[k];
+
+    /// special case for @properties n .arb (invalid for dart files)
+    if (k.startsWith('@')) {
+      trace('Skipping property $k from Keys');
+      continue;
+    }
 
     /// TODO: find bad characters for the field...
     var fieldName = k.trim().camelCase;
     // fieldName = fieldName.replaceAll(':', '_');
     fieldName = fieldName.replaceAll(invalidCharsRegExp, '_');
+    fieldName = _removeInvalidChars(fieldName);
     var localPath = path + k;
     String _fieldModifier;
 
@@ -293,8 +295,16 @@ String _buildTKeyMap({
   return className;
 }
 
+final _invalidClassNamesRegExp = RegExp('@|#|\$|:');
+
+String _removeInvalidChars(String name) {
+  return name.replaceAll(_invalidClassNamesRegExp, '');
+}
+
 String getClassName(String name) {
   ++_classCounter;
+  /// remove invalid chars.
+  name = _removeInvalidChars(name);
   name = '${name.trim()}$_classCounter'.pascalCase;
   return name;
 }
@@ -310,6 +320,17 @@ String _buildLocaleObjFromType(String key) {
   return 'Locale("${keys[0]}","${keys[1]}")';
 }
 
+void runPubGet() {
+  if (which('flutter').found) {
+    var canoDir = configProjectDir;
+    trace('run pub get!', canoDir);
+    sleep(2);
+    'flutter pub get $canoDir'.start(
+      detached: false,
+    );
+  }
+}
+
 void formatDartFiles() {
   /// format dart files.
   if (config.validTranslationFile || config.validTKeyFile) {
@@ -318,8 +339,6 @@ void formatDartFiles() {
         workingDirectory: config.dartOutputDir,
         detached: true,
       );
-      // 'code .'.run;
-      exit(0);
     }
   }
 }

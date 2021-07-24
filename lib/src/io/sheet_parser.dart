@@ -348,6 +348,7 @@ Open $spritesheetUrl and check the available tabs at the bottom.
           trace(
               '${clearRows.length} rows will be cleared ( ${clearRows.join((', '))} )');
           var result = await _table.batchClearRows(clearRows);
+          trace("Clear rows result:", result);
           if (result) {
             clearRows.forEach((row) {
               var k = remoteKeys[row - 1];
@@ -509,10 +510,9 @@ Open $spritesheetUrl and check the available tabs at the bottom.
       final localMap = output[headerKey] = <String, String>{};
       for (var i = 0; i < keys.length; ++i) {
         var key = keys[i];
-        // var value = langCol[i];
         var value = i >= langCol.length ? '' : langCol[i];
         if (value.contains(loadingTranslation) &&
-            mapLoading[headerKey] != false) {
+            mapLoading[headerKey] == false) {
           mapLoading[headerKey] = true;
           trace('$headerKey still is loading translations...');
           isLoadingTranslations = true;

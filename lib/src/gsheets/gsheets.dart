@@ -76,6 +76,7 @@ class GSheets {
           credentialsJson,
           impersonatedUser: impersonatedUser,
         );
+
   ServiceAccountCredentials? get credentials => _credentials;
 
   /// Creates an instance of [GSheets] with custom client
@@ -1228,7 +1229,7 @@ class Worksheet {
     for (var k in rows.keys) {
       var rowIndex = k;
       var maxCol = rows[k]!.length + 1;
-      var from =  title+'!'+getColumnLetter(1);
+      var from = title + '!' + getColumnLetter(1);
       var to = getColumnLetter(maxCol);
       var obj = {
         'range': '$from$rowIndex:$to$rowIndex',
@@ -1244,7 +1245,7 @@ class Worksheet {
         {
           'valueInputOption': 'USER_ENTERED',
           'data': data,
-          'includeValuesInResponse':false,
+          'includeValuesInResponse': false,
         },
       ),
     );
@@ -1253,8 +1254,9 @@ class Worksheet {
   }
 
   Future<bool> batchClearRows(List<int> rows) async {
-    final ranges = rows.map((id) => 'A$id:ZZ$id').toList(growable: false);
+    final ranges = rows.map((id) => "'$_title'!A$id:ZZ$id").toList(growable: false);
     var url = '$_sheetsEndpoint$spreadsheetId/values:batchClear'.toUri();
+    print("Batch clear range: $ranges" );
     final response = await _client.post(
       url,
       body: jsonEncode(

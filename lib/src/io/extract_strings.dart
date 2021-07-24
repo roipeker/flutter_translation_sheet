@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:dcli/dcli.dart';
 import 'package:flutter_translation_sheet/flutter_translation_sheet.dart';
+import 'package:flutter_translation_sheet/src/utils/json2yaml.dart';
 import 'package:path/path.dart' as p;
 
 String libFolder = '';
@@ -92,16 +93,20 @@ void _inspectRecursive(String path) {
     buildInnerMap(parts, jsonMap, canoMap[k]!);
   }
   trace('We found ${canoMap.keys.length} strings in $libFolder');
-
-  var jsonString = prettyJson(jsonMap);
-
   var finalPath = extractStringOutputFile;
-  trace('Final path: $extractStringOutputFile');
-  if (!finalPath.endsWith('.json')) {
-    finalPath = joinDir([finalPath, 'strings.json']);
+  var ext = p.extension(finalPath);
+  var isJson = ext == '.json';
+  if (!isJson && ext != '.yaml') {
+    isJson = true;
+    finalPath += '.json';
   }
-  saveString(finalPath, jsonString);
-  // saveString('my_strings_reference.json', jsonString);
+  var contentString = '';
+  if (isJson) {
+    contentString = prettyJson(jsonMap);
+  } else {
+    contentString = json2yaml(jsonMap, yamlStyle: YamlStyle.pubspecYaml);
+  }
+  saveString(finalPath, contentString);
   trace('Extracted strings saved in $finalPath');
 }
 

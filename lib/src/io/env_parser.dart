@@ -11,7 +11,7 @@ EnvConfig config = EnvConfig._();
 String configPath = '';
 
 String get configProjectDir {
-  return p.dirname(configPath);
+  return p.canonicalize(p.dirname(configPath));
 }
 
 void createSampleConfig() {
@@ -329,6 +329,9 @@ entry_file: data/entry/sample.yaml
 ## - Special case when you need * as prefix or suffix, use *? as splitter
 ## ***?** = {{name}} becomes **name**
 param_output_pattern: "{*}"
+
+intl:
+  enabled: false
 
 dart:
   ## Output dir for dart files

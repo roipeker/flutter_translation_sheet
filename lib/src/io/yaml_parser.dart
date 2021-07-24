@@ -10,13 +10,12 @@ JsonMap buildLocalYamlMap() {
   var entryFile = config.entryFile;
   var parseMap = {};
   _addDoc(entryFile, parseMap);
-  trace('document generated...');
   return JsonMap.from(parseMap);
   // return _canoMap(parseMap);
 }
 
 KeyMap buildCanoMap(Map map) {
-  return _canoMap(map);
+  return _canoMap(map.cast());
 }
 
 String openYaml(String path) {
@@ -83,17 +82,26 @@ void _copyDoc(YamlMap doc, String dir, Map into) {
   }
 }
 
-KeyMap _canoMap(Map content) {
+Map<String, dynamic> metaProperties = {};
+
+KeyMap _canoMap(Map<String, dynamic> content) {
   final output = <String, String>{};
-  void buildKeys(Map inner, String prop) {
+  void buildKeys(Map<String, dynamic> inner, String prop) {
     for (var k in inner.keys) {
+      if (k.startsWith('@')) {
+        /// build meta key, for ARB files.
+        var metaKey = '@'+(prop + '.' + k.substring(1)).camelCase;
+        metaProperties[metaKey] = inner[k];
+        trace('found metadata $k skip');
+        continue;
+      }
       if (inner[k] == null) {
         trace('"$k" has a null value');
       }
       var val = inner[k];
       var p2 = prop.isEmpty ? k : prop + '.' + k;
       if (val is Map) {
-        buildKeys(val, p2);
+        buildKeys(val.cast(), p2);
       } else {
         output[p2] = val ?? ' ';
       }
