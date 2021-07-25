@@ -90,7 +90,7 @@ KeyMap _canoMap(Map<String, dynamic> content) {
     for (var k in inner.keys) {
       if (k.startsWith('@')) {
         /// build meta key, for ARB files.
-        var metaKey = '@'+(prop + '.' + k.substring(1)).camelCase;
+        var metaKey = '@' + (prop + '.' + k.substring(1)).camelCase;
         metaProperties[metaKey] = inner[k];
         trace('found metadata $k skip');
         continue;
@@ -115,10 +115,6 @@ KeyMap _canoMap(Map<String, dynamic> content) {
 
   return output;
 }
-
-// final _matchParamsRegExp1 = RegExp(r'(?<=\{\{)(.+?)(?=\}\})');
-final _matchParamsRegExp2 = RegExp(r'\{\{(.+?)\}\}');
-// final _matchParamsRegExp2 = RegExp(r'\{(.+?)\}');
 
 class VarsCap {
   final Map<String, String> vars;
@@ -153,7 +149,6 @@ void buildVarsInMap(Map<String, String> map) {
   var varsKeys = <String, Map<String, String>>{};
   for (var key in map.keys) {
     var val = map[key]!;
-    // trace(key, ': ', );
     if (val.contains('{{')) {
       var res = captureVars(val);
       if (res.vars.isNotEmpty) {
@@ -166,7 +161,7 @@ void buildVarsInMap(Map<String, String> map) {
   }
 
   if (varsKeys.isNotEmpty) {
-    var varsContent = json2yaml(varsKeys, yamlStyle: YamlStyle.pubspecYaml);
+    var varsContent = json2yaml(varsKeys, yamlStyle: YamlStyle.generic);
     saveString(config.inputVarsFile, varsContent);
     trace(
         'Found ${varsKeys.keys.length} keys with variables, saved at ${config.inputVarsFile}');
@@ -175,13 +170,32 @@ void buildVarsInMap(Map<String, String> map) {
   }
 }
 
+// final _matchParamsRegExp1 = RegExp(r'(?<=\{\{)(.+?)(?=\}\})');
+final _matchParamsRegExp2 = RegExp(r'\{\{(.+?)\}\}');
+// final _matchParamsRegExp2 = RegExp(r'\{(.+?)\}');
+final _captureGoogleTranslateVar = RegExp(
+  r'({+)(\d{1,3})(}+)',
+  multiLine: false,
+  caseSensitive: false,
+);
+final _captureInnerDigitVar = RegExp(
+  r'\d+',
+  multiLine: false,
+  caseSensitive: false,
+);
+final _replaceAndLeaveDigitVar = RegExp(
+  r'({+)|(}+)',
+  multiLine: false,
+  caseSensitive: false,
+);
+
 String replaceVars(VarsCap vars) {
   var str = vars.text;
   var start = config.paramOutputPattern1;
   var end = config.paramOutputPattern2;
-  if (_matchParamsRegExp2.hasMatch(str)) {
+  if (_captureGoogleTranslateVar.hasMatch(str)) {
     final wordset = <String>{};
-    final matches = _matchParamsRegExp2.allMatches(str);
+    final matches = _captureGoogleTranslateVar.allMatches(str);
     for (var match in matches) {
       wordset.add(str.substring(match.start, match.end));
     }
@@ -189,8 +203,10 @@ String replaceVars(VarsCap vars) {
     var words = wordset.toList();
     for (var i = 0; i < words.length; i++) {
       var _key = words[i];
-      var key = _key.substring(2, _key.length - 2);
-      var value = vars.vars[key];
+      var key = _key.replaceAll(_replaceAndLeaveDigitVar, '');
+      var value = vars.vars[key]!;
+      //// special characters taken in account?
+      // value = value.replaceAll(r'$', '\\\$');
       str = str.replaceAll(_key, '$start$value$end');
     }
   }
@@ -210,7 +226,10 @@ VarsCap captureVars(String str) {
     for (var i = 0; i < words.length; i++) {
       var key = '$i';
       var value = words[i];
-      out[key] = value.substring(2, value.length - 2);
+      var innerKey = value.substring(2, value.length - 2);
+      innerKey = innerKey.replaceAll('"', '\\"');
+      out[key] = innerKey;
+      // trace('damn var is:: ${out[key]}');
       str = str.replaceAll(value, '{{$key}}');
     }
   }

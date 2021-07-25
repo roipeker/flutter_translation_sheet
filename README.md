@@ -102,7 +102,7 @@ To store "variables" or placeholders in your strings to be replaced later in you
 "Welcome back {{user}}, today is {{date}}."
 ```
 
-It will store the values in the sheet as {{0}} {{1}} and so on, to avoid complications with GoogleTranslate, and it will
+It will store the values in the sheet as {{0}} {{1}} and so on, to avoid complications with GoogleTranslate (although in rare cases GTranslate will truncate the {{}} somehow, don't worry), and it will
 generate a *vars.lock* file in the directory where you point your "entry_file" in config.
 
 So you can define your own pattern for the code/json generation:
@@ -134,13 +134,18 @@ This command tool is in alpha state, but don't worry, as it doesn't touch any of
 
 Also... when you specify an --output that ends with `.yaml`, you will have a pretty cool template to plug into `fts run` :)
 
+- If you run the cli on macos, `fts` keeps your [iOS app bundle](https://flutter.dev/docs/development/accessibility-and-localization/internationalization#localizing-for-ios-updating-the-ios-app-bundle) synced automatically with the locales! One thing less to worry about.
+
 ### arb and Intl:
 
 We have an experimental support for arb generation. In config.yaml just set (or create if it doesnt exists) this field.
+(This tag will soon be changed to something more "generic" as arb output).
+
 ```yaml
 intl:
   enabled: true
 ```
+
 
 Example of .arb readable metadata:
 ```yaml
@@ -156,6 +161,7 @@ Example of .arb readable metadata:
 For plurals, we have a custom way of writing the dictionary. Just use `plural:variableName:` so `fts` knows how to generate the String.
 Remember that `other` is mandatory (the default value) when you use plurals. 
 
+Raw way of adding the metadata: 
 ```yaml
   ### not required, but you will be a much cooler dev if you provide context :)
   "@messageCount":
@@ -175,15 +181,55 @@ Remember that `other` is mandatory (the default value) when you use plurals.
 Previous yaml will output in *lib/l10n/app_en.arb* (or the path you defined in arb-dir inside l10n.yaml) :
 `"messageCount": "{count,plural, =0{No new messages}=1{You have 1 new message}=2{You have a couple of messages}other{You have {count} new messages}}",` 
 
+Now you can also capture internal variables in the plural/selector modifiers, and add the type and parsing information into it!  
+```yaml
+messageCount:
+    plural:count:
+      =0: No new messages
+      =1: You have 1 new message. You won {{money:int:compactCurrency(decimalDigits:2,name:"Euro",symbol:"€")}}, congratulations!
+      =2: You have a couple of messages
+      other: You have {{count:int}} new messages
+```
+
+All {{variables}} supports this special way to define name, type, format, arguments.
+Useful when you don't want to use the @meta arb approach.
+
+The "format" part applies to [NumberFormatter](https://api.flutter.dev/flutter/intl/NumberFormat-class.html) and [DateFormat](https://api.flutter.dev/flutter/intl/DateFormat-class.html) constructors.
+`{{variable:Type:Format(OptionalNamedArguments)}}` 
+
+
+Selectors (like gender), are also included for the arb generation, although not yet supported on intl for code generation:
+```yaml
+roleWelcome:
+  selector:role:
+    admin: Hi admin!
+    manager: Hi manager!
+    other: Hi visitor.
+```
+output arb:
+```arb
+"mainRoleWelcome": "{role, select, admin {Hi admin!} manager {Hi manager!} other {Hi visitor.} }",
+"@mainRoleWelcome": {
+    "description": "Auto-generated for mainRoleWelcome",
+    "placeholders": {
+        "role": {
+            "type": "String"
+        }
+    }
+}
+```
+
 We will try to provide a richer experience integrating more libraries outputs in the future.  
 
 ### 📝 Considerations:
+
+- Is preferable to keep the *trconfig.yaml* in the root of your project, some commands assumes that location (like arb generation).  
 
 - When using arb output, make sure you have *l10n.yaml* next to the *trconfig.yaml* at the root of your project.
 
 - In your spreadsheet, the first column will always be your "keys", don't change that, don't move the column.
 
-- In your `trconfig.yaml`, the first locale you define is your **master** language:
+- In your *trconfig.yaml*, the first locale you define is your **master** language:
 
 ```yaml
 locales:

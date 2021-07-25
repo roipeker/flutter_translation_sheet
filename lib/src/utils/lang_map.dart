@@ -1,7 +1,7 @@
 import 'package:flutter_translation_sheet/src/utils/utils.dart';
 
 LangInfo langInfoFromKey(String key) {
-  key = normLocale(key);
+  key = normLocale(key, '-').toLowerCase();
   // key = key.replaceAll('_', '-');
   if (!kLangMap.containsKey(key)) {
     print('Language code not found: $key');

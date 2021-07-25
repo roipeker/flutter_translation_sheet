@@ -1,6 +1,6 @@
 name: flutter_translation_sheet
 description: Flutter Translation Sheet Generator is a simple tool to help you with localization (l10n), using automatic GoogleSheet translations (via GTranslate), generating json & dart files.
-version: 1.0.8+17
+version: 1.0.9+18
 homepage: https://github.com/roipeker/flutter_translation_sheet
 
 executables:
@@ -20,6 +20,7 @@ dependencies:
   collection: ^1.15.0
   io: ^1.0.0
   path: ^1.8.0
+
 dev_dependencies:
   pedantic: ^1.11.1
   build_runner: any
