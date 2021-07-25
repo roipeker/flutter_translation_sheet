@@ -1,6 +1,5 @@
-import 'dart:io' as io;
-
 import 'package:flutter_translation_sheet/flutter_translation_sheet.dart';
+import 'package:path/path.dart' as p;
 import 'package:yaml/yaml.dart';
 
 const kRef = '\$ref';
@@ -8,6 +7,7 @@ const kUnwrap = '\$unwrap';
 
 JsonMap buildLocalYamlMap() {
   var entryFile = config.entryFile;
+  trace('Loading entry file: ', entryFile);
   var parseMap = {};
   _addDoc(entryFile, parseMap);
   return JsonMap.from(parseMap);
@@ -23,6 +23,7 @@ String openYaml(String path) {
     path += '.yaml';
   }
   if (!path.startsWith(config.inputYamlDir)) {
+    /// resolve relative url
     path = config.inputYamlDir + path;
   }
   // if (!path.startsWith('data/')) {
@@ -32,8 +33,11 @@ String openYaml(String path) {
 }
 
 void _addDoc(String path, Map into) {
-  var parentDir = io.File(path).parent.path;
+  // trace('the dir is:: ', p.dirname(path));
+  // var parentDir = io.File(path).parent.path;
+  var parentDir = p.dirname(path);
   var string = openYaml(path);
+  trace('Opening yaml ', path);
   if (string.isEmpty) {
     print('Yaml file "$path" is empty or doesnt exists.');
   } else {
@@ -124,6 +128,10 @@ class VarsCap {
 }
 
 void putVarsInMap(Map<String, Map<String, String>> map) {
+  if (!entryDataHasVars) {
+    trace('No placeholders detected.');
+    return;
+  }
   var varsContent = openString(config.inputVarsFile);
   if (varsContent.trim().isEmpty) return;
   var varsYaml = loadYaml(varsContent);
@@ -159,14 +167,13 @@ void buildVarsInMap(Map<String, String> map) {
       }
     }
   }
-
-  if (varsKeys.isNotEmpty) {
+  entryDataHasVars = varsKeys.isNotEmpty;
+  if (entryDataHasVars) {
     var varsContent = json2yaml(varsKeys, yamlStyle: YamlStyle.generic);
+    trace("Vars content: ", varsContent);
     saveString(config.inputVarsFile, varsContent);
     trace(
         'Found ${varsKeys.keys.length} keys with variables, saved at ${config.inputVarsFile}');
-  } else {
-    /// clear file ?
   }
 }
 

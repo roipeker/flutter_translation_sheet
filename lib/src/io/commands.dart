@@ -136,7 +136,6 @@ void startConfig(String path) {
   var f = File(path);
   if (!f.existsSync()) {
     error('Error: $path config file not found');
-
     /// ask to create from template.
     var useCreateTemplate = confirm(
         yellow(

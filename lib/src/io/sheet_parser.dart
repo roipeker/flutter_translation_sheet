@@ -477,7 +477,6 @@ Open $spritesheetUrl and check the available tabs at the bottom.
     // trace('master', masterLanguage, masterLanguageCol);
 
     trace('Requesting translated locales from GSheet ...');
-
     /// TODO: query the rows that we need.
     var ranges = <String>[];
     for (var k in localHeader) {

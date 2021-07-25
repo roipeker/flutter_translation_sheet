@@ -1,3 +1,6 @@
+## [1.0.10+20]
+- force absolute paths.
+
 ## [1.0.9+19]
 - fix version mismatch.
  
