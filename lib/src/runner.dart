@@ -74,12 +74,13 @@ class FTSCommandRunner extends CommandRunner<int> {
     if (config.validTKeyFile) {
       createTKeyFileFromMap(map, save: true, includeToString: true);
     }
-
     createLocalesFiles(localesMap);
     formatDartFiles();
     if (config.intlEnabled) {
       buildArb(localesMap);
     }
+    /// add locales in iOS
+    addLocalesInPlist();
     exit(1);
   }
 
@@ -108,6 +109,8 @@ class FTSCommandRunner extends CommandRunner<int> {
     if (config.intlEnabled) {
       buildArb(localesMap);
     }
+    /// add locales in iOS
+    addLocalesInPlist();
     exit(1);
   }
 }

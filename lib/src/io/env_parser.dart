@@ -233,11 +233,16 @@ class EnvConfig {
   String paramOutputPattern1 = '{{';
   String paramOutputPattern2 = '}}';
   bool intlEnabled = false;
+
   // param_output_pattern
   bool useDartMaps = false;
 
+  String get iosDirPath {
+    return p.canonicalize(p.join(configProjectDir, 'ios'));
+  }
+
   String get intlYamlPath {
-    return !intlEnabled ? '' : joinDir([configProjectDir,'l10n.yaml']);
+    return !intlEnabled ? '' : joinDir([configProjectDir, 'l10n.yaml']);
   }
 
   String get inputYamlDir {
