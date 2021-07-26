@@ -43,7 +43,7 @@ Please make sure your trconfig.yaml sits in the root of your project, and l10n.y
   var sublist = config.locales.where((element) => element.contains('_'));
   sublist.forEach((e) {
     var langCode = e.split('_').first;
-    if(!map.containsKey(langCode)){
+    if (!map.containsKey(langCode)) {
       trace('Adding base langCode: $langCode for arb generation');
       map[langCode] = map[e]!;
     }

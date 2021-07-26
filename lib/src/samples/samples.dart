@@ -20,7 +20,6 @@ menu:
     hint: Open the user collection
 ''';
 
-
   static const news = '''
 item1:
   title: Announcing Flutter 2.2 at Google I/O 2021
@@ -32,7 +31,6 @@ item2:
   subtitle: The Flutter 2.2 release focuses on polish and optimization, including iOS performance improvements, Android deferred components, updated service worker for Flutter web and more!
   text: Today is the day we make Flutter 2.2 available. You get to it by switching to the stable channel and upgrading your current Flutter installation, or going to flutter.dev/docs/get-started to start a new installation.
 ''';
-
 
   static const sample = '''
 ## sample translation, entry file.
