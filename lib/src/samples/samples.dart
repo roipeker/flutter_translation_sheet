@@ -59,3 +59,83 @@ news:
   \$ref: news.yaml
 ''';
 }
+
+const kSimpleLangPickerWidget = r'''
+
+class SimpleLangPicker extends StatelessWidget {
+  final Locale? selected;
+  final Function(Locale) onSelected;
+
+  const SimpleLangPicker({
+    Key? key,
+    this.selected,
+    required this.onSelected,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final _selected = selected ?? AppLocales.supportedLocales.first;
+    return PopupMenuButton<Locale>(
+      tooltip: 'Select language',
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.translate,
+              size: 16,
+            ),
+            SizedBox(width: 8),
+            Text(AppLocales.of(_selected)!.englishName)
+          ],
+        ),
+      ),
+      initialValue: _selected,
+      onSelected: onSelected,
+      itemBuilder: (_) {
+        return AppLocales.available
+            .map(
+              (e) => PopupMenuItem<Locale>(
+                child: Row(
+                  children: [
+                    Text(
+                      e.key.toUpperCase(),
+                      style:
+                          TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(width: 6),
+                    Text(
+                      e.englishName,
+                      style: TextStyle(fontSize: 14),
+                    ),
+                    Text(
+                      ' (${e.nativeName})',
+                      style: TextStyle(fontSize: 12),
+                    ),
+                  ],
+                ),
+                value: e.locale,
+              ),
+            )
+            .toList(growable: false);
+      },
+    );
+  }
+}
+''';
+
+String getCodeMapLocaleKeysToMasterText(String theClassName){
+  return '''
+  static Map<String, String> mapLocaleKeysToMasterText(
+      Map<String, String> localeMap,
+      {Map<String, String>? masterMap}) {
+    final output = <String, String>{};
+    final _masterMap =
+        masterMap ?? $theClassName.byKeys[AppLocales.available.first.key]!;
+    for (var k in localeMap.keys) {
+      output[_masterMap[k]!] = localeMap[k]!;
+    }
+    return output;
+  }''';
+}

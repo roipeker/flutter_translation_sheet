@@ -111,11 +111,10 @@ void _inspectRecursive(String path) {
 }
 
 String _getKey(String str) {
-  var len = libFolder.length;
-  var sub = str.substring(len + 1, str.length);
-  sub = sub.replaceAll('/', '.');
-  sub = sub.replaceAll('.dart', '.');
-  return sub;
+  /// all path (keys) relative to the -p (libFolder)
+  var sub = p.relative(str, from: libFolder);
+  sub = p.withoutExtension(sub) + '.';
+  return p.split(sub).join('.');
 }
 
 var _regex4 = RegExp("\'.*?\'|\".*?\"", dotAll: false);

@@ -1,3 +1,11 @@
+## [1.0.11+21]
+- change default trconfig.yaml template
+- added SimpleLangPicker Widget to simplify locale change.
+- added [TData.byKeys], [TData.getByKeys()], [TData.byText], [TData.getByText()] to support hot reload on Maps.
+- [TData.byText / TData.getByText()] allows you to Map your keys to your master language String.
+- added [TData.mapLocaleKeysToMasterText()] for the ability to convert keys to master string texts on demand.
+- added [AppLocales.systemLocale] and [AppLocales.systemLocales] utility to retrieve the system locale.
+
 ## [1.0.10+20]
 - force absolute paths.
 

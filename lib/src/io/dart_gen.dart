@@ -1,5 +1,6 @@
 import 'package:dcli/dcli.dart';
 import 'package:flutter_translation_sheet/flutter_translation_sheet.dart';
+import 'package:flutter_translation_sheet/src/samples/samples.dart';
 
 int _classCounter = 0;
 final _translateKeyClasses = [];
@@ -52,6 +53,11 @@ abstract class $className {
     }
   }
 
+
+// Get.addTranslations(TData.getByText());
+
+
+
   /// create translation and locale file
   if (config.validTranslationFile) {
     createTranslationFile(
@@ -79,6 +85,8 @@ String createTranslationFile(
   var _imports = imports.join('\n');
   var _translateClassString = '';
   if (hasTranslationMaps) {
+
+
     /// Translation File.
     var _transKeysString = '{\n';
     _transKeysString += translationMaps.join('\n');
@@ -86,15 +94,40 @@ String createTranslationFile(
     //   _transKeysString += '    "$key":$value,\n';
     // });
     _transKeysString += '  };\n';
+    final _tClassName = config.dartTranslationClassname;
     _translateClassString = '''
-abstract class ${config.dartTranslationClassname} {
-  static Map<String, Map<String, String>> translations = $_transKeysString
+abstract class $_tClassName {
+  
+  static Map<String, Map<String, String>> byKeys = getByKeys();
+  static Map<String, Map<String, String>> getByKeys() => $_transKeysString
+  
+  static Map<String, Map<String, String>>? _byText;
+  static Map<String, Map<String, String>> get byText {
+    _byText ??= getByText();
+    return _byText!;
+  }
+  
+  static Map<String, Map<String, String>> getByText() {
+    final source = getByKeys();
+    final output = <String, Map<String, String>>{};
+    final master = source[AppLocales.available.first.key]!;
+    for (final localeKey in source.keys) {
+      output[localeKey] = mapLocaleKeysToMasterText(
+        source[localeKey]!,
+        masterMap: master,
+      );
+    }
+    return output;
+  }
+
+  ${getCodeMapLocaleKeysToMasterText(_tClassName)}
 }''';
   }
   // final _transImportsString = transImports.join('\n');
 // $_transImportsString
   var fileContent = '''
 import 'dart:ui';
+import 'package:flutter/material.dart';
 $_imports
 
 $_translateClassString
@@ -102,6 +135,10 @@ $_translateClassString
 $_classAppLocales
 
 $_kLangVoTemplate
+
+/// demo widget
+$kSimpleLangPickerWidget
+
 ''';
   if (save) {
     var filepath = config.dartTranslationPath;
@@ -140,9 +177,14 @@ abstract class AppLocales {
 
   fileContent += '  static const available = <LangVo>[$_availableLang];\n';
   fileContent +=
-      '  static List<Locale> get supportedLocales => _supportedLocales;\n';
-  fileContent +=
-      '  static final _supportedLocales = <Locale>[$_supportedLocales];\n';
+      '  static List<Locale> get supportedLocales => [$_supportedLocales];\n';
+      // '  static List<Locale> get supportedLocales => _supportedLocales;\n';
+  // fileContent +=
+  //     '  static final _supportedLocales = <Locale>[$_supportedLocales];\n';
+  fileContent += '''
+  static Locale get systemLocale => window.locale;
+  static List<Locale> get systemLocales => window.locales;
+''';
 
   fileContent += '''
   static LangVo? of(Locale locale, [bool fullMatch = false]) {

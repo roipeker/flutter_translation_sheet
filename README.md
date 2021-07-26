@@ -219,6 +219,24 @@ output arb:
 }
 ```
 
+### 📝 Utilities:
+
+You can use `SimpleLangPicker()` widget when you generate the dart code (included by default in `TData class]).
+Is meant to be a quick tester to change languages. For example, if you use GetX for translations:
+```dart
+return Scaffold(
+  appBar: AppBar(
+    title: Text(widget.title),
+    actions: [
+      SimpleLangPicker(
+        onSelected: Get.updateLocale,
+        selected: Get.locale,
+      ),
+    ],
+  ),
+  ...
+```
+
 We will try to provide a richer experience integrating more libraries outputs in the future.  
 
 ### 📝 Considerations:
