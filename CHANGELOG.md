@@ -1,3 +1,17 @@
+## [1.0.10+20]
+- force absolute paths.
+
+## [1.0.9+19]
+- fix version mismatch.
+ 
+## [1.0.9+18]
+- README improvements.
+- new arguments inside variables.
+- fixes Locale canonicalization, now uses the Flutter way: en_US instead of en-us
+- fixes Intl generator error when only languageCode_countryCode is defined (without the languageCode only fallback).
+- Much improved RegExp for variable detection in GoogleSheet cells, when GoogleTranslate corrupts the format breaking the generated code.
+- Automatic iOS Info.plist sync with locales (only macos).
+ 
 ## [1.0.8+17]
 - Improved support for `arb` generation based on `intl` standards!
 - Fixed error for clearing unused rows when you have more than one worksheet.

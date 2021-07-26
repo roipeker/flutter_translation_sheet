@@ -10,6 +10,9 @@ const defaultConfigEnvPath = 'trconfig.yaml';
 EnvConfig config = EnvConfig._();
 String configPath = '';
 
+/// flag that tells us if we have vars to parse or not.
+bool entryDataHasVars = false ;
+
 String get configProjectDir {
   return p.canonicalize(p.dirname(configPath));
 }
@@ -45,8 +48,10 @@ void loadEnv([String path = defaultConfigEnvPath]) {
   config.dartTranslationsId = doc?['dart']?['translations_id'] ?? '';
   config.paramOutputPattern = doc?['param_output_pattern'] ?? '';
   _configParamOutput();
-
   if (config.entryFile.isNotEmpty) {
+    /// clean the URL now.
+    config.entryFile = p.canonicalize(config.entryFile);
+    config.inputYamlDir = p.dirname(config.entryFile);
     var f = File(config.entryFile);
     if (!f.existsSync()) {
       trace(
@@ -55,7 +60,6 @@ Please, create your data tree.''');
       exit(32);
     }
   }
-
   if (doc?['locales'] != null) {
     final l = doc['locales'];
     if (l is YamlList) {
@@ -233,20 +237,20 @@ class EnvConfig {
   String paramOutputPattern1 = '{{';
   String paramOutputPattern2 = '}}';
   bool intlEnabled = false;
+
+  /// assigned from [entryFile]
+  String inputYamlDir = '';
+
   // param_output_pattern
   bool useDartMaps = false;
 
-  String get intlYamlPath {
-    return !intlEnabled ? '' : joinDir([configProjectDir,'l10n.yaml']);
+
+  String get iosDirPath {
+    return p.canonicalize(p.join(configProjectDir, 'ios'));
   }
 
-  String get inputYamlDir {
-    if (entryFile.contains('/')) {
-      var dirs = entryFile.split('/');
-      dirs.removeLast();
-      return dirs.join('/');
-    }
-    return '';
+  String get intlYamlPath {
+    return !intlEnabled ? '' : joinDir([configProjectDir, 'l10n.yaml']);
   }
 
   /// "outputDir + tkeys.dart"

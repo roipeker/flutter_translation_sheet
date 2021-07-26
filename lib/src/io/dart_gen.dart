@@ -29,11 +29,13 @@ void createLocalesFiles(Map<String, Map<String, String>> localesMap) {
       localeMap,
       beautify: true,
     );
-
     /// save dart file.
     if (config.useDartMaps && config.validTranslationFile) {
       /// Dart translation file.
       var data = prettyJson(localeMap);
+      /// cleanup special chars in translated String.
+      data = data.replaceAll(r'$', '\\\$');
+
       var localeInfo = langInfoFromKey(localeName);
       var className = 'Locale${localeName.pascalCase}';
       var fileData = '''
@@ -216,13 +218,11 @@ String _buildTKeyMap({
   var classCanBeConst = false;
   for (var k in map.keys) {
     final v = map[k];
-
     /// special case for @properties n .arb (invalid for dart files)
     if (k.startsWith('@')) {
       trace('Skipping property $k from Keys');
       continue;
     }
-
     /// TODO: find bad characters for the field...
     var fieldName = k.trim().camelCase;
     // fieldName = fieldName.replaceAll(':', '_');
