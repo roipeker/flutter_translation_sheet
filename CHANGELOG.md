@@ -1,3 +1,6 @@
+## [1.0.12+22]
+- fix wrong paths for the sample template.
+
 ## [1.0.11+21]
 - change default trconfig.yaml template
 - added SimpleLangPicker Widget to simplify locale change.

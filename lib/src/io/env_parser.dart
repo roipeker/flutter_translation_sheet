@@ -323,7 +323,7 @@ const _kSampleConfig = '''
 output_json_dir: assets/i18n
 
 ## main entry file to generate the unique translation json.
-entry_file: strings/sample.yaml
+entry_file: assets/fts/sample.yaml
 
 ## pattern to applies final variables in the generated json/dart Strings.
 ## Enclose * in the pattern you need.
@@ -359,7 +359,7 @@ locales:
 
 ## Google Sheets Configuration
 ## How to get your credentials?
-## see: https://medium.com/@a.marenkov/how-to-get-credentials-for-google-sheets-456b7e88c430
+## see: https://github.com/roipeker/flutter_translation_sheet/wiki/Google-credentials
 gsheets:
 
   ## For a performance boost on big datasets, to try to use the GoogleTranslate formula once,
@@ -370,8 +370,11 @@ gsheets:
   ## https://support.google.com/docs/answer/58515?hl=en&co=GENIE.Platform%3DDesktop#zippy=%2Cchoose-how-often-formulas-calculate
   use_iterative_cache: false
 
+  ## Use relative or absolute path to your json credentials.
+  ## Check the wiki for a step by step tutorial:
+  ## https://github.com/roipeker/flutter_translation_sheet/wiki/Google-credentials
   credentials_path:
-
+  
   ## Open your google sheet and copy the SHEET_ID from the url:
   ## https://docs.google.com/spreadsheets/d/{SHEET_ID}/edit#gid=0
   spreadsheet_id:
