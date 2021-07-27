@@ -336,7 +336,7 @@ Set<String> _captureArbSet(String str) {
 }
 
 void buildForIntl(Map<String, Map<String, String>> map) {
-  trace("Intl here!");
+  trace('Intl here!');
   // trace(map);
   var firstLan = map.keys.first;
 

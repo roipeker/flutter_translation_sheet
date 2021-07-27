@@ -49,7 +49,7 @@ class SheetParser {
       _table = table;
     } else {
       final _availableTables =
-          _sheet!.sheets.map((element) => "  - " + element.title).join('\n');
+          _sheet!.sheets.map((element) => '  - ' + element.title).join('\n');
       error('''Worksheet "${config.tableId}" doesn't exists.
 Please check your sheet and update your configuration @[gsheets:worksheet:].
 Available worksheets:
@@ -348,7 +348,7 @@ Open $spritesheetUrl and check the available tabs at the bottom.
           trace(
               '${clearRows.length} rows will be cleared ( ${clearRows.join((', '))} )');
           var result = await _table.batchClearRows(clearRows);
-          trace("Clear rows result:", result);
+          trace('Clear rows result:', result);
           if (result) {
             clearRows.forEach((row) {
               var k = remoteKeys[row - 1];
@@ -442,7 +442,7 @@ Open $spritesheetUrl and check the available tabs at the bottom.
 
     if (remoteKeys.contains('')) {
       var numBlankSpaces = remoteKeys.where((text) => text.isEmpty).length;
-      trace("Num white key rows: ", numBlankSpaces);
+      trace('Num white key rows: ', numBlankSpaces);
 
       /// TODO: Clean up EMPTY keys.
       if (numBlankSpaces > 1) {
