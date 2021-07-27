@@ -69,10 +69,10 @@ void checkResponse(Response response) {
 }
 
 Map<String, V> mapKeysToValues<V>(
-    List<String> keys,
-    List<String> values,
-    V Function(int index, dynamic value) wrap,
-    ) {
+  List<String> keys,
+  List<String> values,
+  V Function(int index, dynamic value) wrap,
+) {
   final map = <String, V>{};
   var index = 0;
   var length = values.length;
@@ -84,10 +84,10 @@ Map<String, V> mapKeysToValues<V>(
 }
 
 List<String> extractSublist(
-    List<String> list, {
-      int from = 0,
-      int length = -1,
-    }) {
+  List<String> list, {
+  int from = 0,
+  int length = -1,
+}) {
   if (from == 0 && length < 1) return list;
   final start = min(from, list.length);
   final end = length < 1 ? list.length : min(from + length, list.length);
@@ -124,10 +124,10 @@ int maxLength(List<List> lists, [int atLeast = 0]) {
 }
 
 void appendIfShorter<T>(
-    List<List<T>> lists,
-    int length,
-    T appendix,
-    ) {
+  List<List<T>> lists,
+  int length,
+  T appendix,
+) {
   for (final list in lists) {
     final dif = length - list.length;
     if (dif > 0) {

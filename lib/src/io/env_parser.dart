@@ -11,7 +11,7 @@ EnvConfig config = EnvConfig._();
 String configPath = '';
 
 /// flag that tells us if we have vars to parse or not.
-bool entryDataHasVars = false ;
+bool entryDataHasVars = false;
 
 String get configProjectDir {
   return p.canonicalize(p.dirname(configPath));
@@ -243,7 +243,6 @@ class EnvConfig {
 
   // param_output_pattern
   bool useDartMaps = false;
-
 
   String get iosDirPath {
     return p.canonicalize(p.join(configProjectDir, 'ios'));

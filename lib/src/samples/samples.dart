@@ -2,41 +2,32 @@ class SampleYamls {
   static const categories = ''' 
 ## Sample categories section.
 ---
-
 title: categories
 subtitle: great categories for your app
-
 menu:
   home:
     label: Home
     hint: Tap to go to the home screen
-
   settings:
     label: Settings
     hint: Tap and check your personal Settings
-
   users:
     label: Users
     hint: Open the user collection
 ''';
 
-
   static const sample = '''
 ## sample translation, entry file.
 ---
-
 title: Welcome to Flutter Translation Sheet tool
-
 body: |
   This is a sample body
   to check the translation system
   in GoogleSheet
-
 header:
   text: "{0}. See {1} to know more about the tool!"
   tag0: Get started with the tool
   tag1: What's new in documentation
-
 ## you can reference other files and folders with [\$ref: path].
 ## content of the file will be unwrapped into the key.
 categories:
@@ -45,17 +36,14 @@ categories:
 }
 
 const kSimpleLangPickerWidget = r'''
-
 class SimpleLangPicker extends StatelessWidget {
   final Locale? selected;
   final Function(Locale) onSelected;
-
   const SimpleLangPicker({
     Key? key,
     this.selected,
     required this.onSelected,
   }) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     final _selected = selected ?? AppLocales.supportedLocales.first;
@@ -109,7 +97,7 @@ class SimpleLangPicker extends StatelessWidget {
 }
 ''';
 
-String getCodeMapLocaleKeysToMasterText(String theClassName){
+String getCodeMapLocaleKeysToMasterText(String theClassName) {
   return '''
   static Map<String, String> mapLocaleKeysToMasterText(
       Map<String, String> localeMap,

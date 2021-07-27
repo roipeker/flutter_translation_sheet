@@ -30,10 +30,12 @@ void createLocalesFiles(Map<String, Map<String, String>> localesMap) {
       localeMap,
       beautify: true,
     );
+
     /// save dart file.
     if (config.useDartMaps && config.validTranslationFile) {
       /// Dart translation file.
       var data = prettyJson(localeMap);
+
       /// cleanup special chars in translated String.
       data = data.replaceAll(r'$', '\\\$');
 
@@ -53,10 +55,7 @@ abstract class $className {
     }
   }
 
-
 // Get.addTranslations(TData.getByText());
-
-
 
   /// create translation and locale file
   if (config.validTranslationFile) {
@@ -85,8 +84,6 @@ String createTranslationFile(
   var _imports = imports.join('\n');
   var _translateClassString = '';
   if (hasTranslationMaps) {
-
-
     /// Translation File.
     var _transKeysString = '{\n';
     _transKeysString += translationMaps.join('\n');
@@ -178,7 +175,7 @@ abstract class AppLocales {
   fileContent += '  static const available = <LangVo>[$_availableLang];\n';
   fileContent +=
       '  static List<Locale> get supportedLocales => [$_supportedLocales];\n';
-      // '  static List<Locale> get supportedLocales => _supportedLocales;\n';
+  // '  static List<Locale> get supportedLocales => _supportedLocales;\n';
   // fileContent +=
   //     '  static final _supportedLocales = <Locale>[$_supportedLocales];\n';
   fileContent += '''
@@ -260,11 +257,13 @@ String _buildTKeyMap({
   var classCanBeConst = false;
   for (var k in map.keys) {
     final v = map[k];
+
     /// special case for @properties n .arb (invalid for dart files)
     if (k.startsWith('@')) {
       trace('Skipping property $k from Keys');
       continue;
     }
+
     /// TODO: find bad characters for the field...
     var fieldName = k.trim().camelCase;
     // fieldName = fieldName.replaceAll(':', '_');
@@ -345,6 +344,7 @@ String _removeInvalidChars(String name) {
 
 String getClassName(String name) {
   ++_classCounter;
+
   /// remove invalid chars.
   name = _removeInvalidChars(name);
   name = '${name.trim()}$_classCounter'.pascalCase;

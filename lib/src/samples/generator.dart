@@ -9,6 +9,7 @@ import 'samples.dart';
 void createSampleContent() {
   saveString('assets/fts/categories.yaml', SampleYamls.categories);
   saveString('assets/fts/sample.yaml', SampleYamls.sample);
+
   /// create config yaml
   createSampleConfig();
   trace(

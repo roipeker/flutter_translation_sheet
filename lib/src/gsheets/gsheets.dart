@@ -1254,9 +1254,10 @@ class Worksheet {
   }
 
   Future<bool> batchClearRows(List<int> rows) async {
-    final ranges = rows.map((id) => "'$_title'!A$id:ZZ$id").toList(growable: false);
+    final ranges =
+        rows.map((id) => "'$_title'!A$id:ZZ$id").toList(growable: false);
     var url = '$_sheetsEndpoint$spreadsheetId/values:batchClear'.toUri();
-    print("Batch clear range: $ranges" );
+    print("Batch clear range: $ranges");
     final response = await _client.post(
       url,
       body: jsonEncode(
