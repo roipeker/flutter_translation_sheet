@@ -56,6 +56,7 @@ abstract class $className {
       translateLines.add('\t\t"$localeName": $className.data,');
     }
   }
+
   /// create translation and locale file
   if (config.validTranslationFile) {
     createTranslationFile(
@@ -376,7 +377,7 @@ void formatDartFiles() {
   /// format dart files.
   if (config.validTranslationFile || config.validTKeyFile) {
     if (which('dart').found) {
-      'dart format .'.start(
+      'dart -w .'.start(
         workingDirectory: config.dartOutputDir,
         detached: true,
       );
@@ -386,7 +387,8 @@ void formatDartFiles() {
 
 /// Saves [localeName] translation [map] in [EnvConfig.outputJsonDir].
 /// With the option to [beautify] the json string output.
-void saveLocaleJsonAsset(String localeName, KeyMap map, {bool beautify = false}) {
+void saveLocaleJsonAsset(String localeName, KeyMap map,
+    {bool beautify = false}) {
   if (!localeName.endsWith('.json')) {
     localeName += '.json';
   }

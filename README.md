@@ -1,4 +1,6 @@
-## Flutter Translation Sheet Generator [fts]
+![Flutter Tranlsation Sheet header](https://user-images.githubusercontent.com/33768711/127226621-75b35a5e-e50f-45ef-a925-32f4ec6d11d0.png?raw=true)
+
+# Flutter Translation Sheet Generator [fts]
 
 Command line application to make your l10n super fast.
 Compose your strings in yaml/json format and use GoogleSheet for auto translate.
@@ -132,9 +134,14 @@ It will output a single json file cloning the structure of the source code folde
 It's up to you to clean it up, adjust keys, split it up in other data source files, and USE it with "Flutter Translate Sheet".
 This command tool is in alpha state, but don't worry, as it doesn't touch any of analyzed files, so is safe.
 
-- New options added: [-s] captures all Strings (event without spaces), and [-e] allows you to define a comma separated list of file extensions to search for Strings, like `-e dart,java,kt,arb`
+It captures interpolated strings in your dart code, variables like `$name`, or `${obj.friends.length}`, and use them as placeholders:
+`$name` becomes `{{name}}` and  `${obj.friends.length}`  becomes `{{length}}`.
+
+- New options added: [-s] captures all Strings (event without spaces), 
+and [-e] allows you to define a comma separated list of file extensions to search for Strings, like `-e dart,java,kt,arb`
 
 Also... when you specify an --output that ends with `.yaml`, you will have a pretty cool template to plug into `fts run` :)
+
 
 - If you run the cli on macos, `fts` keeps your [iOS app bundle](https://flutter.dev/docs/development/accessibility-and-localization/internationalization#localizing-for-ios-updating-the-ios-app-bundle) synced automatically with the locales! One thing less to worry about.
 

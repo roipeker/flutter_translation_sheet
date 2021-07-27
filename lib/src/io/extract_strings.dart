@@ -146,7 +146,7 @@ void _takeFile(File file, List<String> populate) {
     str = str.trim();
     var hasSpace = extractPermissive || str.contains(' ');
     if (str.isNotEmpty && hasSpace && !str.contains(_pathRegExp)) {
-      // str = _replaceVarsInString(str);
+      str = _replaceVarsInString(str);
       populate.add(str);
     }
   }
@@ -157,20 +157,26 @@ void _takeFile(File file, List<String> populate) {
     str = str.trim();
     var hasSpace = extractPermissive || str.contains(' ');
     if (str.isNotEmpty && hasSpace && !str.contains(_pathRegExp)) {
-      // str = _replaceVarsInString(str);
+      str = _replaceVarsInString(str);
       populate.add(str);
     }
   }
 }
-//
-// String _replaceVarsInString(String str){
-//   if(!varMatching.hasMatch(str)) {
-//     return str;
-//   }
-//   var captures = varMatching.allMatches(str);
-//   captures.forEach((element) {
-//     // var captured = element.group(0)!;
-//     var bu = str.replaceAll(varReplacer, '');
-//     print('res: $txt --- $bu');
-//   });
-// }
+
+/// Captures the dart string interpolations inside the string, and convert
+/// them to fts placeholders
+String _replaceVarsInString(String str) {
+  if (!varMatching.hasMatch(str)) {
+    return str;
+  }
+  var captures = varMatching.allMatches(str);
+  captures.forEach((element) {
+    var capturedString = element.group(0)!;
+    var varName = capturedString.replaceAll(varReplacer, '');
+
+    /// take the last element.
+    varName = varName.split('.').last.camelCase;
+    str = str.replaceAll(capturedString, '{{$varName}}');
+  });
+  return str;
+}

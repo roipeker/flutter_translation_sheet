@@ -1,3 +1,7 @@
+## [1.0.13+25]
+- add dart variable capture from interpolated strings in `fts extract`.
+- updated README
+
 ## [1.0.12+23]
 - fix version check for upgrades
 - added a better template in "example/"

@@ -9,6 +9,7 @@ import 'samples.dart';
 void createSampleContent() {
   saveString('assets/fts/home.yaml', SampleYamls.home);
   saveString('assets/fts/sample.yaml', SampleYamls.sample);
+
   /// create config yaml
   createSampleConfig();
   trace('''Please, fill
@@ -34,6 +35,6 @@ in $defaultConfigEnvPath and run the command again.''');
   exit(0);
 }
 
-void createSampleConfig(){
+void createSampleConfig() {
   saveString(defaultConfigEnvPath, SampleYamls.trconfig);
 }
