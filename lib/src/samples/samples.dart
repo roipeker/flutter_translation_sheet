@@ -16,7 +16,6 @@ menu:
     hint: Open the user collection
 ''';
 
-
   static const sample = '''
 ## sample translation, entry file.
 ---
@@ -98,7 +97,7 @@ class SimpleLangPicker extends StatelessWidget {
 }
 ''';
 
-String getCodeMapLocaleKeysToMasterText(String theClassName){
+String getCodeMapLocaleKeysToMasterText(String theClassName) {
   return '''
   static Map<String, String> mapLocaleKeysToMasterText(
       Map<String, String> localeMap,

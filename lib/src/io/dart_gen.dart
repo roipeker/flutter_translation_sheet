@@ -55,10 +55,7 @@ abstract class $className {
     }
   }
 
-
 // Get.addTranslations(TData.getByText());
-
-
 
   /// create translation and locale file
   if (config.validTranslationFile) {
@@ -87,8 +84,6 @@ String createTranslationFile(
   var _imports = imports.join('\n');
   var _translateClassString = '';
   if (hasTranslationMaps) {
-
-
     /// Translation File.
     var _transKeysString = '{\n';
     _transKeysString += translationMaps.join('\n');
@@ -180,7 +175,7 @@ abstract class AppLocales {
   fileContent += '  static const available = <LangVo>[$_availableLang];\n';
   fileContent +=
       '  static List<Locale> get supportedLocales => [$_supportedLocales];\n';
-      // '  static List<Locale> get supportedLocales => _supportedLocales;\n';
+  // '  static List<Locale> get supportedLocales => _supportedLocales;\n';
   // fileContent +=
   //     '  static final _supportedLocales = <Locale>[$_supportedLocales];\n';
   fileContent += '''
