@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:dcli/dcli.dart';
+import 'package:io/io.dart';
+import 'package:yaml/yaml.dart';
 
 import '../data/strings.dart';
 import 'package:http/http.dart' as http;
@@ -27,6 +29,27 @@ Future<void> upgrade() async {
   }
 }
 
+Future<void> printVersion() async {
+  trace(
+    green(
+      await currentVersion() ??
+          'There was an error reading the current version',
+    ),
+  );
+}
+
+Future<String?> currentVersion() async {
+  final pub = File('pubspec.yaml');
+  try {
+    final data = loadYaml(pub.readAsStringSync());
+    if (data is YamlMap) {
+      return data['version'];
+    }
+  } on Exception {
+    return null;
+  }
+}
+
 Future<void> checkUpdate([bool fromCommand = true]) async {
   if (fromCommand) {
     trace('\nChecking for updates...');
@@ -37,7 +60,14 @@ Future<void> checkUpdate([bool fromCommand = true]) async {
       error('cannot fetch the latest version');
       return;
     }
-    final compare = compareSemver(CliConfig.version, latest);
+    final current = await currentVersion();
+    if (current == null) {
+      if (fromCommand) {
+        error('there was an error reading the current version');
+      }
+      return;
+    }
+    final compare = compareSemver(current, latest);
     if (compare >= 0) {
       if (fromCommand) {
         trace(cyan('fts already on the latest version'));
@@ -45,7 +75,7 @@ Future<void> checkUpdate([bool fromCommand = true]) async {
       return;
     }
 
-    final c = orange(CliConfig.version);
+    final c = orange(current);
     final l = green(latest);
     trace(
       yellow(

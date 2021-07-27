@@ -45,7 +45,7 @@ class FTSCommandRunner extends CommandRunner<int> {
   @override
   Future<int?> runCommand(ArgResults topLevelResults) async {
     if (topLevelResults['version'] == true) {
-      trace(green(CliConfig.version));
+      await  printVersion();      
       return ExitCode.success.code;
     }
 

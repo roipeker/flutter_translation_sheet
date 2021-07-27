@@ -23,8 +23,3 @@ dependencies:
 
 dev_dependencies:
   pedantic: ^1.11.1
-  build_runner: any
-  build_version: ^2.0.3
-
-## To keep the version update:
-## `flutter pub run build_runner build --delete-conflicting-outputs`
