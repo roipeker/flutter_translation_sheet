@@ -27,6 +27,9 @@ welcomeUser:
           ''';
 Map<String, dynamic> metaFallbackProperties = {};
 
+/// Creates the `{locale}.arb` files to be used by intl package or similar.
+/// when `config.yaml` has `intl:enabled:true`.
+/// Takes the [map] with all the translations to generates the files.
 void buildArb(Map<String, Map<String, String>> map) {
   trace('Building arb files');
   var appName = '';
@@ -112,6 +115,7 @@ Please make sure your trconfig.yaml sits in the root of your project, and l10n.y
   // runPubGet();
 }
 
+/// Parses and adds the needed @metadata for arb files.
 void _customModifier({
   required String key,
   required String value,
@@ -156,6 +160,7 @@ void _customModifier({
   targetMap[targetKey][selectorKey] = value;
 }
 
+/// Adds a new metakey to [output]
 void _addMetaKey(String newKey, String textValue, Map output, Map metaMap) {
   /// add description always.
   late Map placeholders;
@@ -182,6 +187,8 @@ void _addMetaKey(String newKey, String textValue, Map output, Map metaMap) {
 
 const _emptyVarMap = <String, dynamic>{};
 
+/// Saves the detected placeholders as `vars.locked` in the `entry_file`
+/// basedir.
 String _saveVarsFromString(String value, Map saveTo) {
   final textVars = _varsFromString(value);
   var cleanedValue = value;
@@ -198,6 +205,7 @@ String _saveVarsFromString(String value, Map saveTo) {
   return cleanedValue;
 }
 
+/// Captures the detected variables from [text].
 Map<String, dynamic> _varsFromString(String text) {
   if (text.contains('{') && text.contains('}')) {
     var res = _captureArbSet(text);
@@ -293,6 +301,8 @@ String _resolveSelectorTextFromMap(Map map) {
   return str;
 }
 
+/// Resolves the plural format in source data (entry_file yaml) and validates
+/// the [map].
 String _resolvePluralTextFromMap(Map map) {
   var str = '';
   if (!map.containsKey(_pluralMandatory)) {
@@ -309,6 +319,7 @@ String _resolvePluralTextFromMap(Map map) {
   return str;
 }
 
+/// Returns the folder to save the `.arb` output.
 String _getArbDir() {
   var intlPath = config.intlYamlPath;
   if (intlPath.isNotEmpty && exists(intlPath)) {
@@ -335,12 +346,11 @@ Set<String> _captureArbSet(String str) {
   return wordset;
 }
 
-void buildForIntl(Map<String, Map<String, String>> map) {
-  trace('Intl here!');
-  // trace(map);
-  var firstLan = map.keys.first;
-
-  /// create map!
-  trace(firstLan);
-  trace(map);
-}
+// void buildForIntl(Map<String, Map<String, String>> map) {
+//   trace('Intl here!');
+//   // trace(map);
+//   var firstLan = map.keys.first;
+//   /// create map!
+//   trace(firstLan);
+//   trace(map);
+// }

@@ -1,5 +1,7 @@
 import 'package:flutter_translation_sheet/src/utils/utils.dart';
 
+/// Resolve Locale information [LangInfo] through the locale key (es, en).
+/// Instead of null, if languageCode not found, returns an empty [LangInfo]
 LangInfo langInfoFromKey(String key) {
   key = normLocale(key, '-').toLowerCase();
   // key = key.replaceAll('_', '-');
@@ -19,6 +21,7 @@ LangInfo langInfoFromKey(String key) {
   );
 }
 
+/// Class to extend Locale information with nativeName, englishName and key,
 class LangInfo {
   final String nativeName, englishName, key;
 
@@ -28,6 +31,7 @@ class LangInfo {
   String toString() => '$key - $englishName ($nativeName)';
 }
 
+/// Glossary of the available locales with their native names and english names.
 const kLangMap = <String, Map<String, String>>{
   'ach': {'nativeName': 'Lwo', 'englishName': 'Acholi'},
   'ady': {'nativeName': 'Адыгэбзэ', 'englishName': 'Adyghe'},

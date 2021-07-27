@@ -13,22 +13,12 @@ String configPath = '';
 /// flag that tells us if we have vars to parse or not.
 bool entryDataHasVars = false;
 
+/// Speculates the Flutter project dir based on the [configPath] location.
 String get configProjectDir {
   return p.canonicalize(p.dirname(configPath));
 }
 
-void createSampleConfig() {
-  saveString(defaultConfigEnvPath, _kSampleConfig);
-  trace('''Please, fill
-  
-gsheet:
-  credentials_path:
-  spreadsheet_id:
-  worksheet:
-  
-in $defaultConfigEnvPath and run the command again.''');
-}
-
+/// Loads the configuration file from [path].
 void loadEnv([String path = defaultConfigEnvPath]) {
   var data = openString(path);
   if (data.isEmpty) {
@@ -144,9 +134,9 @@ See https://cloud.google.com/translate/docs/languages for a list of supported tr
   if (!config._isValidDartConfig()) {
     exit(3);
   }
-  _createDir();
 }
 
+/// Parses trconfig.yaml `param_output_pattern`.
 void _configParamOutput() {
   /// fix param output to valid string.
   var _paramOutput = config.paramOutputPattern;
@@ -187,6 +177,7 @@ Using default {*}''');
   }
 }
 
+/// Parses info from `gsheet:` tag in the configuration.
 void _parseSheets(YamlMap doc) {
   var credentials = doc['credentials'];
   var credentialsPath = doc['credentials_path'];
@@ -217,17 +208,7 @@ https://medium.com/@a.marenkov/how-to-get-credentials-for-google-sheets-456b7e88
   config.useIterativeCache = doc['use_iterative_cache'] ?? false;
 }
 
-void _createDir() {
-  // if (!exists(config.outputDir)) {
-  //   createDir(config.outputDir, recursive: true);
-  //   trace('creating output directory at ${config.outputDir}');
-  // }
-}
-
-void main() {
-  loadEnv();
-}
-
+/// Model to represent the configuration (trconfig.yaml).
 class EnvConfig {
   // String outputDir = 'output';
   String dartOutputDir = '';
@@ -316,68 +297,3 @@ Please, set [dart:output_dir:] to use any dart generation capability.
     return true;
   }
 }
-
-const _kSampleConfig = '''
-## output dir for json translations by locale
-output_json_dir: assets/i18n
-
-## main entry file to generate the unique translation json.
-entry_file: assets/fts/sample.yaml
-
-## pattern to applies final variables in the generated json/dart Strings.
-## Enclose * in the pattern you need.
-## {*} = {{name}} becomes {name}
-## %* = {{name}} becomes %name
-## (*) = {{name}} becomes (name)
-## - Special case when you need * as prefix or suffix, use *? as splitter
-## ***?** = {{name}} becomes **name**
-param_output_pattern: "{*}"
-
-intl:
-  enabled: false
-
-dart:
-  ## Output dir for dart files
-  output_dir: lib/i18n
-
-  ## Translation Key class and filename reference
-  keys_id: TKeys
-
-  ## Translations map class an filename reference.
-  translations_id: TData
-
-  ## translations as dart files Maps (available in translations.dart).
-  use_maps: false
-
-## see: https://cloud.google.com/translate/docs/languages
-## All locales to be supported.
-locales:
-  - en
-  - es
-  - ja
-
-## Google Sheets Configuration
-## How to get your credentials?
-## see: https://github.com/roipeker/flutter_translation_sheet/wiki/Google-credentials
-gsheets:
-
-  ## For a performance boost on big datasets, to try to use the GoogleTranslate formula once,
-  ## enable "Iterative Calculations" manually in your worksheet to avoid the #VALUE error.
-  ## Go to:
-  ## File > Spreadsheet Settings > Calculation > set "Iterative calculation" to "On"
-  ## Or check:
-  ## https://support.google.com/docs/answer/58515?hl=en&co=GENIE.Platform%3DDesktop#zippy=%2Cchoose-how-often-formulas-calculate
-  use_iterative_cache: false
-
-  ## Use relative or absolute path to your json credentials.
-  ## Check the wiki for a step by step tutorial:
-  ## https://github.com/roipeker/flutter_translation_sheet/wiki/Google-credentials
-  credentials_path:
-  
-  ## Open your google sheet and copy the SHEET_ID from the url:
-  ## https://docs.google.com/spreadsheets/d/{SHEET_ID}/edit#gid=0
-  spreadsheet_id:
-
-  ## The spreadsheet "table" where your translation will live.
-  worksheet: Sheet1
-''';

@@ -1,19 +1,12 @@
+/// const strings for templates.
 class SampleYamls {
-  static const categories = ''' 
-## Sample categories section.
+  static const home = ''' 
+## Sample home section.
 ---
-title: categories
-subtitle: great categories for your app
-menu:
-  home:
-    label: Home
-    hint: Tap to go to the home screen
-  settings:
-    label: Settings
-    hint: Tap and check your personal Settings
-  users:
-    label: Users
-    hint: Open the user collection
+title: Home screen
+subtitle: Welcome Home
+counter: You pressed the counter {{count}} times
+
 ''';
 
   static const sample = '''
@@ -24,15 +17,78 @@ body: |
   This is a sample body
   to check the translation system
   in GoogleSheet
-header:
-  text: "{0}. See {1} to know more about the tool!"
-  tag0: Get started with the tool
-  tag1: What's new in documentation
+
 ## you can reference other files and folders with [\$ref: path].
 ## content of the file will be unwrapped into the key.
-categories:
-  \$ref: categories.yaml
+home:
+  \$ref: home.yaml
 ''';
+
+  static const trconfig = '''
+## output dir for json translations by locale
+output_json_dir: assets/i18n
+
+## main entry file to generate the unique translation json.
+entry_file: assets/fts/sample.yaml
+
+## pattern to applies final variables in the generated json/dart Strings.
+## Enclose * in the pattern you need.
+## {*} = {{name}} becomes {name}
+## %* = {{name}} becomes %name
+## (*) = {{name}} becomes (name)
+## - Special case when you need * as prefix or suffix, use *? as splitter
+## ***?** = {{name}} becomes **name**
+param_output_pattern: "{*}"
+
+intl:
+  enabled: false
+
+dart:
+  ## Output dir for dart files
+  output_dir: lib/i18n
+
+  ## Translation Key class and filename reference
+  keys_id: TKeys
+
+  ## Translations map class an filename reference.
+  translations_id: TData
+
+  ## translations as dart files Maps (available in translations.dart).
+  use_maps: false
+
+## see: https://cloud.google.com/translate/docs/languages
+## All locales to be supported.
+locales:
+  - en
+  - es
+  - ja
+
+## Google Sheets Configuration
+## How to get your credentials?
+## see: https://github.com/roipeker/flutter_translation_sheet/wiki/Google-credentials
+gsheets:
+
+  ## For a performance boost on big datasets, to try to use the GoogleTranslate formula once,
+  ## enable "Iterative Calculations" manually in your worksheet to avoid the #VALUE error.
+  ## Go to:
+  ## File > Spreadsheet Settings > Calculation > set "Iterative calculation" to "On"
+  ## Or check:
+  ## https://support.google.com/docs/answer/58515?hl=en&co=GENIE.Platform%3DDesktop#zippy=%2Cchoose-how-often-formulas-calculate
+  use_iterative_cache: false
+
+  ## Use relative or absolute path to your json credentials.
+  ## Check the wiki for a step by step tutorial:
+  ## https://github.com/roipeker/flutter_translation_sheet/wiki/Google-credentials
+  credentials_path:
+  
+  ## Open your google sheet and copy the SHEET_ID from the url:
+  ## https://docs.google.com/spreadsheets/d/{SHEET_ID}/edit#gid=0
+  spreadsheet_id:
+
+  ## The spreadsheet "table" where your translation will live.
+  worksheet: Sheet1
+''';
+
 }
 
 const kSimpleLangPickerWidget = r'''
@@ -97,6 +153,8 @@ class SimpleLangPicker extends StatelessWidget {
 }
 ''';
 
+/// Generates `mapLocaleKeysToMasterText()` string using the
+/// specified [theClassName].
 String getCodeMapLocaleKeysToMasterText(String theClassName) {
   return '''
   static Map<String, String> mapLocaleKeysToMasterText(

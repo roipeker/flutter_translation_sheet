@@ -8,8 +8,10 @@ import 'package:io/io.dart';
 import 'data/strings.dart';
 import 'io/io.dart';
 import 'utils/utils.dart';
+
 export 'data/strings.dart';
 
+/// Command Runner
 class FTSCommandRunner extends CommandRunner<int> {
   FTSCommandRunner()
       : super(
@@ -55,6 +57,7 @@ class FTSCommandRunner extends CommandRunner<int> {
 
   var baseCanoMap = <String, String>{};
 
+  /// executes the logic for `fts run`
   Future<void> startRun() async {
     /// save json
     var map = buildLocalYamlMap();
@@ -86,6 +89,7 @@ class FTSCommandRunner extends CommandRunner<int> {
     exit(1);
   }
 
+  /// executes the logic for `fts fetch`
   Future<void> startFetch() async {
     trace('Creating local canonical json');
     var map = buildLocalYamlMap();

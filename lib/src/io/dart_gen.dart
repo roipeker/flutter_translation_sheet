@@ -5,6 +5,7 @@ import 'package:flutter_translation_sheet/src/samples/samples.dart';
 int _classCounter = 0;
 final _translateKeyClasses = [];
 
+/// String template for [LangVo]
 const _kLangVoTemplate = '''
 class LangVo {
   final String nativeName, englishName, key;
@@ -15,7 +16,7 @@ class LangVo {
 }
 ''';
 
-/// creates json and dart files.
+/// Generates the json and dart files according to [EnvConfig].
 void createLocalesFiles(Map<String, Map<String, String>> localesMap) {
   /// collect imports for the output.
   var translateImports = <String>[];
@@ -25,7 +26,7 @@ void createLocalesFiles(Map<String, Map<String, String>> localesMap) {
     // trace('Locale ', localeKey);
     var localeName = normLocale(localeKey);
     var localeMap = localesMap[localeKey]!;
-    saveLocaleAsset(
+    saveLocaleJsonAsset(
       localeName,
       localeMap,
       beautify: true,
@@ -43,6 +44,7 @@ void createLocalesFiles(Map<String, Map<String, String>> localesMap) {
       var className = 'Locale${localeName.pascalCase}';
       var fileData = '''
 /// Translation for ${localeInfo.englishName} ("${localeInfo.key.toUpperCase()}")
+// ignore_for_file: lines_longer_than_80_chars
 abstract class $className {
   static const Map<String,String> data = $data;
 }
@@ -54,9 +56,6 @@ abstract class $className {
       translateLines.add('\t\t"$localeName": $className.data,');
     }
   }
-
-// Get.addTranslations(TData.getByText());
-
   /// create translation and locale file
   if (config.validTranslationFile) {
     createTranslationFile(
@@ -68,6 +67,8 @@ abstract class $className {
   }
 }
 
+/// Generates the `TData.dart` and the specified [locales] translations as dart
+/// files.
 String createTranslationFile(
   List<String> locales, {
   required List<String> imports,
@@ -77,9 +78,7 @@ String createTranslationFile(
   if (locales.isEmpty) {
     locales.add('en');
   }
-  // var locales = ['en', 'es', 'el', 'de', 'pt'];
   var _classAppLocales = _buildAppLocalesFileContent(locales);
-
   var hasTranslationMaps = imports.isNotEmpty;
   var _imports = imports.join('\n');
   var _translateClassString = '';
@@ -383,4 +382,15 @@ void formatDartFiles() {
       );
     }
   }
+}
+
+/// Saves [localeName] translation [map] in [EnvConfig.outputJsonDir].
+/// With the option to [beautify] the json string output.
+void saveLocaleJsonAsset(String localeName, KeyMap map, {bool beautify = false}) {
+  if (!localeName.endsWith('.json')) {
+    localeName += '.json';
+  }
+  var path = joinDir([config.outputJsonDir, localeName]);
+  trace('Saving locale asset "$localeName" in ', path);
+  saveJson(path, map, beautify: beautify);
 }

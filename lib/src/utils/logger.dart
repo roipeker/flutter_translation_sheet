@@ -1,5 +1,7 @@
 import 'package:dcli/dcli.dart';
 
+/// Prints message to console using optional arguments to avoid
+/// complex string interpolation.
 void trace(
   dynamic arg1, [
   dynamic arg2 = '',
@@ -17,6 +19,7 @@ void trace(
   print(o);
 }
 
+/// prints messages to console with optional arguments using "orange" pen.
 void warning(
   dynamic arg1, [
   dynamic arg2 = '',
@@ -28,6 +31,7 @@ void warning(
   print(orange(o));
 }
 
+/// prints messages to console with optional arguments using "red" pen.
 void error(
   dynamic arg1, [
   dynamic arg2 = '',
@@ -47,6 +51,8 @@ void error(
 
 String argsJoiner = '';
 
+/// resolves the [trace] arguments as a unique String message to be printed
+/// in console.
 String _getArgs(
   dynamic arg1, [
   dynamic arg2 = '',

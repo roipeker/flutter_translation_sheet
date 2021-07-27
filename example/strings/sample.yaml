@@ -1,0 +1,15 @@
+---
+
+title: Welcome to the translation tool
+
+body: |
+  This is a sample body
+  to check the translation system
+  in GoogleSheet
+
+countText: This is a counter {{counter}} variable example.
+
+## you can reference other files and folders with [$ref].
+## content of the file will be unwrapped into the key.
+categories:
+  $ref: home/strings.yaml

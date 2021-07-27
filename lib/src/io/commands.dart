@@ -1,10 +1,12 @@
 import 'dart:io';
+
 import 'package:args/args.dart';
 import 'package:args/command_runner.dart';
 import 'package:args/src/arg_parser.dart';
 import 'package:dcli/dcli.dart';
 import 'package:flutter_translation_sheet/flutter_translation_sheet.dart';
 
+/// Command logic for `fts extract`
 class ExtractStringCommand extends Command<int> {
   @override
   final String description = 'Extract Strings from dart files';
@@ -12,12 +14,13 @@ class ExtractStringCommand extends Command<int> {
   @override
   final String name = 'extract';
   final Future Function() exec;
+
   ExtractStringCommand(this.exec) {
     argParser.addOption('path',
         abbr: 'p',
         help: 'Set the /lib folder to search for Strings in dart files.');
     argParser.addOption('output',
-        defaultsTo: 'strings.json',
+        defaultsTo: 'strings.yaml',
         abbr: 'o',
         help: 'Sets the output path for the generated json map.');
     argParser.addOption('ext',
@@ -35,7 +38,7 @@ class ExtractStringCommand extends Command<int> {
   @override
   Future<int> run() async {
     libFolder = '';
-    extractStringOutputFile = absolute('strings.json');
+    extractStringOutputFile = absolute('strings.yaml');
     if (argResults!.wasParsed('output')) {
       extractStringOutputFile = argResults!['output']!.trim();
     }
@@ -53,6 +56,7 @@ class ExtractStringCommand extends Command<int> {
   }
 }
 
+/// Command logic for `fts fetch`
 class FetchCommand extends Command<int> {
   @override
   final String description = 'Fetches the data from the sheet';
@@ -60,6 +64,7 @@ class FetchCommand extends Command<int> {
   @override
   final String name = 'fetch';
   final Future Function() exec;
+
   FetchCommand(this.exec) {
     addConfigOption(argParser);
   }
@@ -72,6 +77,7 @@ class FetchCommand extends Command<int> {
   }
 }
 
+/// Command logic for `fts upgrade`
 class UpgradeCommand extends Command<int> {
   @override
   final String description = 'Upgrade FTS to the latest version';
@@ -79,6 +85,7 @@ class UpgradeCommand extends Command<int> {
   @override
   final String name = 'upgrade';
   final Future<void> Function() exec;
+
   UpgradeCommand(this.exec);
 
   @override
@@ -88,6 +95,7 @@ class UpgradeCommand extends Command<int> {
   }
 }
 
+/// Command logic for `fts run`
 class RunCommand extends Command<int> {
   @override
   final String description =
@@ -109,6 +117,7 @@ class RunCommand extends Command<int> {
   }
 }
 
+/// Adds the `config` argument [argParser]
 void addConfigOption(ArgParser argParser) {
   argParser.addOption(
     'config',
@@ -119,6 +128,7 @@ void addConfigOption(ArgParser argParser) {
   );
 }
 
+/// Reads the `config` from [res]
 void setConfig(ArgResults res) {
   if (res.wasParsed('config')) {
     startConfig(res['config']);
@@ -128,6 +138,7 @@ void setConfig(ArgResults res) {
   }
 }
 
+/// Initializes the supplied configuration from [path]
 void startConfig(String path) {
   if (path.isEmpty) {
     error('Pass the trconfig.yaml path to -c');

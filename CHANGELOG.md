@@ -1,3 +1,9 @@
+## [1.0.12+23]
+- fix version check for upgrades
+- added a better template in "example/"
+- force MacOs validation to run Info.plist edition. (Some linux distros have the plutil) 
+- code docs.
+ 
 ## [1.0.12+22]
 - fix wrong paths for the sample template.
 

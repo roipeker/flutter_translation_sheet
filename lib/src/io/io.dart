@@ -1,5 +1,3 @@
-export 'asset_gen.dart';
-export 'asset_gen.dart';
 export 'commands.dart';
 export 'dart_gen.dart';
 export 'env_parser.dart';

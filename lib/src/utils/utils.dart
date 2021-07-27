@@ -11,10 +11,12 @@ export 'json2yaml.dart';
 export 'logger.dart';
 export 'version.dart';
 
+/// Encodes a json into a tabular format for easy redeability.
 String prettyJson(dynamic json) {
   return JsonEncoder.withIndent('  ' * 2).convert(json);
 }
 
+/// Save the [content] in [path] file, creating the [path] if doesn't exists.
 void saveString(String path, String content) {
   var f = File('$path');
   if (!f.existsSync()) {
@@ -25,6 +27,8 @@ void saveString(String path, String content) {
   point.closeSync();
 }
 
+/// Reads the contents of the [path] file as String.
+/// If files doesn't exists, returns empty String.
 String openString(String path) {
   // if (useDataDir && !path.startsWith('data/')) {
   //   path = 'data/master/$path';
@@ -35,15 +39,18 @@ String openString(String path) {
   return '';
 }
 
+/// Shortcut utility to join paths properly in different environments.
+/// Alias of [buildPath]
 String joinDir(List<String> paths) {
   return buildPath(paths);
-  // return paths.join('/').replaceAll('//', '/');
 }
 
+/// Shortcut utility to join paths properly in different environments.
 String buildPath(List<String> path) {
   return p.canonicalize(p.joinAll(path));
 }
 
+/// Moves a file in the system in async way.
 Future<File> moveFile(File sourceFile, String newPath) async {
   try {
     // prefer using rename as it is probably faster
@@ -57,6 +64,8 @@ Future<File> moveFile(File sourceFile, String newPath) async {
   }
 }
 
+/// Reads [filepath] as a json Map.
+/// If file doesn't exists, returns empty Map.
 JsonMap openJson(String filepath) {
   final str = openString(filepath);
   if (str.isEmpty) {
@@ -66,6 +75,7 @@ JsonMap openJson(String filepath) {
   return jsonDecode(str) as JsonMap;
 }
 
+/// Writes [json] in [filepath], with the option to [beautify] the string.
 void saveJson(String filepath, dynamic json, {bool beautify = false}) {
   String str;
   if (json is! String) {
@@ -76,6 +86,8 @@ void saveJson(String filepath, dynamic json, {bool beautify = false}) {
   saveString(filepath, str);
 }
 
+/// Normalizes [localeString] with [targetSeparator] to have consistency around
+/// the naming conventions usage in the CLI (and other tools)
 String normLocale(String localeString, [String targetSeparator = '_']) {
   /// take only lang code and country code. (zh_Hant_HK, fr_FR, fr_CA)
   localeString = localeString.trim().toLowerCase();

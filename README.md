@@ -28,6 +28,8 @@ Check `--help` on any sub-command of `fts`:
 - `fts run`
 - `fts fetch`
 - `fts extract`
+- `fts upgrade`
+- `fts --version`
 
 ### ⚙️ Usage:
 

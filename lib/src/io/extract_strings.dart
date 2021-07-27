@@ -10,6 +10,7 @@ String extractStringOutputFile = '';
 bool extractPermissive = false;
 String extractAllowedExtensions = 'dart';
 
+/// Logic for `fts extract`
 Future<void> extractStrings() async {
   if (libFolder.isEmpty) {
     libFolder = p.absolute('.');
@@ -36,6 +37,7 @@ Or change the current working directory to /lib or some sub-folder.
   _inspectRecursive(libFolder);
 }
 
+/// Reads [path] recursively capturing the Strings in matched files.
 void _inspectRecursive(String path) {
   trace('Looking for strings in ', path);
   var dir = Directory(path);
@@ -110,9 +112,10 @@ void _inspectRecursive(String path) {
   trace('Extracted strings saved in $finalPath');
 }
 
-String _getKey(String str) {
+/// Makes a "key" based on [filepath].
+String _getKey(String filepath) {
   /// all path (keys) relative to the -p (libFolder)
-  var sub = p.relative(str, from: libFolder);
+  var sub = p.relative(filepath, from: libFolder);
   sub = p.withoutExtension(sub) + '.';
   return p.split(sub).join('.');
 }
@@ -121,9 +124,18 @@ var _regex4 = RegExp("\'.*?\'|\".*?\"", dotAll: false);
 var _regexMultiline = RegExp("('''.+''')|(\"\"\".+\"\"\")", dotAll: true);
 var _regexR1 = RegExp(r'(import|export) .*?;');
 var _pathRegExp = RegExp('(\/|.*\/)');
+final varMatching = RegExp(
+  r'\$([^ ]*)',
+  caseSensitive: false,
+  dotAll: true,
+  multiLine: true,
+);
+final varReplacer = RegExp(r'[\$|\{\}]');
 
-void _takeFile(File f, List<String> populate) {
-  var str = f.readAsStringSync();
+/// Reads [file] from the extraction recursion, using [populate] List to store
+/// the matching Strings.
+void _takeFile(File file, List<String> populate) {
+  var str = file.readAsStringSync();
   str = str.replaceAll(_regexR1, '');
   var fusion = _regex4.allMatches(str);
   var fusion2 = _regexMultiline.allMatches(str);
@@ -134,6 +146,7 @@ void _takeFile(File f, List<String> populate) {
     str = str.trim();
     var hasSpace = extractPermissive || str.contains(' ');
     if (str.isNotEmpty && hasSpace && !str.contains(_pathRegExp)) {
+      // str = _replaceVarsInString(str);
       populate.add(str);
     }
   }
@@ -142,19 +155,22 @@ void _takeFile(File f, List<String> populate) {
     var str = m.group(0)!;
     str = str.substring(1, str.length - 1);
     str = str.trim();
-    // var hasSpace = str.contains(' ');
     var hasSpace = extractPermissive || str.contains(' ');
     if (str.isNotEmpty && hasSpace && !str.contains(_pathRegExp)) {
+      // str = _replaceVarsInString(str);
       populate.add(str);
     }
   }
-  // if (result.isEmpty) return;
-  // trace(f.path, ' # matches: ', result.length);
-  // for (var s in result) {
-  //   trace('> ', s);
-  // }
-  // trace('---');
-  // trace(f.path);
-  // trace(fileContent);
-  // trace('----------');
 }
+//
+// String _replaceVarsInString(String str){
+//   if(!varMatching.hasMatch(str)) {
+//     return str;
+//   }
+//   var captures = varMatching.allMatches(str);
+//   captures.forEach((element) {
+//     // var captured = element.group(0)!;
+//     var bu = str.replaceAll(varReplacer, '');
+//     print('res: $txt --- $bu');
+//   });
+// }

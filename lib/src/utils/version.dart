@@ -9,6 +9,7 @@ import '../data/strings.dart';
 import 'logger.dart';
 import 'utils.dart';
 
+/// runs the [upgrade] command: `fts upgrade`
 Future<void> upgrade() async {
   if (which('flutter').found) {
     trace(green('Upgrading fts....\n'));
@@ -28,6 +29,7 @@ Future<void> upgrade() async {
   }
 }
 
+/// shows the version number in the Terminal.
 Future<void> printVersion() async {
   final current = await currentVersion();
   if (current == null) {
@@ -37,6 +39,9 @@ Future<void> printVersion() async {
   }
 }
 
+/// Returns the current fts version.
+/// Validating if it runs in local mode [CliConfig.isDev], or installed as
+/// snapshot.
 Future<String?> currentVersion() async {
   var scriptFile = Platform.script.toFilePath();
   if (CliConfig.isDev) {
@@ -72,6 +77,9 @@ Future<String?> currentVersion() async {
   }
 }
 
+/// Command to run from `fts upgrade` or automatically after all executions.
+/// Checks if there's a new version available on pub.dev and allows the user
+/// to install them.
 Future<void> checkUpdate([bool fromCommand = true]) async {
   if (CliConfig.isDev) return;
 
@@ -130,6 +138,7 @@ Future<void> checkUpdate([bool fromCommand = true]) async {
   }
 }
 
+/// Retrieves the latest version from pub.dev for [CliConfig.packageName]
 Future<String?> _checkLatestVersion() async {
   try {
     final response = await http.get(

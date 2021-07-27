@@ -1,0 +1,12 @@
+---
+
+title: This is the home page.
+
+message: Today is {{today}}, have a lovely day.
+
+"@message":
+  description: Show today's date.
+    placeholders:
+      today:
+        type: DateTime
+        format: yMMMEd
