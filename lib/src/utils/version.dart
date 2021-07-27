@@ -2,12 +2,12 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:dcli/dcli.dart';
+import 'package:http/http.dart' as http;
 import 'package:yaml/yaml.dart';
 
 import '../data/strings.dart';
-import 'package:http/http.dart' as http;
-
 import 'logger.dart';
+import 'utils.dart';
 
 Future<void> upgrade() async {
   if (which('flutter').found) {
@@ -29,23 +29,52 @@ Future<void> upgrade() async {
 }
 
 Future<void> printVersion() async {
-  trace(
-    green(
-      await currentVersion() ??
-          'There was an error reading the current version',
-    ),
-  );
+  final current = await currentVersion();
+  if (current == null) {
+    error('There was an error reading the current version');
+  } else {
+    trace(green(current));
+  }
 }
 
+// Future<String?> currentVersion() async {
+//   final pub = File('${which('fts').path}');
+
+//   print(pub.path);
+//   try {
+//     final data = loadYaml(pub.readAsStringSync());
+//     if (data is YamlMap) {
+//       return data['version'];
+//     }
+//   } on Exception {
+//     return null;
+//   }
+// }
+
 Future<String?> currentVersion() async {
-  final pub = File('pubspec.yaml');
-  try {
-    final data = loadYaml(pub.readAsStringSync());
-    if (data is YamlMap) {
-      return data['version'];
+  var scriptFile = Platform.script.toFilePath();
+  trace('script file: ', basename(scriptFile));
+  var pathToPubLock =
+      canonicalize(join(dirname(scriptFile), '../pubspec.lock'));
+  var str = openString(pathToPubLock);
+  if (str.isEmpty) return null;
+  var yaml = loadYaml(str);
+  if (yaml['packages'][CliConfig.packageName] == null) {
+    /// running local version? might read the pubspec here.
+    var pathToPubSpec = canonicalize(join(dirname(pathToPubLock), 'pubspec.yaml'));
+    str = openString(pathToPubSpec);
+    if( str.isEmpty ){
+      /// Impossible scenario. But just in case.
+      error('Report version error to the developers of the package.');
+      return null ;
     }
-  } on Exception {
-    return null;
+    yaml = loadYaml(str);
+    var version = yaml['version'];
+    trace('Local Dev Version');
+    return version;
+  } else {
+    var version = yaml['packages'][CliConfig.packageName]['version'].toString();
+    return version;
   }
 }
 
