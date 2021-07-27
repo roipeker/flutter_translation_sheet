@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:dcli/dcli.dart';
-import 'package:io/io.dart';
 import 'package:yaml/yaml.dart';
 
 import '../data/strings.dart';

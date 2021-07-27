@@ -1,6 +1,4 @@
 import 'dart:io';
-
-import 'package:dcli/dcli.dart';
 import 'package:flutter_translation_sheet/flutter_translation_sheet.dart';
 import 'package:flutter_translation_sheet/src/utils/utils.dart';
 
