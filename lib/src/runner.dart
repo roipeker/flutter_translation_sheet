@@ -8,6 +8,7 @@ import 'package:io/io.dart';
 import 'data/strings.dart';
 import 'io/io.dart';
 import 'utils/utils.dart';
+export 'data/strings.dart';
 
 class FTSCommandRunner extends CommandRunner<int> {
   FTSCommandRunner()
@@ -45,7 +46,7 @@ class FTSCommandRunner extends CommandRunner<int> {
   @override
   Future<int?> runCommand(ArgResults topLevelResults) async {
     if (topLevelResults['version'] == true) {
-      await  printVersion();      
+      await printVersion();
       return ExitCode.success.code;
     }
 

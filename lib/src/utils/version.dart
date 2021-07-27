@@ -37,23 +37,17 @@ Future<void> printVersion() async {
   }
 }
 
-// Future<String?> currentVersion() async {
-//   final pub = File('${which('fts').path}');
-
-//   print(pub.path);
-//   try {
-//     final data = loadYaml(pub.readAsStringSync());
-//     if (data is YamlMap) {
-//       return data['version'];
-//     }
-//   } on Exception {
-//     return null;
-//   }
-// }
-
 Future<String?> currentVersion() async {
   var scriptFile = Platform.script.toFilePath();
-  trace('script file: ', basename(scriptFile));
+  if (CliConfig.isDev) {
+    final str = openString('pubspec.yaml');
+    if (str.isEmpty) return null;
+    final data = loadYaml(str);
+    if (data is YamlMap) {
+      return data['version'];
+    }
+  }
+  // trace('script file: ', basename(scriptFile));
   var pathToPubLock =
       canonicalize(join(dirname(scriptFile), '../pubspec.lock'));
   var str = openString(pathToPubLock);
@@ -61,16 +55,16 @@ Future<String?> currentVersion() async {
   var yaml = loadYaml(str);
   if (yaml['packages'][CliConfig.packageName] == null) {
     /// running local version? might read the pubspec here.
-    var pathToPubSpec = canonicalize(join(dirname(pathToPubLock), 'pubspec.yaml'));
+    var pathToPubSpec =
+        canonicalize(join(dirname(pathToPubLock), 'pubspec.yaml'));
     str = openString(pathToPubSpec);
-    if( str.isEmpty ){
+    if (str.isEmpty) {
       /// Impossible scenario. But just in case.
       error('Report version error to the developers of the package.');
-      return null ;
+      return null;
     }
     yaml = loadYaml(str);
     var version = yaml['version'];
-    trace('Local Dev Version');
     return version;
   } else {
     var version = yaml['packages'][CliConfig.packageName]['version'].toString();
@@ -79,9 +73,12 @@ Future<String?> currentVersion() async {
 }
 
 Future<void> checkUpdate([bool fromCommand = true]) async {
+  if (CliConfig.isDev) return;
+
   if (fromCommand) {
     trace('\nChecking for updates...');
   }
+
   try {
     final latest = await _checkLatestVersion();
     if (latest == null) {
