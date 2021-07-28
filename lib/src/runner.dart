@@ -11,20 +11,25 @@ import 'utils/utils.dart';
 
 export 'data/strings.dart';
 
+bool watchFileChanges = false;
+
 /// Command Runner
 class FTSCommandRunner extends CommandRunner<int> {
+  static late FTSCommandRunner instance;
+
   FTSCommandRunner()
       : super(
           CliConfig.cliName,
           'cli to make your app\'s l10n easy',
         ) {
+    instance = this;
     addCommand(FetchCommand(startFetch));
     addCommand(RunCommand(startRun));
     addCommand(UpgradeCommand(checkUpdate));
     addCommand(ExtractStringCommand(extractStrings));
     argParser.addFlag(
       'version',
-      help: 'current version',
+      help: 'Shows the current fts version',
       negatable: false,
     );
   }
@@ -59,41 +64,71 @@ class FTSCommandRunner extends CommandRunner<int> {
 
   /// executes the logic for `fts run`
   Future<void> startRun() async {
-    /// save json
-    var map = buildLocalYamlMap();
-    baseCanoMap = buildCanoMap(map);
-    buildVarsInMap(baseCanoMap);
-
-    /// master language?
-    // saveLocaleAsset(config.masterLocale, canoMap);
-    await sheet.imtired(baseCanoMap);
-    trace('wait a sec to get the data translated');
-    await Future.delayed(Duration(seconds: 1));
-
-    final localesMap = await sheet.getData();
-    localesMap[config.masterLocale] = baseCanoMap;
-    putVarsInMap(localesMap);
-
-    /// create tkey file
-    if (config.validTKeyFile) {
-      createTKeyFileFromMap(map, save: true, includeToString: true);
+    if (watchFileChanges) {
+      await watchChanges();
+    } else {
+      await runRun();
     }
-    createLocalesFiles(localesMap);
-    formatDartFiles();
-    if (config.intlEnabled) {
-      buildArb(localesMap);
-    }
-
-    /// add locales in iOS
-    addLocalesInPlist();
     exit(1);
   }
 
   /// executes the logic for `fts fetch`
   Future<void> startFetch() async {
+    await runFetch();
+    exit(1);
+  }
+
+  bool isRunActive = false;
+
+  Future<void> watchRunDataSource(String changePath) async {
+    if (isRunActive) {
+      return;
+    }
+    trace('Some Data changed. ', changePath);
+    await runRun();
+  }
+
+  void watchRun() async {
+    if (isRunActive) {
+      return;
+    }
+    sheet.reset();
+    startConfig(configPath);
+    await runRun();
+  }
+
+  Future<void> runRun() async {
+    isRunActive = true;
+    /// save json
+    var masterMap = buildLocalYamlMap();
+    baseCanoMap = buildCanoMap(masterMap);
+    buildVarsInMap(baseCanoMap);
+
+    /// master language?
+    // saveLocaleAsset(config.masterLocale, canoMap);
+    await sheet.imtired(baseCanoMap);
+    trace('⏱ Wait to get the master data translated');
+    await Future.delayed(Duration(seconds: 1));
+
+    final localesMap = await sheet.getData();
+    localesMap[config.masterLocale] = baseCanoMap;
+    putVarsInMap(localesMap);
+    createLocalesFiles(localesMap, masterMap);
+    formatDartFiles();
+    if (config.intlEnabled) {
+      buildArb(localesMap);
+    }
+    /// add locales in iOS
+    addLocalesInPlist();
+    // Runes(string)
+    trace('👍 Sync process complete');
+    isRunActive = false;
+  }
+
+  Future<void> runFetch() async {
     trace('Creating local canonical json');
-    var map = buildLocalYamlMap();
-    var canoMap = buildCanoMap(map);
+    var masterMap = buildLocalYamlMap();
+    var canoMap = buildCanoMap(masterMap);
     // trace("Map is: ", canoMap);
     // exit(0);
     buildVarsInMap(canoMap);
@@ -107,10 +142,7 @@ class FTSCommandRunner extends CommandRunner<int> {
     final localesMap = await sheet.getData();
     localesMap[config.masterLocale] = canoMap;
     putVarsInMap(localesMap);
-    if (config.validTKeyFile) {
-      createTKeyFileFromMap(map, save: true, includeToString: true);
-    }
-    createLocalesFiles(localesMap);
+    createLocalesFiles(localesMap, masterMap);
     formatDartFiles();
     if (config.intlEnabled) {
       buildArb(localesMap);
@@ -118,6 +150,5 @@ class FTSCommandRunner extends CommandRunner<int> {
 
     /// add locales in iOS
     addLocalesInPlist();
-    exit(1);
   }
 }

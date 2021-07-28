@@ -29,6 +29,6 @@ void addLocalesInPlist() {
     var cmd =
         'plutil -replace CFBundleLocalizations -json \'$localesString\' $infoPath';
     cmd.run;
-    trace('Locales were updated for iOS at $infoPath');
+    trace('📲 locales for iOS updated:\n - $infoPath:');
   }
 }

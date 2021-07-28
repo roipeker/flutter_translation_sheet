@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:dcli/dcli.dart';
 import 'package:flutter_translation_sheet/flutter_translation_sheet.dart';
 import 'package:path/path.dart' as p;
 import 'package:yaml/yaml.dart';
@@ -30,7 +31,9 @@ void loadEnv([String path = defaultConfigEnvPath]) {
   configPath = p.canonicalize(path);
   var doc = loadYaml(data);
   config.intlEnabled = doc['intl']?['enabled'] ?? false;
-  config.outputJsonDir = doc['output_json_dir'] ?? 'output/assets/l10n';
+  config.outputJsonDir = doc['output_json_dir'] ?? '';
+
+  ///'output/assets/l10n'
   config.entryFile = doc['entry_file'] ?? '';
   config.dartOutputDir = doc?['dart']?['output_dir'] ?? '';
   config.dartTKeysId = doc?['dart']?['keys_id'] ?? '';
@@ -38,6 +41,9 @@ void loadEnv([String path = defaultConfigEnvPath]) {
   config.dartTranslationsId = doc?['dart']?['translations_id'] ?? '';
   config.paramOutputPattern = doc?['param_output_pattern'] ?? '';
   _configParamOutput();
+  if (config.dartOutputDir.isNotEmpty) {
+    config.dartOutputDir = p.canonicalize(config.dartOutputDir);
+  }
   if (config.entryFile.isNotEmpty) {
     /// clean the URL now.
     config.entryFile = p.canonicalize(config.entryFile);
@@ -91,8 +97,12 @@ See https://cloud.google.com/translate/docs/languages for a list of supported tr
             '$defaultConfigEnvPath: [gsheets:worksheet] not defined, add it.');
         exit(2);
       }
-      trace('Spreadsheet id: ', config.sheetId);
-      trace('Worksheet title: "', config.tableId, '"');
+      var _sheetUrl =
+          'https://docs.google.com/spreadsheets/d/${config.sheetId}/edit#gid=0';
+      print('spreadsheet id:\n - ' + magenta(config.sheetId!));
+      // trace('Worksheet title: "', config.tableId, '"');
+      trace('worksheet title:\n - ' + magenta(config.tableId!));
+      trace('🔗 click to edit sheet:\n - $_sheetUrl');
     } else {
       trace(
           'ERROR: $defaultConfigEnvPath: [ghseets] configuration not found, please edit $defaultConfigEnvPath.');
@@ -126,11 +136,11 @@ See https://cloud.google.com/translate/docs/languages for a list of supported tr
     trace('ERROR: $defaultConfigEnvPath: [entryFile] is empty, please add it.');
     exit(3);
   }
-  if (config.outputJsonDir.isEmpty) {
-    trace(
-        'ERROR: $defaultConfigEnvPath: [outputJsonDir] is empty, please add it.');
-    exit(3);
-  }
+  // if (config.outputJsonDir.isEmpty) {
+  //   trace(
+  //       'ERROR: $defaultConfigEnvPath: [outputJsonDir] is empty, please add it.');
+  //   exit(3);
+  // }
   if (!config._isValidDartConfig()) {
     exit(3);
   }
@@ -272,6 +282,8 @@ class EnvConfig {
   bool get validTranslationFile => dartTranslationsId.isNotEmpty;
 
   String get inputVarsFile => joinDir([config.inputYamlDir, 'vars.lock']);
+
+  bool get hasOutputJsonDir => outputJsonDir.isNotEmpty;
 
   bool isValidSheet() =>
       sheetId != null && tableId != null && sheetCredentials != null;

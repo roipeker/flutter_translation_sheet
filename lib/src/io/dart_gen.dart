@@ -1,6 +1,7 @@
 import 'package:dcli/dcli.dart';
 import 'package:flutter_translation_sheet/flutter_translation_sheet.dart';
 import 'package:flutter_translation_sheet/src/samples/samples.dart';
+import 'package:path/path.dart' as p;
 
 int _classCounter = 0;
 final _translateKeyClasses = [];
@@ -8,29 +9,42 @@ final _translateKeyClasses = [];
 /// String template for [LangVo]
 const _kLangVoTemplate = '''
 class LangVo {
-  final String nativeName, englishName, key;
+  final String nativeName, englishName, key, flagChar;
   final Locale locale;
-  const LangVo(this.nativeName, this.englishName, this.key, this.locale);
+  const LangVo(this.nativeName, this.englishName, this.key, this.locale, [this.flagChar='']);
   @override
-  String toString() => 'LangVo {nativeName: "\$nativeName", englishName: "\$englishName", locale: \$locale}';
+  String toString() => 'LangVo {nativeName: "\$nativeName", englishName: "\$englishName", locale: \$locale, emoji: this.flagChar}';
 }
 ''';
 
 /// Generates the json and dart files according to [EnvConfig].
-void createLocalesFiles(Map<String, Map<String, String>> localesMap) {
+void createLocalesFiles(
+  Map<String, Map<String, String>> localesMap,
+  Map<String, dynamic> masterMap,
+) {
+  var dartExportPaths = <String>[];
+  if (config.validTKeyFile) {
+    dartExportPaths.add(config.dartTkeysPath);
+    createTKeyFileFromMap(masterMap, save: true, includeToString: true);
+  }
+
   /// collect imports for the output.
   var translateImports = <String>[];
   var translateLines = <String>[];
-
+  var saveJsonLocales = config.hasOutputJsonDir;
   for (var localeKey in localesMap.keys) {
     // trace('Locale ', localeKey);
     var localeName = normLocale(localeKey);
     var localeMap = localesMap[localeKey]!;
-    saveLocaleJsonAsset(
-      localeName,
-      localeMap,
-      beautify: true,
-    );
+
+    /// save json files.
+    if (saveJsonLocales) {
+      saveLocaleJsonAsset(
+        localeName,
+        localeMap,
+        beautify: true,
+      );
+    }
 
     /// save dart file.
     if (config.useDartMaps && config.validTranslationFile) {
@@ -65,7 +79,26 @@ abstract class $className {
       imports: translateImports,
       translationMaps: translateLines,
     );
+    dartExportPaths.add(config.dartTranslationPath);
   }
+
+  /// create root file export for dartOutput dir.
+  if (dartExportPaths.isNotEmpty) {
+    /// create export file.
+    createDartExportFile(dartExportPaths);
+  }
+}
+
+/// Generates the export file with the TKeys and TData files.
+void createDartExportFile(List<String> exportPaths) {
+  final dir = config.dartOutputDir;
+  var fileContents = exportPaths
+      .map((path) => 'export "${p.relative(path, from: dir)}";')
+      .join('\n');
+  var exportFilePath = p.join(dir, p.basename(dir) + '.dart');
+
+  /// export the file.
+  saveString(exportFilePath, fileContents);
 }
 
 /// Generates the `TData.dart` and the specified [locales] translations as dart
@@ -83,19 +116,26 @@ String createTranslationFile(
   var hasTranslationMaps = imports.isNotEmpty;
   var _imports = imports.join('\n');
   var _translateClassString = '';
+
+  /// TData file
+  final _tClassName = config.dartTranslationClassname;
+  var _tLocalesCode = '';
+
+  /// only add locale codes if user asks for useMaps:true
   if (hasTranslationMaps) {
     /// Translation File.
     var _transKeysString = '{\n';
     _transKeysString += translationMaps.join('\n');
-    // transPropsMap.forEach((key, value) {
-    //   _transKeysString += '    "$key":$value,\n';
-    // });
     _transKeysString += '  };\n';
+
     final _tClassName = config.dartTranslationClassname;
     _translateClassString = '''
 
 abstract class $_tClassName {
-  
+
+
+    _tLocalesCode = '''
+
   static Map<String, Map<String, String>> byKeys = getByKeys();
   static Map<String, Map<String, String>> getByKeys() => $_transKeysString
   
@@ -117,10 +157,24 @@ abstract class $_tClassName {
     }
     return output;
   }
+''';
+  } else {
+    /// keep the fields for easy map access, if the user wants to cache
+    /// the json somewhere.
+    _tLocalesCode = '''
+  static Map<String, Map<String, String>> byKeys = {};
+  static Map<String, Map<String, String>> byText = {};
+''';
+  }
 
+  _translateClassString = '''
+abstract class $_tClassName {
+  
+  $_tLocalesCode
+  
   ${getCodeMapLocaleKeysToMasterText(_tClassName)}
 }''';
-  }
+
   // final _transImportsString = transImports.join('\n');
 // $_transImportsString
   var fileContent = '''
@@ -163,9 +217,10 @@ abstract class AppLocales {
     final langObj = langInfoFromKey(key);
     final nativeName = langObj.nativeName;
     final englishName = langObj.englishName;
+    final flagChar = langObj.emoji;
     final locale = _buildLocaleObjFromType(key);
     return '''
-  static const $localName = LangVo("$nativeName", "$englishName", "$localName", $locale);''';
+  static const $localName = LangVo("$nativeName", "$englishName", "$localName", $locale, "$flagChar");''';
   }).join('\n');
 
   fileContent += _fields + '\n';
@@ -207,6 +262,8 @@ String _localeVarName(String key) {
   return key.snakeCase;
 }
 
+/// Generates the TKeys file from the [map].
+
 String createTKeyFileFromMap(
   JsonMap map, {
   bool save = false,
@@ -227,10 +284,11 @@ String createTKeyFileFromMap(
     changedWords.forEach((e) => print('- $e > t$e'));
   }
   final fileContent = _translateKeyClasses.join('\n\n');
+  _translateKeyClasses.clear();
   if (save) {
     var filepath = config.dartTkeysPath;
     // var filepath = joinDir([config.outputDir, 'i18n/tkeys.dart']);
-    trace('Building keys ($className) file at ', filepath);
+    trace('🧱 Building keys file ($className)\n - $filepath:');
     saveString(filepath, fileContent);
   }
   return fileContent;
@@ -240,10 +298,18 @@ String createTKeyFileFromMap(
 
 String createTKeyFileFromPath(String masterFile, {bool save = false}) {
   final map = openJson(masterFile);
+  _classCounter = 1;
   return createTKeyFileFromMap(KeyMap.from(map), save: save);
 }
 
-/// TKeys
+final invalidCharsRegExp = RegExp(
+  r'[^\w\.@]',
+  caseSensitive: false,
+  dotAll: true,
+  unicode: false,
+);
+
+/// TKeys Map generation.
 String _buildTKeyMap({
   required JsonMap map,
   required String key,
@@ -263,18 +329,16 @@ String _buildTKeyMap({
   final tostrKeys = <String>[];
   final tostrFields = <String>[];
   var classStr = 'class $className {\n';
-  final invalidCharsRegExp =
-      RegExp(r'[^\w\.@-]', caseSensitive: false, dotAll: true, unicode: false);
   // final invalidCharsRegExp = ':';
 
   var classCanBeConst = false;
-  // reservedWords.clear();
+
   for (var k in map.keys) {
     final v = map[k];
 
     /// special case for @properties n .arb (invalid for dart files)
     if (k.startsWith('@')) {
-      trace('Skipping property $k from Keys');
+      trace('... skipping property $k from Keys');
       continue;
     }
 
@@ -393,13 +457,15 @@ void runPubGet() {
   }
 }
 
+/// Format the selected dart folder with `dartfmt` if available.
 void formatDartFiles() {
   /// format dart files.
   if (config.validTranslationFile || config.validTKeyFile) {
-    if (which('dart').found) {
-      'dart -w .'.start(
+    if (which('dartfmt').found) {
+      'dartfmt -w ${config.dartOutputDir}'.start(
         workingDirectory: config.dartOutputDir,
         detached: true,
+        runInShell: false,
       );
     }
   }
@@ -407,8 +473,11 @@ void formatDartFiles() {
 
 /// Saves [localeName] translation [map] in [EnvConfig.outputJsonDir].
 /// With the option to [beautify] the json string output.
-void saveLocaleJsonAsset(String localeName, KeyMap map,
-    {bool beautify = false}) {
+void saveLocaleJsonAsset(
+  String localeName,
+  KeyMap map, {
+  bool beautify = false,
+}) {
   if (!localeName.endsWith('.json')) {
     localeName += '.json';
   }

@@ -7,14 +7,14 @@ const kUnwrap = '\$unwrap';
 
 JsonMap buildLocalYamlMap() {
   var entryFile = config.entryFile;
-  trace('Loading entry file: ', entryFile);
+  trace('Loading entry_file:\n - $entryFile:');
   var parseMap = {};
   _addDoc(entryFile, parseMap);
   return JsonMap.from(parseMap);
   // return _canoMap(parseMap);
 }
 
-KeyMap buildCanoMap(Map map) {
+KeyMap buildCanoMap(Map<String, dynamic> map) {
   return _canoMap(map.cast());
 }
 
@@ -37,15 +37,15 @@ void _addDoc(String path, Map into) {
   // var parentDir = io.File(path).parent.path;
   var parentDir = p.dirname(path);
   var string = openYaml(path);
-  trace('Opening yaml ', path);
+  // trace('Opening yaml ', path);
   if (string.isEmpty) {
-    print('Yaml file "$path" is empty or doesnt exists.');
+    print('Yaml file "$path" is empty or doesn\'t exists.');
   } else {
     var doc = loadYaml(string);
     if (doc is YamlMap) {
       _copyDoc(doc, parentDir, into);
     } else {
-      print('Yaml unsupported format');
+      print('Can not be parsed as yaml');
     }
   }
 }
@@ -107,7 +107,7 @@ KeyMap _canoMap(Map<String, dynamic> content) {
       if (val is Map) {
         buildKeys(val.cast(), p2);
       } else {
-        output[p2] = val ?? ' ';
+        output[p2] = val?.toString() ?? ' ';
       }
     }
   }
@@ -169,14 +169,16 @@ void buildVarsInMap(Map<String, String> map) {
   }
   entryDataHasVars = varsKeys.isNotEmpty;
   if (entryDataHasVars) {
+
     var varsContent = json2yaml(
       varsKeys,
       yamlStyle: YamlStyle.generic,
     );
-    trace('Vars content: ', varsContent);
+//     trace('Vars content: ', varsContent);
+
     saveString(config.inputVarsFile, varsContent);
     trace(
-        'Found ${varsKeys.keys.length} keys with variables, saved at ${config.inputVarsFile}');
+        'Found ${varsKeys.keys.length} key(s) with placeholders.\n - ${config.inputVarsFile}:');
   }
 }
 
