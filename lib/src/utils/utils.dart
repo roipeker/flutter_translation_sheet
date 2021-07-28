@@ -1,10 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:dcli/dcli.dart';
 import 'package:flutter_translation_sheet/flutter_translation_sheet.dart';
 import 'package:path/path.dart' as p;
+import 'package:watcher/watcher.dart';
 
 import '../common.dart';
+import '../runner.dart';
 import 'logger.dart';
 
 export 'json2yaml.dart';
@@ -100,4 +103,61 @@ String normLocale(String localeString, [String targetSeparator = '_']) {
     if (parts.length == 2) parts[1].toUpperCase(),
   ].join(targetSeparator);
   // return .take(2).join(targetSeparator);
+}
+
+final _detectExtensions = <String>{}..addAll(['.yaml', '.json']);
+
+/// detect the extension if its valid for watch changes
+bool _matchExtension(String path) {
+  return _detectExtensions.contains(p.extension(path));
+}
+
+/// Watches for changes in the config.yaml and the config.entry_file basedir
+/// (where your master strings are).
+Future<void> watchChanges() async {
+  /// listen to changes in trconfig.yaml
+  trace('👀 watch mode enabled for:\n - 📁 ${config.inputYamlDir}: and\n - 🗒 $configPath\:');
+  print('Press ' + yellow('q') + ' then ' + yellow('Enter') +  ' to exit the program');
+  _listenConfigChanges();
+  _listenMasterStringsFilesChanges();
+  await stdin.firstWhere((e) {
+    var str = utf8.decode(e);
+
+    /// press q to quit.
+    if (str.trim() == 'q') {
+      return true;
+    }
+    return false;
+  });
+}
+
+/// Listen file changes in master string files.
+void _listenMasterStringsFilesChanges() {
+  var yamlDir = config.inputYamlDir;
+  var watcher = DirectoryWatcher(yamlDir, pollingDelay: Duration(seconds: 1));
+  watcher.events.listen((e) {
+    if (e.type == ChangeType.ADD || e.type == ChangeType.MODIFY) {
+      if (_matchExtension(e.path)) {
+        var path = p.canonicalize(e.path);
+        if (path.endsWith('pubspec.yaml') || path.contains(configPath)) {
+          return;
+        }
+        FTSCommandRunner.instance.watchRunDataSource(path);
+      }
+    } else {
+      /// run cleanup
+      // trace('Master string file removed, pending cleanup.');
+    }
+  });
+}
+
+/// Listen
+void _listenConfigChanges() {
+  var watcher = FileWatcher(configPath);
+  watcher.events.listen((event) {
+    if (event.type == ChangeType.MODIFY) {
+      trace('config changed..');
+      FTSCommandRunner.instance.watchRun();
+    }
+  });
 }

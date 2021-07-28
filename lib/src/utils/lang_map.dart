@@ -11,6 +11,7 @@ LangInfo langInfoFromKey(String key) {
       '',
       '',
       key,
+      '',
     );
   }
   final vo = kLangMap[key]!;
@@ -18,367 +19,1104 @@ LangInfo langInfoFromKey(String key) {
     vo['nativeName']!,
     vo['englishName']!,
     key,
+    vo['emoji']!,
   );
 }
 
 /// Class to extend Locale information with nativeName, englishName and key,
 class LangInfo {
-  final String nativeName, englishName, key;
+  final String nativeName, englishName, key, emoji;
 
-  LangInfo(this.nativeName, this.englishName, this.key);
+  LangInfo(this.nativeName, this.englishName, this.key, this.emoji);
 
   @override
+  // String toString() => '$key $emoji  - $englishName ($nativeName)';
   String toString() => '$key - $englishName ($nativeName)';
 }
 
 /// Glossary of the available locales with their native names and english names.
 const kLangMap = <String, Map<String, String>>{
-  'ach': {'nativeName': 'Lwo', 'englishName': 'Acholi'},
-  'ady': {'nativeName': 'Адыгэбзэ', 'englishName': 'Adyghe'},
-  'af': {'nativeName': 'Afrikaans', 'englishName': 'Afrikaans'},
+  'ach': {
+    'nativeName': 'Lwo',
+    'englishName': 'Acholi',
+    'emoji': '🇺🇬',
+  },
+  'ady': {
+    'nativeName': 'Адыгэбзэ',
+    'englishName': 'Adyghe',
+    'emoji': '🇷🇺',
+  },
+  'af': {
+    'nativeName': 'Afrikaans',
+    'englishName': 'Afrikaans',
+    'emoji': '🏳',
+  },
   'af-na': {
     'nativeName': 'Afrikaans (Namibia)',
-    'englishName': 'Afrikaans (Namibia)'
+    'englishName': 'Afrikaans (Namibia)',
+    'emoji': '🇳🇦',
   },
   'af-za': {
     'nativeName': 'Afrikaans (South Africa)',
-    'englishName': 'Afrikaans (South Africa)'
+    'englishName': 'Afrikaans (South Africa)',
+    'emoji': '🇿🇦',
   },
-  'ak': {'nativeName': 'Tɕɥi', 'englishName': 'Akan'},
-  'ar': {'nativeName': 'العربية', 'englishName': 'Arabic'},
-  'ar-ar': {'nativeName': 'العربية', 'englishName': 'Arabic'},
-  'ar-ma': {'nativeName': 'العربية', 'englishName': 'Arabic (Morocco)'},
+  'ak': {
+    'nativeName': 'Tɕɥi',
+    'englishName': 'Akan',
+    'emoji': '🏳',
+  },
+  'ar': {
+    'nativeName': 'العربية',
+    'englishName': 'Arabic',
+    'emoji': '🏳',
+  },
+  'ar-ar': {
+    'nativeName': 'العربية',
+    'englishName': 'Arabic',
+    'emoji': '🏳',
+  },
+  'ar-ma': {
+    'nativeName': 'العربية',
+    'englishName': 'Arabic (Morocco)',
+    'emoji': '🇲🇦',
+  },
   'ar-sa': {
     'nativeName': 'العربية (السعودية)',
-    'englishName': 'Arabic (Saudi Arabia)'
+    'englishName': 'Arabic (Saudi Arabia)',
+    'emoji': '🇸🇦',
   },
-  'ay-bo': {'nativeName': 'Aymar aru', 'englishName': 'Aymara'},
-  'az': {'nativeName': 'Azərbaycan dili', 'englishName': 'Azerbaijani'},
-  'az-az': {'nativeName': 'Azərbaycan dili', 'englishName': 'Azerbaijani'},
-  'be-by': {'nativeName': 'Беларуская', 'englishName': 'Belarusian'},
-  'bg': {'nativeName': 'Български', 'englishName': 'Bulgarian'},
-  'bg-bg': {'nativeName': 'Български', 'englishName': 'Bulgarian'},
-  'bn': {'nativeName': 'বাংলা', 'englishName': 'Bengali'},
-  'bn-in': {'nativeName': 'বাংলা (ভারত)', 'englishName': 'Bengali (India)'},
+  'ay-bo': {
+    'nativeName': 'Aymar aru',
+    'englishName': 'Aymara',
+    'emoji': '🇧🇴',
+  },
+  'az': {
+    'nativeName': 'Azərbaycan dili',
+    'englishName': 'Azerbaijani',
+    'emoji': '🇦🇿',
+  },
+  'az-az': {
+    'nativeName': 'Azərbaycan dili',
+    'englishName': 'Azerbaijani',
+    'emoji': '🇦🇿',
+  },
+  'be-by': {
+    'nativeName': 'Беларуская',
+    'englishName': 'Belarusian',
+    'emoji': '🇧🇾',
+  },
+  'bg': {
+    'nativeName': 'Български',
+    'englishName': 'Bulgarian',
+    'emoji': '🇧🇬',
+  },
+  'bg-bg': {
+    'nativeName': 'Български',
+    'englishName': 'Bulgarian',
+    'emoji': '🇧🇬',
+  },
+  'bn': {
+    'nativeName': 'বাংলা',
+    'englishName': 'Bengali',
+    'emoji': '🇮🇳',
+  },
+  'bn-in': {
+    'nativeName': 'বাংলা (ভারত)',
+    'englishName': 'Bengali (India)',
+    'emoji': '🇮🇳',
+  },
   'bn-bd': {
     'nativeName': 'বাংলা(বাংলাদেশ)',
-    'englishName': 'Bengali (Bangladesh)'
+    'englishName': 'Bengali (Bangladesh)',
+    'emoji': '🇧🇩',
   },
-  'br': {'nativeName': 'Brezhoneg', 'englishName': 'Breton'},
-  'bs-ba': {'nativeName': 'Bosanski', 'englishName': 'Bosnian'},
-  'ca': {'nativeName': 'Català', 'englishName': 'Catalan'},
-  'ca-es': {'nativeName': 'Català', 'englishName': 'Catalan'},
-  'cak': {'nativeName': 'Maya Kaqchikel', 'englishName': 'Kaqchikel'},
-  'ck-us': {'nativeName': 'ᏣᎳᎩ (tsalagi)', 'englishName': 'Cherokee'},
-  'cs': {'nativeName': 'Čeština', 'englishName': 'Czech'},
-  'cs-cz': {'nativeName': 'Čeština', 'englishName': 'Czech'},
-  'cy': {'nativeName': 'Cymraeg', 'englishName': 'Welsh'},
-  'cy-gb': {'nativeName': 'Cymraeg', 'englishName': 'Welsh'},
-  'da': {'nativeName': 'Dansk', 'englishName': 'Danish'},
-  'da-dk': {'nativeName': 'Dansk', 'englishName': 'Danish'},
-  'de': {'nativeName': 'Deutsch', 'englishName': 'German'},
+  'br': {
+    'nativeName': 'Brezhoneg',
+    'englishName': 'Breton',
+    'emoji': '🇫🇷',
+  },
+  'bs-ba': {
+    'nativeName': 'Bosanski',
+    'englishName': 'Bosnian',
+    'emoji': '🇧🇦',
+  },
+  'ca': {
+    'nativeName': 'Català',
+    'englishName': 'Catalan',
+    'emoji': '🇪🇸',
+  },
+  'ca-es': {
+    'nativeName': 'Català',
+    'englishName': 'Catalan',
+    'emoji': '🇪🇸',
+  },
+  'cak': {
+    'nativeName': 'Maya Kaqchikel',
+    'englishName': 'Kaqchikel',
+    'emoji': '🇬🇹',
+  },
+  'ck-us': {
+    'nativeName': 'ᏣᎳᎩ (tsalagi)',
+    'englishName': 'Cherokee',
+    'emoji': '🇺🇸',
+  },
+  'cs': {
+    'nativeName': 'Čeština',
+    'englishName': 'Czech',
+    'emoji': '🇨🇿',
+  },
+  'cs-cz': {
+    'nativeName': 'Čeština',
+    'englishName': 'Czech',
+    'emoji': '🇨🇿',
+  },
+  'cy': {
+    'nativeName': 'Cymraeg',
+    'englishName': 'Welsh',
+    'emoji': '🏳',
+  },
+  'cy-gb': {
+    'nativeName': 'Cymraeg',
+    'englishName': 'Welsh',
+    'emoji': '🇬🇧',
+  },
+  'da': {
+    'nativeName': 'Dansk',
+    'englishName': 'Danish',
+    'emoji': '🇩🇰',
+  },
+  'da-dk': {
+    'nativeName': 'Dansk',
+    'englishName': 'Danish',
+    'emoji': '🇩🇰',
+  },
+  'de': {
+    'nativeName': 'Deutsch',
+    'englishName': 'German',
+    'emoji': '🇩🇪',
+  },
   'de-at': {
     'nativeName': 'Deutsch (Österreich)',
-    'englishName': 'German (Austria)'
+    'englishName': 'German (Austria)',
+    'emoji': '🇦🇹',
   },
   'de-de': {
     'nativeName': 'Deutsch (Deutschland)',
-    'englishName': 'German (Germany)'
+    'englishName': 'German (Germany)',
+    'emoji': '🇩🇪',
   },
   'de-ch': {
     'nativeName': 'Deutsch (Schweiz)',
-    'englishName': 'German (Switzerland)'
+    'englishName': 'German (Switzerland)',
+    'emoji': '🇨🇭',
   },
-  'dsb': {'nativeName': 'Dolnoserbšćina', 'englishName': 'Lower Sorbian'},
-  'el': {'nativeName': 'Ελληνικά', 'englishName': 'Greek'},
-  'el-gr': {'nativeName': 'Ελληνικά', 'englishName': 'Greek (Greece)'},
-  'en': {'nativeName': 'English', 'englishName': 'English'},
-  'en-gb': {'nativeName': 'English (UK)', 'englishName': 'English (UK)'},
+  'dsb': {
+    'nativeName': 'Dolnoserbšćina',
+    'englishName': 'Lower Sorbian',
+    'emoji': '🏳',
+  },
+  'el': {
+    'nativeName': 'Ελληνικά',
+    'englishName': 'Greek',
+    'emoji': '🇬🇷',
+  },
+  'el-gr': {
+    'nativeName': 'Ελληνικά',
+    'englishName': 'Greek (Greece)',
+    'emoji': '🇬🇷',
+  },
+  'en': {
+    'nativeName': 'English',
+    'englishName': 'English',
+    'emoji': '🇬🇧',
+  },
+  'en-gb': {
+    'nativeName': 'English (UK)',
+    'englishName': 'English (UK)',
+    'emoji': '🇬🇧',
+  },
   'en-au': {
     'nativeName': 'English (Australia)',
-    'englishName': 'English (Australia)'
+    'englishName': 'English (Australia)',
+    'emoji': '🇦🇺',
   },
   'en-ca': {
     'nativeName': 'English (Canada)',
-    'englishName': 'English (Canada)'
+    'englishName': 'English (Canada)',
+    'emoji': '🇨🇦',
   },
   'en-ie': {
     'nativeName': 'English (Ireland)',
-    'englishName': 'English (Ireland)'
+    'englishName': 'English (Ireland)',
+    'emoji': '🇮🇪',
   },
-  'en-in': {'nativeName': 'English (India)', 'englishName': 'English (India)'},
+  'en-in': {
+    'nativeName': 'English (India)',
+    'englishName': 'English (India)',
+    'emoji': '🇮🇳',
+  },
   'en-pi': {
     'nativeName': 'English (Pirate)',
-    'englishName': 'English (Pirate)'
+    'englishName': 'English (Pirate)',
+    'emoji': '🇺🇸',
   },
   'en-ud': {
     'nativeName': 'English (Upside Down)',
-    'englishName': 'English (Upside Down)'
+    'englishName': 'English (Upside Down)',
+    'emoji': '🇺🇸',
   },
-  'en-us': {'nativeName': 'English (US)', 'englishName': 'English (US)'},
+  'en-us': {
+    'nativeName': 'English (US)',
+    'englishName': 'English (US)',
+    'emoji': '🇺🇸',
+  },
   'en-za': {
     'nativeName': 'English (South Africa)',
-    'englishName': 'English (South Africa)'
+    'englishName': 'English (South Africa)',
+    'emoji': '🇿🇦',
   },
   'en@pirate': {
     'nativeName': 'English (Pirate)',
-    'englishName': 'English (Pirate)'
+    'englishName': 'English (Pirate)',
+    'emoji': '🏴󠁧󠁢󠁥󠁮󠁧󠁿',
   },
-  'eo': {'nativeName': 'Esperanto', 'englishName': 'Esperanto'},
-  'eo-eo': {'nativeName': 'Esperanto', 'englishName': 'Esperanto'},
-  'es': {'nativeName': 'Español', 'englishName': 'Spanish'},
+  'eo': {
+    'nativeName': 'Esperanto',
+    'englishName': 'Esperanto',
+    'emoji': '🏳',
+  },
+  'eo-eo': {
+    'nativeName': 'Esperanto',
+    'englishName': 'Esperanto',
+    'emoji': '🏳',
+  },
+  'es': {
+    'nativeName': 'Español',
+    'englishName': 'Spanish',
+    'emoji': '🇪🇸',
+  },
   'es-ar': {
     'nativeName': 'Español (Argentine)',
-    'englishName': 'Spanish (Argentina)'
+    'englishName': 'Spanish (Argentina)',
+    'emoji': '🇦🇷',
   },
   'es-419': {
     'nativeName': 'Español (Latinoamérica)',
-    'englishName': 'Spanish (Latin America)'
+    'englishName': 'Spanish (Latin America)',
+    'emoji': '🏳',
   },
-  'es-cl': {'nativeName': 'Español (Chile)', 'englishName': 'Spanish (Chile)'},
+  'es-cl': {
+    'nativeName': 'Español (Chile)',
+    'englishName': 'Spanish (Chile)',
+    'emoji': '🇨🇱',
+  },
   'es-co': {
     'nativeName': 'Español (Colombia)',
-    'englishName': 'Spanish (Colombia)'
+    'englishName': 'Spanish (Colombia)',
+    'emoji': '🇨🇴',
   },
   'es-ec': {
     'nativeName': 'Español (Ecuador)',
-    'englishName': 'Spanish (Ecuador)'
+    'englishName': 'Spanish (Ecuador)',
+    'emoji': '🇪🇨',
   },
-  'es-es': {'nativeName': 'Español (España)', 'englishName': 'Spanish (Spain)'},
+  'es-es': {
+    'nativeName': 'Español (España)',
+    'englishName': 'Spanish (Spain)',
+    'emoji': '🇪🇸',
+  },
   'es-la': {
     'nativeName': 'Español (Latinoamérica)',
-    'englishName': 'Spanish (Latin America)'
+    'englishName': 'Spanish (Latin America)',
+    'emoji': '🏳',
   },
   'es-ni': {
     'nativeName': 'Español (Nicaragua)',
-    'englishName': 'Spanish (Nicaragua)'
+    'englishName': 'Spanish (Nicaragua)',
+    'emoji': '🇳🇮',
   },
   'es-mx': {
     'nativeName': 'Español (México)',
-    'englishName': 'Spanish (Mexico)'
+    'englishName': 'Spanish (Mexico)',
+    'emoji': '🇲🇽',
   },
   'es-us': {
     'nativeName': 'Español (Estados Unidos)',
-    'englishName': 'Spanish (United States)'
+    'englishName': 'Spanish (United States)',
+    'emoji': '🇺🇸',
   },
   'es-ve': {
     'nativeName': 'Español (Venezuela)',
-    'englishName': 'Spanish (Venezuela)'
+    'englishName': 'Spanish (Venezuela)',
+    'emoji': '🇻🇪',
   },
-  'et': {'nativeName': 'eesti keel', 'englishName': 'Estonian'},
+  'et': {
+    'nativeName': 'eesti keel',
+    'englishName': 'Estonian',
+    'emoji': '🇪🇪',
+  },
   'et-ee': {
     'nativeName': 'Eesti (Estonia)',
-    'englishName': 'Estonian (Estonia)'
+    'englishName': 'Estonian (Estonia)',
+    'emoji': '🇪🇪',
   },
-  'eu': {'nativeName': 'Euskara', 'englishName': 'Basque'},
-  'eu-es': {'nativeName': 'Euskara', 'englishName': 'Basque'},
-  'fa': {'nativeName': 'فارسی', 'englishName': 'Persian'},
-  'fa-ir': {'nativeName': 'فارسی', 'englishName': 'Persian'},
-  'fb-lt': {'nativeName': 'Leet Speak', 'englishName': 'Leet'},
-  'ff': {'nativeName': 'Fulah', 'englishName': 'Fulah'},
-  'fi': {'nativeName': 'Suomi', 'englishName': 'Finnish'},
-  'fi-fi': {'nativeName': 'Suomi', 'englishName': 'Finnish'},
-  'fo-fo': {'nativeName': 'Føroyskt', 'englishName': 'Faroese'},
-  'fr': {'nativeName': 'Français', 'englishName': 'French'},
+  'eu': {
+    'nativeName': 'Euskara',
+    'englishName': 'Basque',
+    'emoji': '🇪🇸',
+  },
+  'eu-es': {
+    'nativeName': 'Euskara',
+    'englishName': 'Basque',
+    'emoji': '🇪🇸',
+  },
+  'fa': {
+    'nativeName': 'فارسی',
+    'englishName': 'Persian',
+    'emoji': '🇮🇷',
+  },
+  'fa-ir': {
+    'nativeName': 'فارسی',
+    'englishName': 'Persian',
+    'emoji': '🇮🇷',
+  },
+  'fb-lt': {
+    'nativeName': 'Leet Speak',
+    'englishName': 'Leet',
+    'emoji': '🇱🇹',
+  },
+  'ff': {
+    'nativeName': 'Fulah',
+    'englishName': 'Fulah',
+    'emoji': '🏳',
+  },
+  'fi': {
+    'nativeName': 'Suomi',
+    'englishName': 'Finnish',
+    'emoji': '🇫🇮',
+  },
+  'fi-fi': {
+    'nativeName': 'Suomi',
+    'englishName': 'Finnish',
+    'emoji': '🇫🇮',
+  },
+  'fo-fo': {
+    'nativeName': 'Føroyskt',
+    'englishName': 'Faroese',
+    'emoji': '🇫🇴',
+  },
+  'fr': {
+    'nativeName': 'Français',
+    'englishName': 'French',
+    'emoji': '🇫🇷',
+  },
   'fr-ca': {
     'nativeName': 'Français (Canada)',
-    'englishName': 'French (Canada)'
+    'englishName': 'French (Canada)',
+    'emoji': '🇨🇦',
   },
   'fr-fr': {
     'nativeName': 'Français (France)',
-    'englishName': 'French (France)'
+    'englishName': 'French (France)',
+    'emoji': '🇫🇷',
   },
   'fr-be': {
     'nativeName': 'Français (Belgique)',
-    'englishName': 'French (Belgium)'
+    'englishName': 'French (Belgium)',
+    'emoji': '🇧🇪',
   },
   'fr-ch': {
     'nativeName': 'Français (Suisse)',
-    'englishName': 'French (Switzerland)'
+    'englishName': 'French (Switzerland)',
+    'emoji': '🇨🇭',
   },
-  'fy-nl': {'nativeName': 'Frysk', 'englishName': 'Frisian (West)'},
-  'ga': {'nativeName': 'Gaeilge', 'englishName': 'Irish'},
-  'ga-ie': {'nativeName': 'Gaeilge', 'englishName': 'Irish'},
-  'gd': {'nativeName': 'Gàidhlig', 'englishName': 'Gaelic'},
-  'gl': {'nativeName': 'Galego', 'englishName': 'Galician'},
-  'gl-es': {'nativeName': 'Galego', 'englishName': 'Galician'},
-  'gn-py': {'nativeName': 'Avañe\'ẽ', 'englishName': 'Guarani'},
-  'gu-in': {'nativeName': 'ગુજરાતી', 'englishName': 'Gujarati'},
-  'gv': {'nativeName': 'Gaelg', 'englishName': 'Manx'},
-  'gx-gr': {'nativeName': 'Ἑλληνική ἀρχαία', 'englishName': 'Classical Greek'},
-  'he': {'nativeName': 'עברית‏', 'englishName': 'Hebrew'},
-  'he-il': {'nativeName': 'עברית‏', 'englishName': 'Hebrew'},
-  'hi': {'nativeName': 'हिन्दी', 'englishName': 'Hindi'},
-  'hi-in': {'nativeName': 'हिन्दी', 'englishName': 'Hindi'},
-  'hr': {'nativeName': 'Hrvatski', 'englishName': 'Croatian'},
-  'hr-hr': {'nativeName': 'Hrvatski', 'englishName': 'Croatian'},
-  'hsb': {'nativeName': 'Hornjoserbšćina', 'englishName': 'Upper Sorbian'},
-  'ht': {'nativeName': 'Kreyòl', 'englishName': 'Haitian Creole'},
-  'hu': {'nativeName': 'Magyar', 'englishName': 'Hungarian'},
-  'hu-hu': {'nativeName': 'Magyar', 'englishName': 'Hungarian'},
-  'hy-am': {'nativeName': 'Հայերեն', 'englishName': 'Armenian'},
-  'id': {'nativeName': 'Bahasa Indonesia', 'englishName': 'Indonesian'},
-  'id-id': {'nativeName': 'Bahasa Indonesia', 'englishName': 'Indonesian'},
-  'is': {'nativeName': 'Íslenska', 'englishName': 'Icelandic'},
+  'fy-nl': {
+    'nativeName': 'Frysk',
+    'englishName': 'Frisian (West)',
+    'emoji': '🇳🇱',
+  },
+  'ga': {
+    'nativeName': 'Gaeilge',
+    'englishName': 'Irish',
+    'emoji': '🇮🇪',
+  },
+  'ga-ie': {
+    'nativeName': 'Gaeilge',
+    'englishName': 'Irish',
+    'emoji': '🇮🇪',
+  },
+  'gd': {
+    'nativeName': 'Gàidhlig',
+    'englishName': 'Gaelic',
+    'emoji': '🇬🇧',
+  },
+  'gl': {
+    'nativeName': 'Galego',
+    'englishName': 'Galician',
+    'emoji': '🇪🇸',
+  },
+  'gl-es': {
+    'nativeName': 'Galego',
+    'englishName': 'Galician',
+    'emoji': '🇪🇸',
+  },
+  'gn-py': {
+    'nativeName': 'Avañe\'ẽ',
+    'englishName': 'Guarani',
+    'emoji': '🇵🇾',
+  },
+  'gu-in': {
+    'nativeName': 'ગુજરાતી',
+    'englishName': 'Gujarati',
+    'emoji': '🇮🇳',
+  },
+  'gv': {
+    'nativeName': 'Gaelg',
+    'englishName': 'Manx',
+    'emoji': '🏳',
+  },
+  'gx-gr': {
+    'nativeName': 'Ἑλληνική ἀρχαία',
+    'englishName': 'Classical Greek',
+    'emoji': '🇺🇾',
+  },
+  'he': {
+    'nativeName': 'עברית‏',
+    'englishName': 'Hebrew',
+    'emoji': '🇮🇱',
+  },
+  'he-il': {
+    'nativeName': 'עברית‏',
+    'englishName': 'Hebrew',
+    'emoji': '🇮🇱',
+  },
+  'hi': {
+    'nativeName': 'हिन्दी',
+    'englishName': 'Hindi',
+    'emoji': '🇮🇳',
+  },
+  'hi-in': {
+    'nativeName': 'हिन्दी',
+    'englishName': 'Hindi',
+    'emoji': '🇮🇳',
+  },
+  'hr': {
+    'nativeName': 'Hrvatski',
+    'englishName': 'Croatian',
+    'emoji': '🇭🇷',
+  },
+  'hr-hr': {
+    'nativeName': 'Hrvatski',
+    'englishName': 'Croatian',
+    'emoji': '🇭🇷',
+  },
+  'hsb': {
+    'nativeName': 'Hornjoserbšćina',
+    'englishName': 'Upper Sorbian',
+    'emoji': '🏳',
+  },
+  'ht': {
+    'nativeName': 'Kreyòl',
+    'englishName': 'Haitian Creole',
+    'emoji': '🇭🇹',
+  },
+  'hu': {
+    'nativeName': 'Magyar',
+    'englishName': 'Hungarian',
+    'emoji': '🇭🇺',
+  },
+  'hu-hu': {
+    'nativeName': 'Magyar',
+    'englishName': 'Hungarian',
+    'emoji': '🇭🇺',
+  },
+  'hy-am': {
+    'nativeName': 'Հայերեն',
+    'englishName': 'Armenian',
+    'emoji': '🇦🇲',
+  },
+  'id': {
+    'nativeName': 'Bahasa Indonesia',
+    'englishName': 'Indonesian',
+    'emoji': '🇮🇩',
+  },
+  'id-id': {
+    'nativeName': 'Bahasa Indonesia',
+    'englishName': 'Indonesian',
+    'emoji': '🇮🇩',
+  },
+  'is': {
+    'nativeName': 'Íslenska',
+    'englishName': 'Icelandic',
+    'emoji': '🇮🇸',
+  },
   'is-is': {
     'nativeName': 'Íslenska (Iceland)',
-    'englishName': 'Icelandic (Iceland)'
+    'englishName': 'Icelandic (Iceland)',
+    'emoji': '🇮🇸',
   },
-  'it': {'nativeName': 'Italiano', 'englishName': 'Italian'},
-  'it-it': {'nativeName': 'Italiano', 'englishName': 'Italian'},
-  'ja': {'nativeName': '日本語', 'englishName': 'Japanese'},
-  'ja-jp': {'nativeName': '日本語 (日本)', 'englishName': 'Japanese (Japan)'},
-  'jv-id': {'nativeName': 'Basa Jawa', 'englishName': 'Javanese'},
-  'ka': {'nativeName': 'ქართული', 'englishName': 'Georgian'},
-  'ka-ge': {'nativeName': 'ქართული', 'englishName': 'Georgian'},
-  'kk-kz': {'nativeName': 'Қазақша', 'englishName': 'Kazakh'},
-  'km': {'nativeName': 'ភាសាខ្មែរ', 'englishName': 'Khmer'},
-  'km-kh': {'nativeName': 'ភាសាខ្មែរ', 'englishName': 'Khmer'},
-  'kab': {'nativeName': 'Taqbaylit', 'englishName': 'Kabyle'},
-  'kn': {'nativeName': 'ಕನ್ನಡ', 'englishName': 'Kannada'},
-  'kn-in': {'nativeName': 'ಕನ್ನಡ (India)', 'englishName': 'Kannada (India)'},
-  'ko': {'nativeName': '한국어', 'englishName': 'Korean'},
-  'ko-kr': {'nativeName': '한국어 (한국)', 'englishName': 'Korean (Korea)'},
-  'ku-tr': {'nativeName': 'Kurdî', 'englishName': 'Kurdish'},
-  'kw': {'nativeName': 'Kernewek', 'englishName': 'Cornish'},
-  'la': {'nativeName': 'Latin', 'englishName': 'Latin'},
-  'la-va': {'nativeName': 'Latin', 'englishName': 'Latin'},
-  'lb': {'nativeName': 'Lëtzebuergesch', 'englishName': 'Luxembourgish'},
-  'li-nl': {'nativeName': 'Lèmbörgs', 'englishName': 'Limburgish'},
-  'lt': {'nativeName': 'Lietuvių', 'englishName': 'Lithuanian'},
-  'lt-lt': {'nativeName': 'Lietuvių', 'englishName': 'Lithuanian'},
-  'lv': {'nativeName': 'Latviešu', 'englishName': 'Latvian'},
-  'lv-lv': {'nativeName': 'Latviešu', 'englishName': 'Latvian'},
-  'mai': {'nativeName': 'मैथिली, মৈথিলী', 'englishName': 'Maithili'},
-  'mg-mg': {'nativeName': 'Malagasy', 'englishName': 'Malagasy'},
-  'mk': {'nativeName': 'Македонски', 'englishName': 'Macedonian'},
+  'it': {
+    'nativeName': 'Italiano',
+    'englishName': 'Italian',
+    'emoji': '🇮🇹',
+  },
+  'it-it': {
+    'nativeName': 'Italiano',
+    'englishName': 'Italian',
+    'emoji': '🇮🇹',
+  },
+  'ja': {
+    'nativeName': '日本語',
+    'englishName': 'Japanese',
+    'emoji': '🇯🇵',
+  },
+  'ja-jp': {
+    'nativeName': '日本語 (日本)',
+    'englishName': 'Japanese (Japan)',
+    'emoji': '🇯🇵',
+  },
+  'jv-id': {
+    'nativeName': 'Basa Jawa',
+    'englishName': 'Javanese',
+    'emoji': '🇮🇩',
+  },
+  'ka': {
+    'nativeName': 'ქართული',
+    'englishName': 'Georgian',
+    'emoji': '🇬🇪',
+  },
+  'ka-ge': {
+    'nativeName': 'ქართული',
+    'englishName': 'Georgian',
+    'emoji': '🇬🇪',
+  },
+  'kk-kz': {
+    'nativeName': 'Қазақша',
+    'englishName': 'Kazakh',
+    'emoji': '🇰🇿',
+  },
+  'km': {
+    'nativeName': 'ភាសាខ្មែរ',
+    'englishName': 'Khmer',
+    'emoji': '🇰🇭',
+  },
+  'km-kh': {
+    'nativeName': 'ភាសាខ្មែរ',
+    'englishName': 'Khmer',
+    'emoji': '🇰🇭',
+  },
+  'kab': {
+    'nativeName': 'Taqbaylit',
+    'englishName': 'Kabyle',
+    'emoji': '🇩🇿',
+  },
+  'kn': {
+    'nativeName': 'ಕನ್ನಡ',
+    'englishName': 'Kannada',
+    'emoji': '🇮🇳',
+  },
+  'kn-in': {
+    'nativeName': 'ಕನ್ನಡ (India)',
+    'englishName': 'Kannada (India)',
+    'emoji': '🇮🇳',
+  },
+  'ko': {
+    'nativeName': '한국어',
+    'englishName': 'Korean',
+    'emoji': '🇰🇷',
+  },
+  'ko-kr': {
+    'nativeName': '한국어 (한국)',
+    'englishName': 'Korean (Korea)',
+    'emoji': '🇰🇷',
+  },
+  'ku-tr': {
+    'nativeName': 'Kurdî',
+    'englishName': 'Kurdish',
+    'emoji': '🇹🇷',
+  },
+  'kw': {
+    'nativeName': 'Kernewek',
+    'englishName': 'Cornish',
+    'emoji': '🇬🇧',
+  },
+  'la': {
+    'nativeName': 'Latin',
+    'englishName': 'Latin',
+    'emoji': '🏳',
+  },
+  'la-va': {
+    'nativeName': 'Latin',
+    'englishName': 'Latin',
+    'emoji': '🇻🇦',
+  },
+  'lb': {
+    'nativeName': 'Lëtzebuergesch',
+    'englishName': 'Luxembourgish',
+    'emoji': '🇱🇺',
+  },
+  'li-nl': {
+    'nativeName': 'Lèmbörgs',
+    'englishName': 'Limburgish',
+    'emoji': '🇳🇱',
+  },
+  'lt': {
+    'nativeName': 'Lietuvių',
+    'englishName': 'Lithuanian',
+    'emoji': '🇱🇹',
+  },
+  'lt-lt': {
+    'nativeName': 'Lietuvių',
+    'englishName': 'Lithuanian',
+    'emoji': '🇱🇹',
+  },
+  'lv': {
+    'nativeName': 'Latviešu',
+    'englishName': 'Latvian',
+    'emoji': '🇱🇻',
+  },
+  'lv-lv': {
+    'nativeName': 'Latviešu',
+    'englishName': 'Latvian',
+    'emoji': '🇱🇻',
+  },
+  'mai': {
+    'nativeName': 'मैथिली, মৈথিলী',
+    'englishName': 'Maithili',
+    'emoji': '🏳',
+  },
+  'mg-mg': {
+    'nativeName': 'Malagasy',
+    'englishName': 'Malagasy',
+    'emoji': '🇲🇬',
+  },
+  'mk': {
+    'nativeName': 'Македонски',
+    'englishName': 'Macedonian',
+    'emoji': '🇲🇰',
+  },
   'mk-mk': {
     'nativeName': 'Македонски (Македонски)',
-    'englishName': 'Macedonian (Macedonian)'
+    'englishName': 'Macedonian (Macedonian)',
+    'emoji': '🇲🇰',
   },
-  'ml': {'nativeName': 'മലയാളം', 'englishName': 'Malayalam'},
-  'ml-in': {'nativeName': 'മലയാളം', 'englishName': 'Malayalam'},
-  'mn-mn': {'nativeName': 'Монгол', 'englishName': 'Mongolian'},
-  'mr': {'nativeName': 'मराठी', 'englishName': 'Marathi'},
-  'mr-in': {'nativeName': 'मराठी', 'englishName': 'Marathi'},
-  'ms': {'nativeName': 'Bahasa Melayu', 'englishName': 'Malay'},
-  'ms-my': {'nativeName': 'Bahasa Melayu', 'englishName': 'Malay'},
-  'mt': {'nativeName': 'Malti', 'englishName': 'Maltese'},
-  'mt-mt': {'nativeName': 'Malti', 'englishName': 'Maltese'},
-  'my': {'nativeName': 'ဗမာစကာ', 'englishName': 'Burmese'},
-  'no': {'nativeName': 'Norsk', 'englishName': 'Norwegian'},
-  'nb': {'nativeName': 'Norsk (bokmål)', 'englishName': 'Norwegian (bokmal)'},
+  'ml': {
+    'nativeName': 'മലയാളം',
+    'englishName': 'Malayalam',
+    'emoji': '🇮🇳',
+  },
+  'ml-in': {
+    'nativeName': 'മലയാളം',
+    'englishName': 'Malayalam',
+    'emoji': '🇮🇳',
+  },
+  'mn-mn': {
+    'nativeName': 'Монгол',
+    'englishName': 'Mongolian',
+    'emoji': '🇲🇳',
+  },
+  'mr': {
+    'nativeName': 'मराठी',
+    'englishName': 'Marathi',
+    'emoji': '🇮🇳',
+  },
+  'mr-in': {
+    'nativeName': 'मराठी',
+    'englishName': 'Marathi',
+    'emoji': '🇮🇳',
+  },
+  'ms': {
+    'nativeName': 'Bahasa Melayu',
+    'englishName': 'Malay',
+    'emoji': '🇲🇾',
+  },
+  'ms-my': {
+    'nativeName': 'Bahasa Melayu',
+    'englishName': 'Malay',
+    'emoji': '🇲🇾',
+  },
+  'mt': {
+    'nativeName': 'Malti',
+    'englishName': 'Maltese',
+    'emoji': '🇲🇹',
+  },
+  'mt-mt': {
+    'nativeName': 'Malti',
+    'englishName': 'Maltese',
+    'emoji': '🇲🇹',
+  },
+  'my': {
+    'nativeName': 'ဗမာစကာ',
+    'englishName': 'Burmese',
+    'emoji': '🇲🇲',
+  },
+  'no': {
+    'nativeName': 'Norsk',
+    'englishName': 'Norwegian',
+    'emoji': '🇳🇴',
+  },
+  'nb': {
+    'nativeName': 'Norsk (bokmål)',
+    'englishName': 'Norwegian (bokmal)',
+    'emoji': '🇳🇴',
+  },
   'nb-no': {
     'nativeName': 'Norsk (bokmål)',
-    'englishName': 'Norwegian (bokmal)'
+    'englishName': 'Norwegian (bokmal)',
+    'emoji': '🇳🇴',
   },
-  'ne': {'nativeName': 'नेपाली', 'englishName': 'Nepali'},
-  'ne-np': {'nativeName': 'नेपाली', 'englishName': 'Nepali'},
-  'nl': {'nativeName': 'Nederlands', 'englishName': 'Dutch'},
+  'ne': {
+    'nativeName': 'नेपाली',
+    'englishName': 'Nepali',
+    'emoji': '🇳🇵',
+  },
+  'ne-np': {
+    'nativeName': 'नेपाली',
+    'englishName': 'Nepali',
+    'emoji': '🇳🇵',
+  },
+  'nl': {
+    'nativeName': 'Nederlands',
+    'englishName': 'Dutch',
+    'emoji': '🇳🇱',
+  },
   'nl-be': {
     'nativeName': 'Nederlands (België)',
-    'englishName': 'Dutch (Belgium)'
+    'englishName': 'Dutch (Belgium)',
+    'emoji': '🇧🇪',
   },
   'nl-nl': {
     'nativeName': 'Nederlands (Nederland)',
-    'englishName': 'Dutch (Netherlands)'
+    'englishName': 'Dutch (Netherlands)',
+    'emoji': '🇳🇱',
   },
   'nn-no': {
     'nativeName': 'Norsk (nynorsk)',
-    'englishName': 'Norwegian (nynorsk)'
+    'englishName': 'Norwegian (nynorsk)',
+    'emoji': '🇳🇴',
   },
-  'oc': {'nativeName': 'Occitan', 'englishName': 'Occitan'},
-  'or-in': {'nativeName': 'ଓଡ଼ିଆ', 'englishName': 'Oriya'},
-  'pa': {'nativeName': 'ਪੰਜਾਬੀ', 'englishName': 'Punjabi'},
+  'oc': {
+    'nativeName': 'Occitan',
+    'englishName': 'Occitan',
+    'emoji': '🏴󠁥󠁳󠁣󠁴󠁿',
+  },
+  'or-in': {
+    'nativeName': 'ଓଡ଼ିଆ',
+    'englishName': 'Oriya',
+    'emoji': '🇮🇳',
+  },
+  'pa': {
+    'nativeName': 'ਪੰਜਾਬੀ',
+    'englishName': 'Punjabi',
+    'emoji': '🇮🇳',
+  },
   'pa-in': {
     'nativeName': 'ਪੰਜਾਬੀ (ਭਾਰਤ ਨੂੰ)',
-    'englishName': 'Punjabi (India)'
+    'englishName': 'Punjabi (India)',
+    'emoji': '🇮🇳',
   },
-  'pl': {'nativeName': 'Polski', 'englishName': 'Polish'},
-  'pl-pl': {'nativeName': 'Polski', 'englishName': 'Polish'},
-  'ps-af': {'nativeName': 'پښتو', 'englishName': 'Pashto'},
-  'pt': {'nativeName': 'Português', 'englishName': 'Portuguese'},
+  'pl': {
+    'nativeName': 'Polski',
+    'englishName': 'Polish',
+    'emoji': '🇵🇱',
+  },
+  'pl-pl': {
+    'nativeName': 'Polski',
+    'englishName': 'Polish',
+    'emoji': '🇵🇱',
+  },
+  'ps-af': {
+    'nativeName': 'پښتو',
+    'englishName': 'Pashto',
+    'emoji': '🇦🇫',
+  },
+  'pt': {
+    'nativeName': 'Português',
+    'englishName': 'Portuguese',
+    'emoji': '🇧🇷',
+  },
   'pt-br': {
     'nativeName': 'Português (Brasil)',
-    'englishName': 'Portuguese (Brazil)'
+    'englishName': 'Portuguese (Brazil)',
+    'emoji': '🇧🇷',
   },
   'pt-pt': {
     'nativeName': 'Português (Portugal)',
-    'englishName': 'Portuguese (Portugal)'
+    'englishName': 'Portuguese (Portugal)',
+    'emoji': '🇵🇹',
   },
-  'qu-pe': {'nativeName': 'Qhichwa', 'englishName': 'Quechua'},
-  'rm-ch': {'nativeName': 'Rumantsch', 'englishName': 'Romansh'},
-  'ro': {'nativeName': 'Română', 'englishName': 'Romanian'},
-  'ro-ro': {'nativeName': 'Română', 'englishName': 'Romanian'},
-  'ru': {'nativeName': 'Русский', 'englishName': 'Russian'},
-  'ru-ru': {'nativeName': 'Русский', 'englishName': 'Russian'},
-  'sa-in': {'nativeName': 'संस्कृतम्', 'englishName': 'Sanskrit'},
-  'se-no': {'nativeName': 'Davvisámegiella', 'englishName': 'Northern Sámi'},
-  'sh': {'nativeName': 'српскохрватски', 'englishName': 'Serbo-Croatian'},
-  'si-lk': {'nativeName': 'පළාත', 'englishName': 'Sinhala (Sri Lanka)'},
-  'sk': {'nativeName': 'Slovenčina', 'englishName': 'Slovak'},
+  'qu-pe': {
+    'nativeName': 'Qhichwa',
+    'englishName': 'Quechua',
+    'emoji': '🇵🇪',
+  },
+  'rm-ch': {
+    'nativeName': 'Rumantsch',
+    'englishName': 'Romansh',
+    'emoji': '🇸🇪',
+  },
+  'ro': {
+    'nativeName': 'Română',
+    'englishName': 'Romanian',
+    'emoji': '🇷🇴',
+  },
+  'ro-ro': {
+    'nativeName': 'Română',
+    'englishName': 'Romanian',
+    'emoji': '🇷🇴',
+  },
+  'ru': {
+    'nativeName': 'Русский',
+    'englishName': 'Russian',
+    'emoji': '🇷🇺',
+  },
+  'ru-ru': {
+    'nativeName': 'Русский',
+    'englishName': 'Russian',
+    'emoji': '🇷🇺',
+  },
+  'sa-in': {
+    'nativeName': 'संस्कृतम्',
+    'englishName': 'Sanskrit',
+    'emoji': '🏳',
+  },
+  'se-no': {
+    'nativeName': 'Davvisámegiella',
+    'englishName': 'Northern Sámi',
+    'emoji': '🏳',
+  },
+  'sh': {
+    'nativeName': 'српскохрватски',
+    'englishName': 'Serbo-Croatian',
+    'emoji': '🇷🇸🇭🇷',
+  },
+  'si-lk': {
+    'nativeName': 'පළාත',
+    'englishName': 'Sinhala (Sri Lanka)',
+    'emoji': '🇱🇰',
+  },
+  'sk': {
+    'nativeName': 'Slovenčina',
+    'englishName': 'Slovak',
+    'emoji': '🇸🇰',
+  },
   'sk-sk': {
     'nativeName': 'Slovenčina (Slovakia)',
-    'englishName': 'Slovak (Slovakia)'
+    'englishName': 'Slovak (Slovakia)',
+    'emoji': '🇸🇰',
   },
-  'sl': {'nativeName': 'Slovenščina', 'englishName': 'Slovenian'},
-  'sl-si': {'nativeName': 'Slovenščina', 'englishName': 'Slovenian'},
-  'so-so': {'nativeName': 'Soomaaliga', 'englishName': 'Somali'},
-  'sq': {'nativeName': 'Shqip', 'englishName': 'Albanian'},
-  'sq-al': {'nativeName': 'Shqip', 'englishName': 'Albanian'},
-  'sr': {'nativeName': 'Српски', 'englishName': 'Serbian'},
-  'sr-rs': {'nativeName': 'Српски (Serbia)', 'englishName': 'Serbian (Serbia)'},
-  'su': {'nativeName': 'Basa Sunda', 'englishName': 'Sundanese'},
-  'sv': {'nativeName': 'Svenska', 'englishName': 'Swedish'},
-  'sv-se': {'nativeName': 'Svenska', 'englishName': 'Swedish'},
-  'sw': {'nativeName': 'Kiswahili', 'englishName': 'Swahili'},
-  'sw-ke': {'nativeName': 'Kiswahili', 'englishName': 'Swahili (Kenya)'},
-  'ta': {'nativeName': 'தமிழ்', 'englishName': 'Tamil'},
-  'ta-in': {'nativeName': 'தமிழ்', 'englishName': 'Tamil'},
-  'te': {'nativeName': 'తెలుగు', 'englishName': 'Telugu'},
-  'te-in': {'nativeName': 'తెలుగు', 'englishName': 'Telugu'},
-  'tg': {'nativeName': 'забо́ни тоҷикӣ́', 'englishName': 'Tajik'},
-  'tg-tj': {'nativeName': 'тоҷикӣ', 'englishName': 'Tajik'},
-  'th': {'nativeName': 'ภาษาไทย', 'englishName': 'Thai'},
+  'sl': {
+    'nativeName': 'Slovenščina',
+    'englishName': 'Slovenian',
+    'emoji': '🇸🇮',
+  },
+  'sl-si': {
+    'nativeName': 'Slovenščina',
+    'englishName': 'Slovenian',
+    'emoji': '🇸🇮',
+  },
+  'so-so': {
+    'nativeName': 'Soomaaliga',
+    'englishName': 'Somali',
+    'emoji': '🇸🇴',
+  },
+  'sq': {
+    'nativeName': 'Shqip',
+    'englishName': 'Albanian',
+    'emoji': '🇦🇱',
+  },
+  'sq-al': {
+    'nativeName': 'Shqip',
+    'englishName': 'Albanian',
+    'emoji': '🇦🇱',
+  },
+  'sr': {
+    'nativeName': 'Српски',
+    'englishName': 'Serbian',
+    'emoji': '🇷🇸',
+  },
+  'sr-rs': {
+    'nativeName': 'Српски (Serbia)',
+    'englishName': 'Serbian (Serbia)',
+    'emoji': '🇷🇸',
+  },
+  'su': {
+    'nativeName': 'Basa Sunda',
+    'englishName': 'Sundanese',
+    'emoji': '🇮🇩',
+  },
+  'sv': {
+    'nativeName': 'Svenska',
+    'englishName': 'Swedish',
+    'emoji': '🇸🇪',
+  },
+  'sv-se': {
+    'nativeName': 'Svenska',
+    'englishName': 'Swedish',
+    'emoji': '🇸🇪',
+  },
+  'sw': {
+    'nativeName': 'Kiswahili',
+    'englishName': 'Swahili',
+    'emoji': '🇰🇪',
+  },
+  'sw-ke': {
+    'nativeName': 'Kiswahili',
+    'englishName': 'Swahili (Kenya)',
+    'emoji': '🇰🇪',
+  },
+  'ta': {
+    'nativeName': 'தமிழ்',
+    'englishName': 'Tamil',
+    'emoji': '🇮🇳',
+  },
+  'ta-in': {
+    'nativeName': 'தமிழ்',
+    'englishName': 'Tamil',
+    'emoji': '🇮🇳',
+  },
+  'te': {
+    'nativeName': 'తెలుగు',
+    'englishName': 'Telugu',
+    'emoji': '🇮🇳',
+  },
+  'te-in': {
+    'nativeName': 'తెలుగు',
+    'englishName': 'Telugu',
+    'emoji': '🇮🇳',
+  },
+  'tg': {
+    'nativeName': 'забо́ни тоҷикӣ́',
+    'englishName': 'Tajik',
+    'emoji': '🇹🇯',
+  },
+  'tg-tj': {
+    'nativeName': 'тоҷикӣ',
+    'englishName': 'Tajik',
+    'emoji': '🇹🇯',
+  },
+  'th': {
+    'nativeName': 'ภาษาไทย',
+    'englishName': 'Thai',
+    'emoji': '🇹🇭',
+  },
   'th-th': {
     'nativeName': 'ภาษาไทย (ประเทศไทย)',
-    'englishName': 'Thai (Thailand)'
+    'englishName': 'Thai (Thailand)',
+    'emoji': '🇹🇭',
   },
-  'tl': {'nativeName': 'Filipino', 'englishName': 'Filipino'},
-  'tl-ph': {'nativeName': 'Filipino', 'englishName': 'Filipino'},
-  'tlh': {'nativeName': 'tlhIngan-Hol', 'englishName': 'Klingon'},
-  'tr': {'nativeName': 'Türkçe', 'englishName': 'Turkish'},
-  'tr-tr': {'nativeName': 'Türkçe', 'englishName': 'Turkish'},
-  'tt-ru': {'nativeName': 'татарча', 'englishName': 'Tatar'},
-  'uk': {'nativeName': 'Українська', 'englishName': 'Ukrainian'},
-  'uk-ua': {'nativeName': 'Українська', 'englishName': 'Ukrainian'},
-  'ur': {'nativeName': 'اردو', 'englishName': 'Urdu'},
-  'ur-pk': {'nativeName': 'اردو', 'englishName': 'Urdu'},
-  'uz': {'nativeName': 'O\'zbek', 'englishName': 'Uzbek'},
-  'uz-uz': {'nativeName': 'O\'zbek', 'englishName': 'Uzbek'},
-  'vi': {'nativeName': 'Tiếng Việt', 'englishName': 'Vietnamese'},
-  'vi-vn': {'nativeName': 'Tiếng Việt', 'englishName': 'Vietnamese'},
-  'xh-za': {'nativeName': 'isiXhosa', 'englishName': 'Xhosa'},
-  'yi': {'nativeName': 'ייִדיש', 'englishName': 'Yiddish'},
-  'yi-de': {'nativeName': 'ייִדיש (German)', 'englishName': 'Yiddish (German)'},
-  'zh': {'nativeName': '中文', 'englishName': 'Chinese'},
-  'zh-hans': {'nativeName': '中文简体', 'englishName': 'Chinese Simplified'},
-  'zh-hant': {'nativeName': '中文繁體', 'englishName': 'Chinese Traditional'},
+  'tl': {
+    'nativeName': 'Filipino',
+    'englishName': 'Filipino',
+    'emoji': '🇵🇭',
+  },
+  'tl-ph': {
+    'nativeName': 'Filipino',
+    'englishName': 'Filipino',
+    'emoji': '🇵🇭',
+  },
+  'tlh': {
+    'nativeName': 'tlhIngan-Hol',
+    'englishName': 'Klingon',
+    'emoji': '🇹🇷',
+  },
+  'tr': {
+    'nativeName': 'Türkçe',
+    'englishName': 'Turkish',
+    'emoji': '🇹🇷',
+  },
+  'tr-tr': {
+    'nativeName': 'Türkçe',
+    'englishName': 'Turkish',
+    'emoji': '🇹🇷',
+  },
+  'tt-ru': {
+    'nativeName': 'татарча',
+    'englishName': 'Tatar',
+    'emoji': '🇷🇺',
+  },
+  'uk': {
+    'nativeName': 'Українська',
+    'englishName': 'Ukrainian',
+    'emoji': '🇺🇦',
+  },
+  'uk-ua': {
+    'nativeName': 'Українська',
+    'englishName': 'Ukrainian',
+    'emoji': '🇺🇦',
+  },
+  'ur': {
+    'nativeName': 'اردو',
+    'englishName': 'Urdu',
+    'emoji': '🇵🇰',
+  },
+  'ur-pk': {
+    'nativeName': 'اردو',
+    'englishName': 'Urdu',
+    'emoji': '🇵🇰',
+  },
+  'uz': {
+    'nativeName': 'O\'zbek',
+    'englishName': 'Uzbek',
+    'emoji': '🇺🇿',
+  },
+  'uz-uz': {
+    'nativeName': 'O\'zbek',
+    'englishName': 'Uzbek',
+    'emoji': '🇺🇿',
+  },
+  'vi': {
+    'nativeName': 'Tiếng Việt',
+    'englishName': 'Vietnamese',
+    'emoji': '🇻🇳'
+  },
+  'vi-vn': {
+    'nativeName': 'Tiếng Việt',
+    'englishName': 'Vietnamese',
+    'emoji': '🇻🇳'
+  },
+  'xh-za': {'nativeName': 'isiXhosa', 'englishName': 'Xhosa', 'emoji': '🇿🇦'},
+  'yi': {'nativeName': 'ייִדיש', 'englishName': 'Yiddish', 'emoji': '🕎'},
+  'yi-de': {
+    'nativeName': 'ייִדיש (German)',
+    'englishName': 'Yiddish (German)',
+    'emoji': '🇩🇪'
+  },
+  'zh': {'nativeName': '中文', 'englishName': 'Chinese', 'emoji': '🇨🇳'},
+  'zh-hans': {
+    'nativeName': '中文简体',
+    'englishName': 'Chinese Simplified',
+    'emoji': '🇨🇳'
+  },
+  'zh-hant': {
+    'nativeName': '中文繁體',
+    'englishName': 'Chinese Traditional',
+    'emoji': '🇨🇳'
+  },
   'zh-cn': {
     'nativeName': '中文（中国）',
-    'englishName': 'Chinese Simplified (China)'
+    'englishName': 'Chinese Simplified (China)',
+    'emoji': '🇨🇳'
   },
   'zh-hk': {
     'nativeName': '中文（香港）',
-    'englishName': 'Chinese Traditional (Hong Kong)'
+    'englishName': 'Chinese Traditional (Hong Kong)',
+    'emoji': '🇭🇰'
   },
   'zh-sg': {
     'nativeName': '中文（新加坡）',
-    'englishName': 'Chinese Simplified (Singapore)'
+    'englishName': 'Chinese Simplified (Singapore)',
+    'emoji': '🇸🇬'
   },
   'zh-tw': {
     'nativeName': '中文（台灣）',
-    'englishName': 'Chinese Traditional (Taiwan)'
+    'englishName': 'Chinese Traditional (Taiwan)',
+    'emoji': '🇹🇼'
   },
-  'zu-za': {'nativeName': 'isiZulu', 'englishName': 'Zulu'}
+  'zu-za': {
+    'nativeName': 'isiZulu',
+    'englishName': 'Zulu',
+    'emoji': '🇿🇦',
+  }
 };

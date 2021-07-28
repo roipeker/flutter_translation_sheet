@@ -77,9 +77,16 @@ Take the sample data input as reference, and use it in your own project.
 
 **fts** will try to keep the local input and the remote sheet in sync, and automatically generate the locales for you every time you run it.
 
+You can leave a terminal open and use the `run` command while listening for file changes in your master strings folder, or your *trconfig.yaml*:
+`fts run --watch`.
+You can exit the watch with `q` and then press `Enter`.
+
+⚠️ **Warning**:
+> Watch out how often you modify the files and save them. Remember that your Google service account has [usage limits](https://developers.google.com/sheets/api/reference/limits). 
+
+
 After a while of not using it, Google Sheet performance slow down on every request, so it might take a little longer to get the output generated.
 Once it warms up (run 1 time) the sync performance is pretty solid.
-
 
 ```bash
 fts fetch
@@ -121,7 +128,9 @@ So you can define your own pattern for the code/json generation:
 ## ***?** = {{name}} becomes **name**
 param_output_pattern: "{{*}}"
 ```
-Warning: Do not confuse the data source placeholder format with `param_output_pattern` configuration.
+
+⚠️ **Warning**:
+> Do not confuse the data source placeholder format with `param_output_pattern` configuration.
 Data-source (your yaml strings) must have this form `{{variable}}` to be interpreted as variables.
 The generated output strings uses `param_output_pattern` configuration to render the variables as you please.
 
@@ -274,7 +283,7 @@ locales:
 - If *fts* finds the 2nd ROW empty in any column, it will take the data corrupted, and will re-upload for translation.
 
 - If the row count from keys is different from the master language, it will invalidate the entire sheet.
- 
+
 
 ----
 

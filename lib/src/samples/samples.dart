@@ -88,6 +88,7 @@ gsheets:
   ## The spreadsheet "table" where your translation will live.
   worksheet: Sheet1
 ''';
+
 }
 
 const kSimpleLangPickerWidget = r'''
@@ -114,7 +115,7 @@ class SimpleLangPicker extends StatelessWidget {
               size: 16,
             ),
             SizedBox(width: 8),
-            Text(AppLocales.of(_selected)!.englishName)
+            Text(AppLocales.of(_selected)?.englishName??'-')
           ],
         ),
       ),
@@ -158,7 +159,7 @@ String getCodeMapLocaleKeysToMasterText(String theClassName) {
   return '''
   static Map<String, String> mapLocaleKeysToMasterText(
       Map<String, String> localeMap,
-      {Map<String, String>? masterMap}) {
+      {Map<String, String>? masterMap,}) {
     final output = <String, String>{};
     final _masterMap =
         masterMap ?? $theClassName.byKeys[AppLocales.available.first.key]!;

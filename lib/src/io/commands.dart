@@ -6,6 +6,8 @@ import 'package:args/src/arg_parser.dart';
 import 'package:dcli/dcli.dart';
 import 'package:flutter_translation_sheet/flutter_translation_sheet.dart';
 
+import '../runner.dart';
+
 /// Command logic for `fts extract`
 class ExtractStringCommand extends Command<int> {
   @override
@@ -106,12 +108,24 @@ class RunCommand extends Command<int> {
   final Future Function() exec;
 
   RunCommand(this.exec) {
+    argParser.addFlag(
+      'watch',
+      abbr: 'w',
+      help:
+          'Watch the master strings root directory (config.entry_file parent folder) for file changes and also listen for changes on trconfig.yaml',
+    );
     addConfigOption(argParser);
   }
 
   @override
   Future<int> run() async {
     setConfig(argResults!);
+    if (argResults != null) {
+      if (argResults!.wasParsed('watch')) {
+        watchFileChanges = argResults!['watch'];
+      }
+    }
+
     await exec();
     return 0;
   }
@@ -133,7 +147,6 @@ void setConfig(ArgResults res) {
   if (res.wasParsed('config')) {
     startConfig(res['config']);
   } else {
-    /// use default!
     startConfig('trconfig.yaml');
   }
 }

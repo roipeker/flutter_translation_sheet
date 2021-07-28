@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:dcli/dcli.dart';
 import 'package:flutter_translation_sheet/flutter_translation_sheet.dart';
 import 'package:flutter_translation_sheet/src/gsheets/gsheets.dart';
 
@@ -31,7 +32,7 @@ class SheetParser {
     if (!config.isValidSheet()) {
       throw 'Invalid GoogleSheet configuration';
     }
-    trace('connecting ...');
+    trace('🔌 connecting ...');
     try {
       _sheet = await _api.spreadsheet(
         config.sheetId!,
@@ -153,13 +154,27 @@ Open $spritesheetUrl and check the available tabs at the bottom.
   //   return '=GOOGLETRANSLATE(B$row, "$from", "$to")';
   // }
 
+  /// reset the variables when running watch mode.
+  void reset() {
+    _headersInited = false;
+    remoteHeader.clear();
+    localHeader.clear();
+    // List<String> remoteHeader=[];
+    // List<String> localHeader=[];
+    // bool _headersInited = false;
+    //
+    // late List<String> remoteHeader;
+    // late List<String> localHeader;
+    // bool _headersInited = false;
+  }
+
   bool _isValidLocale(String locale) {
     return config.locales.contains(locale);
   }
 
   /// final for easy access.
-  late List<String> remoteHeader;
-  late List<String> localHeader;
+  List<String> remoteHeader = [];
+  List<String> localHeader = [];
   bool _headersInited = false;
 
   // late String masterLanguage;
@@ -175,6 +190,7 @@ Open $spritesheetUrl and check the available tabs at the bottom.
   Future<void> _initHeaders() async {
     if (_headersInited) return;
     remoteHeader = await _headerModel();
+    print('remote headers:\n - ' + magenta(remoteHeader.join(' | ')));
     localHeader = ['keys', ...config.locales];
     _headersInited = true;
   }
@@ -186,16 +202,16 @@ Open $spritesheetUrl and check the available tabs at the bottom.
     // var remoteMasterLangId = remoteHeader.indexOf(masterLanguage) + 1;
 
     /// get remote keys
-    trace('getting remote keys...');
+    trace('🔑 getting remote Keys ...');
     var remoteKeys = await _table.values.column(1, fromRow: 1);
-    trace('found ${remoteKeys.length} remote keys.');
+    trace('found ${remoteKeys.length} remote Keys 🔑');
 
     var hasKeys = (remoteKeys.length > 1 && remoteKeys[1].isNotEmpty);
     // var startRow = hasKeys ? remoteKeys.length + 1 : 2;
 
     // trace(remoteKeys);
     if (!hasKeys) {
-      trace('No remote keys found, generating...');
+      trace('⛔ no remote Keys found, generating...');
 
       /// no checking needed.
       final keys = map.keys.toList();
@@ -217,7 +233,7 @@ Open $spritesheetUrl and check the available tabs at the bottom.
 
     /// how much to fill now ?
     var lastRow = await _getLastRemoteRow();
-    trace('Last remote keys row: ', lastRow);
+    // trace('Last remote keys row: ', lastRow);
 
     /// check each lang separately now.
     trace('Validating header columns...');
@@ -259,8 +275,9 @@ Open $spritesheetUrl and check the available tabs at the bottom.
 
     /// --- now let's see what changed.
     /// load remote key + master
-    trace('Checking changes with the remote keys...');
+    print(yellow('❯') + ' checking changes with the remote keys...');
     var remoteMap = await _getRemoteMap(masterLanguageCol);
+    print(yellow('❯') + ' remote keys received ' + green('✓'));
 
     /// check master language text changes
     trace('Checking remote master String changes...');
@@ -380,8 +397,8 @@ Open $spritesheetUrl and check the available tabs at the bottom.
     }
     if (addedKeys.isNotEmpty) {
       trace(
-        'These keys were added in the current map: \n-',
-        addedKeys.join('\n-'),
+        'new keys inserted:\n - ',
+        addedKeys.join('\n - '),
       );
 
       /// we will add the rows to their positions?
@@ -409,7 +426,7 @@ Open $spritesheetUrl and check the available tabs at the bottom.
           ++row;
           // trace('row $row built');
         }
-        trace('Inserting ${insertRows.length} records...');
+        trace('Inserting ${insertRows.length} record(s)');
         // await _table.values.insertRows(lastRow, insertRows);
         try {
           await _table.values.appendRows(insertRows);
@@ -422,7 +439,7 @@ Open $spritesheetUrl and check the available tabs at the bottom.
           }
           exit(3);
         }
-        trace('Appending complete :)');
+        trace('🙂 Append rows complete');
       } else {
         for (var k in addedKeys) {
           var row = _keys.indexOf(k) + 2;
@@ -442,7 +459,7 @@ Open $spritesheetUrl and check the available tabs at the bottom.
 
     if (remoteKeys.contains('')) {
       var numBlankSpaces = remoteKeys.where((text) => text.isEmpty).length;
-      trace('Num white key rows: ', numBlankSpaces);
+      trace('total blank key rows: ', red('$numBlankSpaces'));
 
       /// TODO: Clean up EMPTY keys.
       if (numBlankSpaces > 1) {
@@ -454,12 +471,12 @@ Open $spritesheetUrl and check the available tabs at the bottom.
         trace('Duplicated rows deleted: $count');
       }
 
-      /// detect the first row!
+      /// detect the first row!🎯
       var firstCleanIndex = remoteKeys.indexOf('');
       if (firstCleanIndex > 1) {
         var row = firstCleanIndex + 1;
         await _table.deleteRow(row);
-        trace('Last empty row $row deleted.');
+        print('Empty row ' + red('$row') + ' deleted.');
       }
     }
 
@@ -569,7 +586,7 @@ Open $spritesheetUrl and check the available tabs at the bottom.
 
   Future<List<String>> _headerModel() async {
     if (_sheet == null) await _connect();
-    trace('checking headers row...');
+    trace('checking headers row ... 🔎');
     var configLocales = ['keys', ...config.locales];
     var sheetLocales = await _getHeaders();
 
