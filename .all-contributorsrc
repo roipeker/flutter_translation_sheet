@@ -1,0 +1,25 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "IsmailAlamKhan",
+      "name": "IsmailAlamKhan",
+      "avatar_url": "https://avatars.githubusercontent.com/u/67656229?v=4",
+      "profile": "https://github.com/IsmailAlamKhan",
+      "contributions": [
+        "maintenance",
+        "code"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "projectName": "flutter_translation_sheet",
+  "projectOwner": "roipeker",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "skipCi": true
+}
