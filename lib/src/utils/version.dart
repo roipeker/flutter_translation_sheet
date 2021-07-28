@@ -15,7 +15,8 @@ Future<void> upgrade() async {
     trace(green('Upgrading fts....\n'));
     final result =
         'flutter pub global activate flutter_translation_sheet'.start(
-      terminal: true,
+      // terminal: true,
+      runInShell: true,
       progress: Progress(
         (e) => trace(yellow(e, bold: false)),
         stderr: printerr,
@@ -88,6 +89,7 @@ Future<void> checkUpdate([bool fromCommand = true]) async {
   }
 
   try {
+    /*
     final latest = await _checkLatestVersion();
     if (latest == null) {
       error('cannot fetch the latest version');
@@ -126,6 +128,7 @@ Future<void> checkUpdate([bool fromCommand = true]) async {
         '\n___________________________________________________\n\n',
       ),
     );
+    */
     final result = confirm(
       yellow('Would you like update to the last version?'),
       defaultValue: true,
