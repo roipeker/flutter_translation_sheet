@@ -129,12 +129,12 @@ String createTranslationFile(
     _transKeysString += '  };\n';
 
     final _tClassName = config.dartTranslationClassname;
+
     _translateClassString = '''
 
 abstract class $_tClassName {
 
 
-    _tLocalesCode = '''
 
   static Map<String, Map<String, String>> byKeys = getByKeys();
   static Map<String, Map<String, String>> getByKeys() => $_transKeysString
