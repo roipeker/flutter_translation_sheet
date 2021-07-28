@@ -2,6 +2,7 @@
 - add `fts run --watch` to keep listening for file system changes in the config file and the directory that holds your master strings (entry_file parent folder).
 - [LangVo.flagChar] to read the flag "emojis" if supported by the system.
 - add default dart exports for [config.dart.output_dir] file.
+- add dart reserved words checking (and replacer) for the master strings tag, when generating TKeys files.
 
 ## [1.0.13+25]
 - add dart variable capture from interpolated strings in `fts extract`.

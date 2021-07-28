@@ -128,14 +128,7 @@ String createTranslationFile(
     _transKeysString += translationMaps.join('\n');
     _transKeysString += '  };\n';
 
-    final _tClassName = config.dartTranslationClassname;
-
-    _translateClassString = '''
-
-abstract class $_tClassName {
-
-
-
+    _tLocalesCode = '''
   static Map<String, Map<String, String>> byKeys = getByKeys();
   static Map<String, Map<String, String>> getByKeys() => $_transKeysString
   
@@ -394,21 +387,6 @@ String _buildTKeyMap({
 ''';
   }
 
-//   final tostrName = className;
-//   if (path.isNotEmpty && toString) {
-//     classStr += '''
-//   @override
-//   String toString() => """\\$tostrName:$path''';
-//     if (tostrFields.isNotEmpty) {
-//       classStr += '\n  -fields: ' + tostrFields.join(', ');
-//     }
-//     if (tostrKeys.isNotEmpty) {
-//       classStr += '\n  -keys: ' + tostrKeys.join(', ');
-//     }
-//     classStr += '''""";
-// ''';
-//   }
-
   /// private constructor.
   var classModifier = classCanBeConst ? 'const ' : '';
   classStr += ' $classModifier$className._();\n';
@@ -434,8 +412,6 @@ String getClassName(String name) {
   name = '${name.trim()}$_classCounter'.pascalCase;
   return name;
 }
-
-// String _cleanLocaleKey(String key) => key.replaceAll('-', '_').trim();
 
 String _buildLocaleObjFromType(String key) {
   key = normLocale(key);
@@ -486,8 +462,10 @@ void saveLocaleJsonAsset(
   saveJson(path, map, beautify: beautify);
 }
 
+/// List of modified words captured based on [reservedWords].
 final changedWords = <String>[];
 
+/// List of Dart reserved words to be escaped in the TKeys output.
 final reservedWords = [
   'abstract',
   'else',
