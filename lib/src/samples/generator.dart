@@ -1,17 +1,25 @@
 import 'dart:io';
-
-import 'package:dcli/dcli.dart';
 import 'package:flutter_translation_sheet/flutter_translation_sheet.dart';
 import 'package:flutter_translation_sheet/src/utils/utils.dart';
 
 import 'samples.dart';
 
+/// Generates the sample template content when no `fts --config` is provided nor
+/// trconfig.yaml is detected in the current working directory.
 void createSampleContent() {
-  saveString('assets/fts/categories.yaml', SampleYamls.categories);
+  saveString('assets/fts/home.yaml', SampleYamls.home);
   saveString('assets/fts/sample.yaml', SampleYamls.sample);
 
   /// create config yaml
   createSampleConfig();
+  trace('''Please, fill
+  
+gsheet:
+  credentials_path:
+  spreadsheet_id:
+  worksheet:
+  
+in $defaultConfigEnvPath and run the command again.''');
   trace(
       '$defaultConfigEnvPath and sample files created in ${Directory.current}');
   // if (which('code').found) {
@@ -25,4 +33,8 @@ void createSampleContent() {
   //   }
   // }
   exit(0);
+}
+
+void createSampleConfig() {
+  saveString(defaultConfigEnvPath, SampleYamls.trconfig);
 }

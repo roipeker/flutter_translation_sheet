@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:dcli/dcli.dart';
 import 'package:flutter_translation_sheet/flutter_translation_sheet.dart';
 import 'package:path/path.dart' as p;
 import 'package:yaml/yaml.dart';
@@ -13,22 +14,12 @@ String configPath = '';
 /// flag that tells us if we have vars to parse or not.
 bool entryDataHasVars = false;
 
+/// Speculates the Flutter project dir based on the [configPath] location.
 String get configProjectDir {
   return p.canonicalize(p.dirname(configPath));
 }
 
-void createSampleConfig() {
-  saveString(defaultConfigEnvPath, _kSampleConfig);
-  trace('''Please, fill
-  
-gsheet:
-  credentials_path:
-  spreadsheet_id:
-  worksheet:
-  
-in $defaultConfigEnvPath and run the command again.''');
-}
-
+/// Loads the configuration file from [path].
 void loadEnv([String path = defaultConfigEnvPath]) {
   var data = openString(path);
   if (data.isEmpty) {
@@ -40,7 +31,9 @@ void loadEnv([String path = defaultConfigEnvPath]) {
   configPath = p.canonicalize(path);
   var doc = loadYaml(data);
   config.intlEnabled = doc['intl']?['enabled'] ?? false;
-  config.outputJsonDir = doc['output_json_dir'] ?? 'output/assets/l10n';
+  config.outputJsonDir = doc['output_json_dir'] ?? '';
+
+  ///'output/assets/l10n'
   config.entryFile = doc['entry_file'] ?? '';
   config.dartOutputDir = doc?['dart']?['output_dir'] ?? '';
   config.dartTKeysId = doc?['dart']?['keys_id'] ?? '';
@@ -48,6 +41,9 @@ void loadEnv([String path = defaultConfigEnvPath]) {
   config.dartTranslationsId = doc?['dart']?['translations_id'] ?? '';
   config.paramOutputPattern = doc?['param_output_pattern'] ?? '';
   _configParamOutput();
+  if (config.dartOutputDir.isNotEmpty) {
+    config.dartOutputDir = p.canonicalize(config.dartOutputDir);
+  }
   if (config.entryFile.isNotEmpty) {
     /// clean the URL now.
     config.entryFile = p.canonicalize(config.entryFile);
@@ -101,8 +97,12 @@ See https://cloud.google.com/translate/docs/languages for a list of supported tr
             '$defaultConfigEnvPath: [gsheets:worksheet] not defined, add it.');
         exit(2);
       }
-      trace('Spreadsheet id: ', config.sheetId);
-      trace('Worksheet title: "', config.tableId, '"');
+      var _sheetUrl =
+          'https://docs.google.com/spreadsheets/d/${config.sheetId}/edit#gid=0';
+      print('spreadsheet id:\n - ' + magenta(config.sheetId!));
+      // trace('Worksheet title: "', config.tableId, '"');
+      trace('worksheet title:\n - ' + magenta(config.tableId!));
+      trace('🔗 click to edit sheet:\n - $_sheetUrl');
     } else {
       trace(
           'ERROR: $defaultConfigEnvPath: [ghseets] configuration not found, please edit $defaultConfigEnvPath.');
@@ -136,17 +136,17 @@ See https://cloud.google.com/translate/docs/languages for a list of supported tr
     trace('ERROR: $defaultConfigEnvPath: [entryFile] is empty, please add it.');
     exit(3);
   }
-  if (config.outputJsonDir.isEmpty) {
-    trace(
-        'ERROR: $defaultConfigEnvPath: [outputJsonDir] is empty, please add it.');
-    exit(3);
-  }
+  // if (config.outputJsonDir.isEmpty) {
+  //   trace(
+  //       'ERROR: $defaultConfigEnvPath: [outputJsonDir] is empty, please add it.');
+  //   exit(3);
+  // }
   if (!config._isValidDartConfig()) {
     exit(3);
   }
-  _createDir();
 }
 
+/// Parses trconfig.yaml `param_output_pattern`.
 void _configParamOutput() {
   /// fix param output to valid string.
   var _paramOutput = config.paramOutputPattern;
@@ -187,6 +187,7 @@ Using default {*}''');
   }
 }
 
+/// Parses info from `gsheet:` tag in the configuration.
 void _parseSheets(YamlMap doc) {
   var credentials = doc['credentials'];
   var credentialsPath = doc['credentials_path'];
@@ -217,17 +218,7 @@ https://medium.com/@a.marenkov/how-to-get-credentials-for-google-sheets-456b7e88
   config.useIterativeCache = doc['use_iterative_cache'] ?? false;
 }
 
-void _createDir() {
-  // if (!exists(config.outputDir)) {
-  //   createDir(config.outputDir, recursive: true);
-  //   trace('creating output directory at ${config.outputDir}');
-  // }
-}
-
-void main() {
-  loadEnv();
-}
-
+/// Model to represent the configuration (trconfig.yaml).
 class EnvConfig {
   // String outputDir = 'output';
   String dartOutputDir = '';
@@ -292,6 +283,8 @@ class EnvConfig {
 
   String get inputVarsFile => joinDir([config.inputYamlDir, 'vars.lock']);
 
+  bool get hasOutputJsonDir => outputJsonDir.isNotEmpty;
+
   bool isValidSheet() =>
       sheetId != null && tableId != null && sheetCredentials != null;
 
@@ -316,68 +309,3 @@ Please, set [dart:output_dir:] to use any dart generation capability.
     return true;
   }
 }
-
-const _kSampleConfig = '''
-## output dir for json translations by locale
-output_json_dir: assets/i18n
-
-## main entry file to generate the unique translation json.
-entry_file: assets/fts/sample.yaml
-
-## pattern to applies final variables in the generated json/dart Strings.
-## Enclose * in the pattern you need.
-## {*} = {{name}} becomes {name}
-## %* = {{name}} becomes %name
-## (*) = {{name}} becomes (name)
-## - Special case when you need * as prefix or suffix, use *? as splitter
-## ***?** = {{name}} becomes **name**
-param_output_pattern: "{*}"
-
-intl:
-  enabled: false
-
-dart:
-  ## Output dir for dart files
-  output_dir: lib/i18n
-
-  ## Translation Key class and filename reference
-  keys_id: TKeys
-
-  ## Translations map class an filename reference.
-  translations_id: TData
-
-  ## translations as dart files Maps (available in translations.dart).
-  use_maps: false
-
-## see: https://cloud.google.com/translate/docs/languages
-## All locales to be supported.
-locales:
-  - en
-  - es
-  - ja
-
-## Google Sheets Configuration
-## How to get your credentials?
-## see: https://github.com/roipeker/flutter_translation_sheet/wiki/Google-credentials
-gsheets:
-
-  ## For a performance boost on big datasets, to try to use the GoogleTranslate formula once,
-  ## enable "Iterative Calculations" manually in your worksheet to avoid the #VALUE error.
-  ## Go to:
-  ## File > Spreadsheet Settings > Calculation > set "Iterative calculation" to "On"
-  ## Or check:
-  ## https://support.google.com/docs/answer/58515?hl=en&co=GENIE.Platform%3DDesktop#zippy=%2Cchoose-how-often-formulas-calculate
-  use_iterative_cache: false
-
-  ## Use relative or absolute path to your json credentials.
-  ## Check the wiki for a step by step tutorial:
-  ## https://github.com/roipeker/flutter_translation_sheet/wiki/Google-credentials
-  credentials_path:
-  
-  ## Open your google sheet and copy the SHEET_ID from the url:
-  ## https://docs.google.com/spreadsheets/d/{SHEET_ID}/edit#gid=0
-  spreadsheet_id:
-
-  ## The spreadsheet "table" where your translation will live.
-  worksheet: Sheet1
-''';

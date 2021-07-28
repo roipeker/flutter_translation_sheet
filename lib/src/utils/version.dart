@@ -2,12 +2,14 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:dcli/dcli.dart';
+import 'package:http/http.dart' as http;
+import 'package:yaml/yaml.dart';
 
 import '../data/strings.dart';
-import 'package:http/http.dart' as http;
-
 import 'logger.dart';
+import 'utils.dart';
 
+/// runs the [upgrade] command: `fts upgrade`
 Future<void> upgrade() async {
   if (which('flutter').found) {
     trace(green('Upgrading fts....\n'));
@@ -27,17 +29,78 @@ Future<void> upgrade() async {
   }
 }
 
+/// shows the version number in the Terminal.
+Future<void> printVersion() async {
+  final current = await currentVersion();
+  if (current == null) {
+    error('There was an error reading the current version');
+  } else {
+    trace(green(current));
+  }
+}
+
+/// Returns the current fts version.
+/// Validating if it runs in local mode [CliConfig.isDev], or installed as
+/// snapshot.
+Future<String?> currentVersion() async {
+  var scriptFile = Platform.script.toFilePath();
+  if (CliConfig.isDev) {
+    final str = openString('pubspec.yaml');
+    if (str.isEmpty) return null;
+    final data = loadYaml(str);
+    if (data is YamlMap) {
+      return data['version'];
+    }
+  }
+  // trace('script file: ', basename(scriptFile));
+  var pathToPubLock =
+      canonicalize(join(dirname(scriptFile), '../pubspec.lock'));
+  var str = openString(pathToPubLock);
+  if (str.isEmpty) return null;
+  var yaml = loadYaml(str);
+  if (yaml['packages'][CliConfig.packageName] == null) {
+    /// running local version? might read the pubspec here.
+    var pathToPubSpec =
+        canonicalize(join(dirname(pathToPubLock), 'pubspec.yaml'));
+    str = openString(pathToPubSpec);
+    if (str.isEmpty) {
+      /// Impossible scenario. But just in case.
+      error('Report version error to the developers of the package.');
+      return null;
+    }
+    yaml = loadYaml(str);
+    var version = yaml['version'];
+    return version;
+  } else {
+    var version = yaml['packages'][CliConfig.packageName]['version'].toString();
+    return version;
+  }
+}
+
+/// Command to run from `fts upgrade` or automatically after all executions.
+/// Checks if there's a new version available on pub.dev and allows the user
+/// to install them.
 Future<void> checkUpdate([bool fromCommand = true]) async {
+  if (CliConfig.isDev) return;
+
   if (fromCommand) {
     trace('\nChecking for updates...');
   }
+
   try {
     final latest = await _checkLatestVersion();
     if (latest == null) {
       error('cannot fetch the latest version');
       return;
     }
-    final compare = compareSemver(CliConfig.version, latest);
+    final current = await currentVersion();
+    if (current == null) {
+      if (fromCommand) {
+        error('there was an error reading the current version');
+      }
+      return;
+    }
+    final compare = compareSemver(current, latest);
     if (compare >= 0) {
       if (fromCommand) {
         trace(cyan('fts already on the latest version'));
@@ -45,7 +108,7 @@ Future<void> checkUpdate([bool fromCommand = true]) async {
       return;
     }
 
-    final c = orange(CliConfig.version);
+    final c = orange(current);
     final l = green(latest);
     trace(
       yellow(
@@ -75,6 +138,7 @@ Future<void> checkUpdate([bool fromCommand = true]) async {
   }
 }
 
+/// Retrieves the latest version from pub.dev for [CliConfig.packageName]
 Future<String?> _checkLatestVersion() async {
   try {
     final response = await http.get(

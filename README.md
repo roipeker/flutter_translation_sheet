@@ -1,4 +1,6 @@
-## Flutter Translation Sheet Generator [fts]
+![Flutter Tranlsation Sheet header](https://user-images.githubusercontent.com/33768711/127226621-75b35a5e-e50f-45ef-a925-32f4ec6d11d0.png?raw=true)
+
+# Flutter Translation Sheet Generator [fts]
 
 Command line application to make your l10n super fast.
 Compose your strings in yaml/json format and use GoogleSheet for auto translate.
@@ -28,6 +30,8 @@ Check `--help` on any sub-command of `fts`:
 - `fts run`
 - `fts fetch`
 - `fts extract`
+- `fts upgrade`
+- `fts --version`
 
 ### ⚙️ Usage:
 
@@ -73,9 +77,16 @@ Take the sample data input as reference, and use it in your own project.
 
 **fts** will try to keep the local input and the remote sheet in sync, and automatically generate the locales for you every time you run it.
 
+You can leave a terminal open and use the `run` command while listening for file changes in your master strings folder, or your *trconfig.yaml*:
+`fts run --watch`.
+You can exit the watch with `q` and then press `Enter`.
+
+⚠️ **Warning**:
+> Watch out how often you modify the files and save them. Remember that your Google service account has [usage limits](https://developers.google.com/sheets/api/reference/limits). 
+
+
 After a while of not using it, Google Sheet performance slow down on every request, so it might take a little longer to get the output generated.
 Once it warms up (run 1 time) the sync performance is pretty solid.
-
 
 ```bash
 fts fetch
@@ -117,7 +128,9 @@ So you can define your own pattern for the code/json generation:
 ## ***?** = {{name}} becomes **name**
 param_output_pattern: "{{*}}"
 ```
-Warning: Do not confuse the data source placeholder format with `param_output_pattern` configuration.
+
+⚠️ **Warning**:
+> Do not confuse the data source placeholder format with `param_output_pattern` configuration.
 Data-source (your yaml strings) must have this form `{{variable}}` to be interpreted as variables.
 The generated output strings uses `param_output_pattern` configuration to render the variables as you please.
 
@@ -130,9 +143,14 @@ It will output a single json file cloning the structure of the source code folde
 It's up to you to clean it up, adjust keys, split it up in other data source files, and USE it with "Flutter Translate Sheet".
 This command tool is in alpha state, but don't worry, as it doesn't touch any of analyzed files, so is safe.
 
-- New options added: [-s] captures all Strings (event without spaces), and [-e] allows you to define a comma separated list of file extensions to search for Strings, like `-e dart,java,kt,arb`
+It captures interpolated strings in your dart code, variables like `$name`, or `${obj.friends.length}`, and use them as placeholders:
+`$name` becomes `{{name}}` and  `${obj.friends.length}`  becomes `{{length}}`.
+
+- New options added: [-s] captures all Strings (event without spaces), 
+and [-e] allows you to define a comma separated list of file extensions to search for Strings, like `-e dart,java,kt,arb`
 
 Also... when you specify an --output that ends with `.yaml`, you will have a pretty cool template to plug into `fts run` :)
+
 
 - If you run the cli on macos, `fts` keeps your [iOS app bundle](https://flutter.dev/docs/development/accessibility-and-localization/internationalization#localizing-for-ios-updating-the-ios-app-bundle) synced automatically with the locales! One thing less to worry about.
 
@@ -265,7 +283,7 @@ locales:
 - If *fts* finds the 2nd ROW empty in any column, it will take the data corrupted, and will re-upload for translation.
 
 - If the row count from keys is different from the master language, it will invalidate the entire sheet.
- 
+
 
 ----
 

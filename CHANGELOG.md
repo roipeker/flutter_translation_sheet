@@ -1,3 +1,18 @@
+## [1.0.14+27]
+- add `fts run --watch` to keep listening for file system changes in the config file and the directory that holds your master strings (entry_file parent folder).
+- [LangVo.flagChar] to read the flag "emojis" if supported by the system.
+- add default dart exports for [config.dart.output_dir] file.
+
+## [1.0.13+25]
+- add dart variable capture from interpolated strings in `fts extract`.
+- updated README
+
+## [1.0.12+23]
+- fix version check for upgrades
+- added a better template in "example/"
+- force MacOs validation to run Info.plist edition. (Some linux distros have the plutil) 
+- code docs.
+ 
 ## [1.0.12+22]
 - fix wrong paths for the sample template.
 
