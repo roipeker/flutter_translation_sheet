@@ -1,4 +1,7 @@
 ![Flutter Tranlsation Sheet header](https://user-images.githubusercontent.com/33768711/127226621-75b35a5e-e50f-45ef-a925-32f4ec6d11d0.png?raw=true)
+<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+<!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 # Flutter Translation Sheet Generator [fts]
 
@@ -291,3 +294,22 @@ Thanks for passing by!
 
 
 ![](https://estruyf-github.azurewebsites.net/api/VisitorHit?user=roipeker&repo=flutter_translation_sheet&countColorcountColor&countColor=%23323232)
+## Contributors ✨
+
+Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tr>
+    <td align="center"><a href="https://github.com/IsmailAlamKhan"><img src="https://avatars.githubusercontent.com/u/67656229?v=4?s=100" width="100px;" alt=""/><br /><sub><b>IsmailAlamKhan</b></sub></a><br /><a href="#maintenance-IsmailAlamKhan" title="Maintenance">🚧</a> <a href="https://github.com/roipeker/flutter_translation_sheet/commits?author=IsmailAlamKhan" title="Code">💻</a></td>
+  </tr>
+</table>
+
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
