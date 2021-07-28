@@ -127,7 +127,15 @@ String createTranslationFile(
     var _transKeysString = '{\n';
     _transKeysString += translationMaps.join('\n');
     _transKeysString += '  };\n';
+
+    final _tClassName = config.dartTranslationClassname;
+    _translateClassString = '''
+
+abstract class $_tClassName {
+
+
     _tLocalesCode = '''
+
   static Map<String, Map<String, String>> byKeys = getByKeys();
   static Map<String, Map<String, String>> getByKeys() => $_transKeysString
   
@@ -170,6 +178,7 @@ abstract class $_tClassName {
   // final _transImportsString = transImports.join('\n');
 // $_transImportsString
   var fileContent = '''
+// ignore_for_file: lines_longer_than_80_chars
 import 'dart:ui';
 import 'package:flutter/material.dart';
 $_imports
@@ -194,6 +203,7 @@ $kSimpleLangPickerWidget
 
 String _buildAppLocalesFileContent(List<String> locales) {
   var fileContent = '''
+//ignore: avoid_classes_with_only_static_members
 abstract class AppLocales {
 ''';
   final _fields = locales.map((String key) {
@@ -253,18 +263,26 @@ String _localeVarName(String key) {
 }
 
 /// Generates the TKeys file from the [map].
+
 String createTKeyFileFromMap(
   JsonMap map, {
   bool save = false,
   bool includeToString = true,
 }) {
   var className = config.dartTKeysClassname; //'TKeys'
+  changedWords.clear();
   _buildTKeyMap(
     map: map,
     key: className,
     path: '',
     toString: includeToString,
   );
+  if (changedWords.isNotEmpty) {
+    print(
+      'These following keys have been changed with a prefix ${cyan("t + key")} because they are reserved words:',
+    );
+    changedWords.forEach((e) => print('- $e > t$e'));
+  }
   final fileContent = _translateKeyClasses.join('\n\n');
   _translateKeyClasses.clear();
   if (save) {
@@ -329,6 +347,12 @@ String _buildTKeyMap({
     // fieldName = fieldName.replaceAll(':', '_');
     fieldName = fieldName.replaceAll(invalidCharsRegExp, '_');
     fieldName = _removeInvalidChars(fieldName);
+    final c = fieldName.toLowerCase();
+    if (reservedWords.contains(c)) {
+      changedWords.add(fieldName);
+      fieldName = 't$fieldName';
+    }
+
     var localPath = path + k;
     String _fieldModifier;
 
@@ -461,3 +485,71 @@ void saveLocaleJsonAsset(
   trace('Saving locale asset "$localeName" in ', path);
   saveJson(path, map, beautify: beautify);
 }
+
+final changedWords = <String>[];
+
+final reservedWords = [
+  'abstract',
+  'else',
+  'import',
+  'show',
+  'as',
+  'enum',
+  'in',
+  'static',
+  'assert',
+  'export',
+  'interface',
+  'super',
+  'async',
+  'extends',
+  'is',
+  'switch',
+  'await',
+  'extension',
+  'late',
+  'sync',
+  'break',
+  'external',
+  'library',
+  'this',
+  'case',
+  'factory',
+  'mixin',
+  'throw',
+  'catch',
+  'false',
+  'new',
+  'true',
+  'class',
+  'final',
+  'null',
+  'try',
+  'const',
+  'finally',
+  'on',
+  'typedef',
+  'continue',
+  'for',
+  'operator',
+  'var',
+  'covariant',
+  'function',
+  'part',
+  'void',
+  'default',
+  'get',
+  'required',
+  'while',
+  'deferred',
+  'hide',
+  'rethrow',
+  'with',
+  'do',
+  'if',
+  'return',
+  'yield',
+  'dynamic',
+  'implements',
+  'set',
+];
