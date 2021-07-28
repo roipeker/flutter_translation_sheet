@@ -99,6 +99,7 @@ class FTSCommandRunner extends CommandRunner<int> {
 
   Future<void> runRun() async {
     isRunActive = true;
+
     /// save json
     var masterMap = buildLocalYamlMap();
     baseCanoMap = buildCanoMap(masterMap);
@@ -118,6 +119,7 @@ class FTSCommandRunner extends CommandRunner<int> {
     if (config.intlEnabled) {
       buildArb(localesMap);
     }
+
     /// add locales in iOS
     addLocalesInPlist();
     // Runes(string)

@@ -169,7 +169,6 @@ void buildVarsInMap(Map<String, String> map) {
   }
   entryDataHasVars = varsKeys.isNotEmpty;
   if (entryDataHasVars) {
-
     var varsContent = json2yaml(
       varsKeys,
       yamlStyle: YamlStyle.generic,

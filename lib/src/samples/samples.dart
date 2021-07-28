@@ -88,7 +88,6 @@ gsheets:
   ## The spreadsheet "table" where your translation will live.
   worksheet: Sheet1
 ''';
-
 }
 
 const kSimpleLangPickerWidget = r'''
