@@ -1,6 +1,6 @@
 ![Flutter Tranlsation Sheet header](https://user-images.githubusercontent.com/33768711/127226621-75b35a5e-e50f-45ef-a925-32f4ec6d11d0.png?raw=true)
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-3-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 # Flutter Translation Sheet Generator [fts]
@@ -305,6 +305,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   <tr>
     <td align="center"><a href="https://github.com/IsmailAlamKhan"><img src="https://avatars.githubusercontent.com/u/67656229?v=4?s=100" width="100px;" alt=""/><br /><sub><b>IsmailAlamKhan</b></sub></a><br /><a href="#maintenance-IsmailAlamKhan" title="Maintenance">🚧</a> <a href="https://github.com/roipeker/flutter_translation_sheet/commits?author=IsmailAlamKhan" title="Code">💻</a></td>
     <td align="center"><a href="http://unacorbatanegra.me"><img src="https://avatars.githubusercontent.com/u/44511181?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Nicolas Lopez</b></sub></a><br /><a href="https://github.com/roipeker/flutter_translation_sheet/commits?author=unacorbatanegra" title="Code">💻</a> <a href="#ideas-unacorbatanegra" title="Ideas, Planning, & Feedback">🤔</a></td>
+    <td align="center"><a href="https://github.com/leossmith"><img src="https://avatars.githubusercontent.com/u/4300876?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Leo</b></sub></a><br /><a href="https://github.com/roipeker/flutter_translation_sheet/commits?author=leossmith" title="Documentation">📖</a> <a href="#maintenance-leossmith" title="Maintenance">🚧</a></td>
   </tr>
 </table>
 
