@@ -24,6 +24,16 @@
         "code",
         "ideas"
       ]
+    },
+    {
+      "login": "leossmith",
+      "name": "Leo",
+      "avatar_url": "https://avatars.githubusercontent.com/u/4300876?v=4",
+      "profile": "https://github.com/leossmith",
+      "contributions": [
+        "doc",
+        "maintenance"
+      ]
     }
   ],
   "contributorsPerLine": 7,
