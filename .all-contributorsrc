@@ -14,6 +14,16 @@
         "maintenance",
         "code"
       ]
+    },
+    {
+      "login": "unacorbatanegra",
+      "name": "Nicolas Lopez",
+      "avatar_url": "https://avatars.githubusercontent.com/u/44511181?v=4",
+      "profile": "http://unacorbatanegra.me",
+      "contributions": [
+        "code",
+        "ideas"
+      ]
     }
   ],
   "contributorsPerLine": 7,
