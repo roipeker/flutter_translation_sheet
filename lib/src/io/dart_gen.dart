@@ -92,6 +92,7 @@ abstract class $className {
 /// Generates the export file with the TKeys and TData files.
 void createDartExportFile(List<String> exportPaths) {
   final dir = config.dartOutputDir;
+  exportPaths.sort();
   var fileContents = exportPaths
       .map((path) => 'export "${p.relative(path, from: dir)}";')
       .join('\n');

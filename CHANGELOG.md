@@ -1,6 +1,7 @@
-## [1.0.14+28]
+## [1.0.14+29]
 
 - Fixed the upgrade `fts upgrade` command.
+- Fix sorting of export file under [dart:output_dir]
 
 ## [1.0.14+27]
 
