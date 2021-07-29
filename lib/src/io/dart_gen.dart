@@ -162,6 +162,7 @@ String createTranslationFile(
   }
 
   _translateClassString = '''
+//ignore: avoid_classes_with_only_static_members
 abstract class $_tClassName {
   
   $_tLocalesCode
@@ -277,7 +278,9 @@ String createTKeyFileFromMap(
     );
     changedWords.forEach((e) => print('- $e > t$e'));
   }
-  final fileContent = _translateKeyClasses.join('\n\n');
+  final fileContent =
+      '// ignore_for_file: lines_longer_than_80_chars\n\n ${_translateKeyClasses.join('\n\n')}';
+
   _translateKeyClasses.clear();
   if (save) {
     var filepath = config.dartTkeysPath;
