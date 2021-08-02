@@ -136,6 +136,7 @@ void appendIfShorter<T>(
   }
 }
 
+bool fileSheetsFilter(json) => json['mimeType'] == 'application/vnd.google-apps.spreadsheet';
 bool gridSheetsFilter(json) => json['properties']['sheetType'] == 'GRID';
 
 extension StringX on String {

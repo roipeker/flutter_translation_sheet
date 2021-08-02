@@ -8,6 +8,8 @@ import 'package:flutter_translation_sheet/src/gsheets/gsheets.dart';
 final sheet = SheetParser();
 
 class SheetParser {
+
+  GSheets get api => _api;
   late final _api = GSheets(config.sheetCredentials);
   Spreadsheet? _sheet;
   late Worksheet _table;
@@ -24,7 +26,7 @@ class SheetParser {
     return '''Make sure you shared the spreadsheet with your service account email:
   1 - Open $spritesheetUrl.
   2 - Click "Share" button at the top.
-  3 - Add "$credentialEmail" in "Share with people and groups" and click "Done".
+  3 - Add "$credentialEmail" in "Share with people and groups" and click "SEND".
 ''';
   }
 

@@ -131,6 +131,49 @@ class RunCommand extends Command<int> {
   }
 }
 
+/// Command logic for `fts init`
+class InitCommand extends Command<int> {
+  @override
+  final String description =
+      'generates and setup the trconfig.yaml and templates';
+
+  @override
+  final String name = 'init';
+  final Future<void> Function() exec;
+
+  InitCommand(this.exec) {
+    argParser.addOption(
+      'credentials',
+      abbr: 'c',
+      valueHelp: 'The path to credentials.json',
+      mandatory: true,
+      help: 'Google Service credentials json',
+    );
+  }
+
+  @override
+  Future<int> run() async {
+    if (argResults != null) {
+      if (argResults!.wasParsed('credentials')) {
+        setCredentials(path: argResults!['credentials']);
+      }
+    }
+    if (!config.isValidCredentials()){
+      error('''Invalid path to Google Sheet credentials:
+
+Usage:
+fts init --credentials path/to/credentials
+
+How to get your credentials?
+https://github.com/roipeker/flutter_translation_sheet/wiki/Google-credentials
+''');
+      exit(2);
+    }
+    await exec();
+    return 0;
+  }
+}
+
 /// Adds the `config` argument [argParser]
 void addConfigOption(ArgParser argParser) {
   argParser.addOption(

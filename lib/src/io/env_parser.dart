@@ -191,31 +191,35 @@ Using default {*}''');
 void _parseSheets(YamlMap doc) {
   var credentials = doc['credentials'];
   var credentialsPath = doc['credentials_path'];
-  if (credentials != null) {
-    config.sheetCredentials = credentials;
-  } else if (credentialsPath != null) {
-    var credentialsString = openString(credentialsPath);
-    if (credentialsString.isEmpty) {
-      error(
-          "ERROR: [gsheets:credentials_path:$credentialsPath] doesn\'t exists or is empty.");
-      exit(2);
-    }
-    config.sheetCredentials = credentialsString;
-  }
-  if (config.sheetCredentials == null) {
+  setCredentials(path: credentialsPath, json: credentials);
+  if (!config.isValidCredentials()){
     trace(
         '''$defaultConfigEnvPath: Please be sure to include your Google Sheet credentials.
 - Use [gsheets:credentials_path:] for a path to your credentials.
 - Use [gsheets:credentials:] to paste credentials Json details.
 
 How to get your credentials?
-https://medium.com/@a.marenkov/how-to-get-credentials-for-google-sheets-456b7e88c430
+https://github.com/roipeker/flutter_translation_sheet/wiki/Google-credentials
 ''');
     exit(2);
   }
   config.sheetId = doc['spreadsheet_id'];
   config.tableId = doc['worksheet'];
   config.useIterativeCache = doc['use_iterative_cache'] ?? false;
+}
+
+void setCredentials({String? path, Map? json}) {
+  if (json != null) {
+    config.sheetCredentials = json;
+  } else if (path != null) {
+    var credentialsString = openString(path);
+    // if (credentialsString.isEmpty) {
+    //   error(
+    //       "ERROR: [gsheets:credentials_path:$path] doesn\'t exists or is empty.");
+    //   exit(2);
+    // }
+    config.sheetCredentials = credentialsString;
+  }
 }
 
 /// Model to represent the configuration (trconfig.yaml).
@@ -256,6 +260,11 @@ class EnvConfig {
 
   String? sheetId, tableId;
   dynamic sheetCredentials;
+
+  bool isValidCredentials() {
+    return sheetCredentials != null &&
+        '$sheetCredentials'.toString().isNotEmpty;
+  }
 
   String get dartTKeysClassname {
     return dartTKeysId.pascalCase;

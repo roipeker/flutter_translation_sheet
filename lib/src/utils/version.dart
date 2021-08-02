@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:dcli/dcli.dart';
 import 'package:http/http.dart' as http;
+import 'package:path/path.dart' as p;
 import 'package:yaml/yaml.dart';
 
 import '../data/strings.dart';
@@ -46,12 +47,17 @@ Future<void> printVersion() async {
 Future<String?> currentVersion() async {
   var scriptFile = Platform.script.toFilePath();
   if (CliConfig.isDev) {
-    final str = openString('pubspec.yaml');
+    /// get project dir (../../)
+    var basePath = p.dirname(scriptFile);
+    basePath = p.dirname(basePath);
+    var pubSpec = p.join(basePath, 'pubspec.yaml');
+    final str = openString(pubSpec);
     if (str.isEmpty) return null;
     final data = loadYaml(str);
     if (data is YamlMap) {
-      return data['version'];
+      return 'dev-' + data['version'];
     }
+    return 'Could not find pubspec.yaml version in local enviroment.';
   }
   // trace('script file: ', basename(scriptFile));
   var pathToPubLock =

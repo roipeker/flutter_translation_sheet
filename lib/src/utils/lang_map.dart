@@ -69,12 +69,12 @@ const kLangMap = <String, Map<String, String>>{
   'ar': {
     'nativeName': 'العربية',
     'englishName': 'Arabic',
-    'emoji': '🏳',
+    'emoji': '🇸🇦',
   },
   'ar-ar': {
     'nativeName': 'العربية',
     'englishName': 'Arabic',
-    'emoji': '🏳',
+    'emoji': '🇸🇦',
   },
   'ar-ma': {
     'nativeName': 'العربية',
@@ -119,7 +119,7 @@ const kLangMap = <String, Map<String, String>>{
   'bn': {
     'nativeName': 'বাংলা',
     'englishName': 'Bengali',
-    'emoji': '🇮🇳',
+    'emoji': '🇧🇩',
   },
   'bn-in': {
     'nativeName': 'বাংলা (ভারত)',

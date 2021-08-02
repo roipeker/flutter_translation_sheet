@@ -418,8 +418,8 @@ String getClassName(String name) {
 }
 
 String _buildLocaleObjFromType(String key) {
-  key = normLocale(key);
-  final keys = key.split('-');
+  key = normLocale(key, '_');
+  final keys = key.split('_');
   if (keys.length == 1) {
     return 'Locale("${keys[0]}")';
   }

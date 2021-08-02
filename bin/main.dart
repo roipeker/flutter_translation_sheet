@@ -1,17 +1,23 @@
 import 'dart:io';
 
+import 'package:flutter_translation_sheet/src/gsheets/gsheets.dart';
 import 'package:flutter_translation_sheet/src/runner.dart';
+import 'package:flutter_translation_sheet/src/utils/errors.dart';
 
 /// entry point of the program.
 /// Delegates arguments to the CommandRunner.
 Future<void> main(List<String> args) async {
-  await _checkEnviroment();
-  exit(await FTSCommandRunner().run(args));
+  _checkEnviroment();
+  try {
+    exit(await FTSCommandRunner().run(args));
+  } on GSheetsException catch (e) {
+    gsheetError(e);
+    rethrow;
+  }
 }
 
 /// Initializes the execution enviroment for the script.
 /// [CliConfig.isDev] is `true` when runs locally.
-Future<void> _checkEnviroment() async {
-  CliConfig.isDev = Platform.script.toFilePath() == 'main.dart';
-  return;
+void _checkEnviroment() async {
+  CliConfig.isDev = Platform.script.toString().endsWith('main.dart');
 }

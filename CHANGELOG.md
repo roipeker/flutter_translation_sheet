@@ -1,5 +1,11 @@
-## [1.0.14+29]
+## [1.0.14+30]
+- fixed `fts --version` for local development.
+- added global catch() for sheet errors, to provide in the future better hints on the errors and possible solutions.
+- changed some wording on the error messages.
+- made some preparations files for a future init command.
+- custom arb placeholders are STILL broken. Should be revisit asap.
 
+## [1.0.14+29]
 - Fixed the upgrade `fts upgrade` command.
 - Fix sorting of export file under [dart:output_dir]
 

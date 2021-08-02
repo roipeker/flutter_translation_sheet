@@ -38,8 +38,14 @@ void buildArb(Map<String, Map<String, String>> map) {
   if (arbDir.isEmpty) {
     error(
         '''ERROR: $defaultConfigEnvPath, intl package support is enabled [intl:enabled:true]
-But 'arb-dir:' is not define or l10.yaml not found in your target project.
-Please make sure your trconfig.yaml sits in the root of your project, and l10n.yaml as well.''');
+But 'arb-dir:' is not define or l10n.yaml not found in your target project.
+Please make sure your trconfig.yaml sits in the root of your project, and l10n.yaml as well.
+
+Follow the Flutter documentation for intl:
+
+https://flutter.dev/docs/development/accessibility-and-localization/internationalization#adding-your-own-localized-messages
+
+''');
   }
 
   /// look for base locales.
@@ -95,6 +101,7 @@ Please make sure your trconfig.yaml sits in the root of your project, and l10n.y
     for (var k in pluralMaps.keys) {
       /// add meta keys
       output[k] = _resolvePluralTextFromMap(pluralMaps[k]);
+      trace('a1 ',output[k]);
       _addMetaKey(k, output[k], output, metaProperties);
       _addMetaKey(k, output[k], output, metaFallbackProperties);
     }
@@ -102,6 +109,7 @@ Please make sure your trconfig.yaml sits in the root of your project, and l10n.y
     /// add selector keys
     for (var k in selectorMaps.keys) {
       output[k] = _resolveSelectorTextFromMap(selectorMaps[k]);
+      trace('a2 ',output[k]);
       _addMetaKey(k, output[k], output, metaProperties);
       _addMetaKey(k, output[k], output, metaFallbackProperties);
     }
@@ -164,7 +172,6 @@ void _customModifier({
 void _addMetaKey(String newKey, String textValue, Map output, Map metaMap) {
   /// add description always.
   late Map placeholders;
-
   /// check if the property had metadata.
   final metaKey = '@$newKey';
   if (metaMap.containsKey(metaKey)) {
@@ -181,8 +188,14 @@ void _addMetaKey(String newKey, String textValue, Map output, Map metaMap) {
         metaMap[metaKey].containsKey('placeholders')) {
       placeholders.addAll(metaMap[metaKey]['placeholders']);
     }
+
   }
   _saveVarsFromString(textValue, placeholders);
+  trace("Metmap: ", metaMap);
+  trace("NEW KEY: ", newKey);
+  trace("TEXT: ", textValue);
+  trace("OUTPUT: ", output);
+
 }
 
 const _emptyVarMap = <String, dynamic>{};

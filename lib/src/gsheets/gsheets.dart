@@ -3,7 +3,6 @@
 /// pub lib: https://pub.dev/packages/gsheets
 ///
 /// All credits to him.
-
 import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
@@ -229,6 +228,23 @@ class GSheets {
       renderOption,
       inputOption,
     );
+  }
+
+  Future<List<FileResource>> listSpreadsheets() async {
+    final client = await this.client.catchError((_) {
+      // retry once on error
+      _client = null;
+      return this.client;
+    });
+    final _url = 'https://www.googleapis.com/drive/v3/files';
+    final _query = "q=mimeType='application/vnd.google-apps.spreadsheet'";
+    final response = await client.get('$_url?$_query'.toUri());
+    checkResponse(response);
+    // FileResource
+    return (jsonDecode(response.body)['files'] as List)
+        .where(fileSheetsFilter)
+        .map((json) => FileResource._fromJson(json))
+        .toList();
   }
 
   static String _parseRenderOption(ValueRenderOption option) {
@@ -601,6 +617,7 @@ class Spreadsheet {
       }),
       headers: {'Content-type': 'application/json'},
     );
+    print('Response is: ${response.body}');
     checkResponse(response);
     return Permission._fromJson(jsonDecode(response.body));
   }
@@ -727,6 +744,33 @@ class Permission {
   type: $type
   role: $role
   deleted: $deleted''';
+}
+
+/// File resource for GDrive v3 api.
+class FileResource {
+  final String kind;
+  final String id;
+  final String name;
+  final String mimeType;
+
+  FileResource._({
+    required this.kind,
+    required this.id,
+    required this.name,
+    required this.mimeType,
+  });
+
+  FileResource._fromJson(Map<String, dynamic> json)
+      : kind = json['kind'],
+        id = json['id'],
+        name = json['name'],
+        mimeType = json['mimeType'];
+
+  @override
+  String toString() => '''
+  id: $id
+  name: $name
+  mimeType: $mimeType''';
 }
 
 /// Representation of a [Worksheet].

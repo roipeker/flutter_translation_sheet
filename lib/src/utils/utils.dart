@@ -13,6 +13,7 @@ import 'logger.dart';
 export 'json2yaml.dart';
 export 'logger.dart';
 export 'version.dart';
+export 'errors.dart';
 
 /// Encodes a json into a tabular format for easy redeability.
 String prettyJson(dynamic json) {
