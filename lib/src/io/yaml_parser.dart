@@ -90,6 +90,7 @@ Map<String, dynamic> metaProperties = {};
 
 KeyMap _canoMap(Map<String, dynamic> content) {
   final output = <String, String>{};
+
   void buildKeys(Map<String, dynamic> inner, String prop) {
     for (var k in inner.keys) {
       if (k.startsWith('@')) {
@@ -148,6 +149,7 @@ void putVarsInMap(Map<String, Map<String, String>> map) {
       if (varsMap.containsKey(key)) {
         var text = localeMap[key]!;
         localeMap[key] = replaceVars(VarsCap(text, varsMap[key]!));
+        varsByKeys[key] = varsMap[key];
       }
     }
   }

@@ -158,16 +158,13 @@ Also... when you specify an --output that ends with `.yaml`, you will have a pre
 
 ### arb and Intl:
 
-We have an experimental support for arb generation. In config.yaml just set (or create if it doesnt exists) this field.
-(This tag will soon be changed to something more "generic" as arb output).
+We provide an experimental support for arb generation. In trconfig.yaml just set:
 
 ```yaml
-intl:
-  enabled: true
+output_arb_template: lib/l10n/app_*.arb
 ```
 
-
-Example of .arb readable metadata:
+fts has support for .arb readable metadata:
 ```yaml
   today: "Today is {{date}}, and is hot."
   "@today":
@@ -177,6 +174,11 @@ Example of .arb readable metadata:
         type: DateTime
         format: yMMMEd
  ```
+
+As a shortcut, placeholders supports the type and format in arb generation:
+```yaml
+today: "Today is {{date:DateTime:yMMMed()}}, and is hot."
+```
 
 For plurals, we have a custom way of writing the dictionary. Just use `plural:variableName:` so `fts` knows how to generate the String.
 Remember that `other` is mandatory (the default value) when you use plurals. 
@@ -198,7 +200,7 @@ Raw way of adding the metadata:
       other: You have {{count}} new messages
 ```
 
-Previous yaml will output in *lib/l10n/app_en.arb* (or the path you defined in arb-dir inside l10n.yaml) :
+Previous yaml will output :
 `"messageCount": "{count,plural, =0{No new messages}=1{You have 1 new message}=2{You have a couple of messages}other{You have {count} new messages}}",` 
 
 Now you can also capture internal variables in the plural/selector modifiers, and add the type and parsing information into it!  
@@ -211,14 +213,13 @@ messageCount:
       other: You have {{count:int}} new messages
 ```
 
-All {{variables}} supports this special way to define name, type, format, arguments.
+All `{{variables}}` supports this special way to define name, type, format, arguments.
 Useful when you don't want to use the @meta arb approach.
 
 The "format" part applies to [NumberFormatter](https://api.flutter.dev/flutter/intl/NumberFormat-class.html) and [DateFormat](https://api.flutter.dev/flutter/intl/DateFormat-class.html) constructors.
 `{{variable:Type:Format(OptionalNamedArguments)}}` 
 
-
-Selectors (like gender), are also included for the arb generation, although not yet supported on intl for code generation:
+Selectors (like "gender"), are also included for the arb generation, although not yet supported on Flutter's Intl for code generation:
 ```yaml
 roleWelcome:
   selector:role:

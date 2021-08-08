@@ -26,10 +26,16 @@ home:
 
   static const trconfig = '''
 ## output dir for json translations by locale
-output_json_dir: assets/i18n
+## (*) represents the locale
+output_json_template: assets/i18n/*.json
+
+## output dir for arb translations files by locale
+## Useful if you have intl setup or "Intl plugin" in your IDE.
+## (*) represents the locale
+#output_arb_template: lib/l10n/intl_*
 
 ## main entry file to generate the unique translation json.
-entry_file: assets/fts/sample.yaml
+entry_file: strings/sample.yaml
 
 ## pattern to applies final variables in the generated json/dart Strings.
 ## Enclose * in the pattern you need.
@@ -39,9 +45,6 @@ entry_file: assets/fts/sample.yaml
 ## - Special case when you need * as prefix or suffix, use *? as splitter
 ## ***?** = {{name}} becomes **name**
 param_output_pattern: "{*}"
-
-intl:
-  enabled: false
 
 dart:
   ## Output dir for dart files
@@ -53,7 +56,7 @@ dart:
   ## Translations map class an filename reference.
   translations_id: TData
 
-  ## translations as dart files Maps (available in translations.dart).
+  ## translations as Dart files Maps (available in translations.dart).
   use_maps: false
 
 ## see: https://cloud.google.com/translate/docs/languages

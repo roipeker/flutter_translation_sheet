@@ -7,8 +7,8 @@ import 'samples.dart';
 /// Generates the sample template content when no `fts --config` is provided nor
 /// trconfig.yaml is detected in the current working directory.
 void createSampleContent() {
-  saveString('assets/fts/home.yaml', SampleYamls.home);
-  saveString('assets/fts/sample.yaml', SampleYamls.sample);
+  saveString('strings/home.yaml', SampleYamls.home);
+  saveString('strings/sample.yaml', SampleYamls.sample);
 
   /// create config yaml
   createSampleConfig();

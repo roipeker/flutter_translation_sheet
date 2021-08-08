@@ -32,6 +32,11 @@ void createLocalesFiles(
   var translateImports = <String>[];
   var translateLines = <String>[];
   var saveJsonLocales = config.hasOutputJsonDir;
+
+  if (saveJsonLocales) {
+    trace('Saving json locales in ${config.jsonOutputDir}:');
+  }
+
   for (var localeKey in localesMap.keys) {
     // trace('Locale ', localeKey);
     var localeName = normLocale(localeKey);
@@ -451,6 +456,17 @@ void formatDartFiles() {
   }
 }
 
+void flutterHotReload() {
+  if (which('flutter').found) {
+    trace('Running hot-reload...');
+    'flutter pub get'.start(
+      workingDirectory: configProjectDir,
+      detached: true,
+      runInShell: true,
+    );
+  }
+}
+
 /// Saves [localeName] translation [map] in [EnvConfig.outputJsonDir].
 /// With the option to [beautify] the json string output.
 void saveLocaleJsonAsset(
@@ -458,11 +474,13 @@ void saveLocaleJsonAsset(
   KeyMap map, {
   bool beautify = false,
 }) {
-  if (!localeName.endsWith('.json')) {
-    localeName += '.json';
-  }
-  var path = joinDir([config.outputJsonDir, localeName]);
-  trace('Saving locale asset "$localeName" in ', path);
+  /// not valid anymore.
+  // if (!localeName.endsWith('.json')) {
+  //   localeName += '.json';
+  // }
+  // var path = joinDir([config.outputJsonDir, localeName]);
+  var path = config.getJsonFilePath(localeName);
+  // trace('Saving json "$localeName" in ', path);
   saveJson(path, map, beautify: beautify);
 }
 
