@@ -1,8 +1,5 @@
-## [1.0.14+31]
-- fixed simple placeholder generation for arb.
-- improved plural and selectors modifiers for arb.
-- changed trconfig.yaml structure: now you can provide [output_json_template] and [output_arb_template] using the * as placeholder for locale replacement. ( For example `output_arb_template: lib/l10n/intl_*.arb`)
-- other minor adjustments.
+## [1.0.15+31]
+- preparing release for pub.dev
 
 ## [1.0.14+30]
 - fixed `fts --version` for local development.
