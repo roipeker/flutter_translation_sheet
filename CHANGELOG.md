@@ -1,3 +1,6 @@
+## [1.0.15+32]
+- dart format.
+
 ## [1.0.15+31]
 - preparing release for pub.dev
 

@@ -338,8 +338,10 @@ Please, set [dart:output_dir:] to use any dart generation capability.
   void _configOutputTemplates() {
     if (outputJsonTemplate.isNotEmpty) {
       var str = outputJsonTemplate;
+
       /// json for filename and dir.
       jsonOutputDir = p.canonicalize(p.dirname(str));
+
       /// todo: override for now, clear later.
       outputJsonDir = jsonOutputDir;
       _jsonOutputFilename = p.basename(str);
@@ -351,6 +353,7 @@ Please, set [dart:output_dir:] to use any dart generation capability.
 
     if (outputArbTemplate.isNotEmpty) {
       var str = outputArbTemplate;
+
       /// arb for filename and dir.
       arbOutputDir = p.canonicalize(p.dirname(str));
       _arbOutputFilename = p.basename(str);
@@ -365,6 +368,7 @@ Please, set [dart:output_dir:] to use any dart generation capability.
     if (hasOutputArbDir) {
       var name = _arbOutputFilename.replaceAll('*', locale);
       name = p.basenameWithoutExtension(name);
+
       /// force extension...
       name += '.arb';
       return p.join(arbOutputDir, name);

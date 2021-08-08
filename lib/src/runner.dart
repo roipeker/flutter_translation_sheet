@@ -103,6 +103,7 @@ class FTSCommandRunner extends CommandRunner<int> {
 
   Future<void> execRun() async {
     isRunActive = true;
+
     /// save json
     var masterMap = buildLocalYamlMap();
     baseCanoMap = buildCanoMap(masterMap);
@@ -153,6 +154,7 @@ class FTSCommandRunner extends CommandRunner<int> {
     if (config.hasOutputArbDir) {
       buildArb(localesMap);
     }
+
     /// add locales in iOS
     addLocalesInPlist();
     flutterHotReload();

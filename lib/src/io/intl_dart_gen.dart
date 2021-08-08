@@ -193,7 +193,6 @@ void _customModifier({
 // }
 // }
 
-
 /// Adds a new metakey to [output]
 void _addMetaKey(String newKey, String textValue, Map output, Map metaMap) {
   /// add description always.
@@ -346,6 +345,7 @@ String _resolveSelectorTextFromMap(Map map) {
   /// "selector:gender:String"
   map.remove('varType');
   var varKey = map.remove('var');
+
   /// Format is critical to be accepted by intl tools.
   /// NO SPACES at the end.
   str += '{$varKey, select,';

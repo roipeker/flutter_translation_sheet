@@ -8,7 +8,6 @@ import 'package:flutter_translation_sheet/src/gsheets/gsheets.dart';
 final sheet = SheetParser();
 
 class SheetParser {
-
   GSheets get api => _api;
   late final _api = GSheets(config.sheetCredentials);
   Spreadsheet? _sheet;

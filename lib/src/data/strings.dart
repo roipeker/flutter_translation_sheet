@@ -4,12 +4,10 @@ class CliConfig {
   static bool isDev = false;
 }
 
-
-
 abstract class AppStrings {
-
   /// add all errors here?
-  static const kInvalidOutputJsonTemplate = '''Invalid pattern supplied for [config::output_json_template]
+  static const kInvalidOutputJsonTemplate =
+      '''Invalid pattern supplied for [config::output_json_template]
 Use the star char (*) once, its a placeholder for the locale name.
 
 Example:
@@ -18,7 +16,8 @@ Example:
  - *-i18n > en-i18n.json
 ''';
 
-  static const kInvalidOutputArbTemplate = '''Invalid pattern supplied for [config::output_arb_template]
+  static const kInvalidOutputArbTemplate =
+      '''Invalid pattern supplied for [config::output_arb_template]
 Use the star char (*) once, its a placeholder for the locale name.
 
 Example:

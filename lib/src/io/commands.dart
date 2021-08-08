@@ -158,7 +158,7 @@ class InitCommand extends Command<int> {
         setCredentials(path: argResults!['credentials']);
       }
     }
-    if (!config.isValidCredentials()){
+    if (!config.isValidCredentials()) {
       error('''Invalid path to Google Sheet credentials:
 
 Usage:
