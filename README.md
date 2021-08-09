@@ -18,6 +18,11 @@ Compose your strings in yaml/json format and use GoogleSheet for auto translate.
 ![GitHub watchers](https://img.shields.io/github/watchers/roipeker/flutter_translation_sheet?style=social)
 ![GitHub followers](https://img.shields.io/github/followers/roipeker?style=social)
 
+### WIKI and setup
+
+Follow the [Wiki pages](https://github.com/roipeker/flutter_translation_sheet/wiki) for detailed instructions on the usage and project examples.
+
+
 ### 🧰 Install:
 
 > You need to have `flutter` or `dart` SDK in your System PATH.
