@@ -258,12 +258,12 @@ abstract class AppLocales {
   return fileContent;
 }
 
+/// Normalize locale [key] to match Flutter's.
 String _localeVarName(String key) {
-  return key.snakeCase;
+  return key.replaceAll('-', '_');
 }
 
 /// Generates the TKeys file from the [map].
-
 String createTKeyFileFromMap(
   JsonMap map, {
   bool save = false,
