@@ -10,8 +10,6 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      /// In Flutter > 2.2.3 avoids the exception when not using
-      /// `flutter_localizations` dependency.
       localeResolutionCallback: (_, __) => const Locale('en'),
       home: HomePageView(),
     );
