@@ -12,23 +12,30 @@ void addLocalesInPlist() {
   if (!Platform.isMacOS) {
     return;
   }
-  // replaces locales in the InfoPlist if available (only on Macos)
-  // <key>CFBundleLocalizations</key>
-  // <array>
-  // <string>en</string>
-  // <string>ar</string>
-  // </array>
-  var infoPath = buildPath([config.iosDirPath, 'Runner', 'Info.plist']);
+  _buildAppleLocales(config.iosDirPath, 'iOS');
+  _buildAppleLocales(config.macosDirPath, 'MacOS');
+}
+
+/// Takes the /ios or /macos [dirPath] and the [name] of the platform to print
+/// messages.
+/// @see [addLocalesInPlist]
+void _buildAppleLocales(String dirPath, String name){
+  final infoPath = buildPath([dirPath, 'Runner', 'Info.plist']);
   if (!exists(infoPath)) {
-    trace('Cant find the project ios folder to update locales. Skipping');
+    trace('Can\'t locate $name project folder to update locales. Skipping');
     return;
   }
   if (which('plutil').found) {
-    /// get locales :)
+    // replaces locales in the InfoPlist if available (only on Macos)
+    // <key>CFBundleLocalizations</key>
+    // <array>
+    // <string>en</string>
+    // <string>ar</string>
+    // </array>
     var localesString = jsonEncode(config.locales);
     var cmd =
         'plutil -replace CFBundleLocalizations -json \'$localesString\' $infoPath';
     cmd.run;
-    trace('📲 locales for iOS updated:\n - $infoPath:');
+    trace('locales for $name updated:\n - $infoPath:');
   }
 }

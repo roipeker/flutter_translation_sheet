@@ -44,9 +44,9 @@ Check `--help` on any sub-command of `fts`:
 
 Go with your terminal in any folder (or Flutter project folder), and run `fts run`.
 
-First time will create a template for you, and you will have to get your [Google credentials json](https://medium.com/@a.marenkov/how-to-get-credentials-for-google-sheets-456b7e88c430).
+First time will create a template for you, and you will have to get your [Google credentials json](https://github.com/roipeker/flutter_translation_sheet/wiki/Google-credentials/).
 
-Once you get the json, go to `tfconfig.yaml` and in the `gsheet:` there are two ways to fill the credentials (you only need to use one):
+Once you get the json, go to `trconfig.yaml` and in the `gsheet:` there are two ways to fill the credentials (you only need to use one):
 
 1. Add `credentials_path:` followed by the path of your json. You can copy the json file to the root folder of your project. The path can be absolute or relative.
 
@@ -76,7 +76,7 @@ gsheets:
   }
 ```
 
-You can find more information in the comments in `tfconfig.yaml` and fill the `gsheet:` section, and change the output folder as needed.
+You can find more information in the comments in `trconfig.yaml` and fill the `gsheet:` section, and change the output folder as needed.
 
 Once you have your configuration file ready, run `fts` to generate your sample google sheets.
 
@@ -309,7 +309,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <table>
   <tr>
     <td align="center"><a href="https://github.com/IsmailAlamKhan"><img src="https://avatars.githubusercontent.com/u/67656229?v=4?s=100" width="100px;" alt=""/><br /><sub><b>IsmailAlamKhan</b></sub></a><br /><a href="#maintenance-IsmailAlamKhan" title="Maintenance">🚧</a> <a href="https://github.com/roipeker/flutter_translation_sheet/commits?author=IsmailAlamKhan" title="Code">💻</a></td>
-    <td align="center"><a href="http://unacorbatanegra.me"><img src="https://avatars.githubusercontent.com/u/44511181?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Nicolas Lopez</b></sub></a><br /><a href="https://github.com/roipeker/flutter_translation_sheet/commits?author=unacorbatanegra" title="Code">💻</a> <a href="#ideas-unacorbatanegra" title="Ideas, Planning, & Feedback">🤔</a></td>
+    <td align="center"><a href="https://unacorbatanegra.me"><img src="https://avatars.githubusercontent.com/u/44511181?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Nicolas Lopez</b></sub></a><br /><a href="https://github.com/roipeker/flutter_translation_sheet/commits?author=unacorbatanegra" title="Code">💻</a> <a href="#ideas-unacorbatanegra" title="Ideas, Planning, & Feedback">🤔</a></td>
     <td align="center"><a href="https://github.com/leossmith"><img src="https://avatars.githubusercontent.com/u/4300876?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Leo</b></sub></a><br /><a href="https://github.com/roipeker/flutter_translation_sheet/commits?author=leossmith" title="Documentation">📖</a> <a href="#maintenance-leossmith" title="Maintenance">🚧</a></td>
   </tr>
 </table>

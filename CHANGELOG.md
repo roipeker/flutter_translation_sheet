@@ -1,3 +1,8 @@
+## [1.0.15+33]
+- readme fixes.
+- fix for locale key in `LangVo`.
+- improved `SimpleLangPicker` ui.
+
 ## [1.0.15+32]
 - dart format.
 

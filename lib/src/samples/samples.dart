@@ -94,6 +94,9 @@ gsheets:
 }
 
 const kSimpleLangPickerWidget = r'''
+
+/// Dropdown menu with available locales.
+/// Useful to test changing Locales.
 class SimpleLangPicker extends StatelessWidget {
   final Locale? selected;
   final Function(Locale) onSelected;
@@ -117,7 +120,7 @@ class SimpleLangPicker extends StatelessWidget {
               size: 16,
             ),
             SizedBox(width: 8),
-            Text(AppLocales.of(_selected)?.englishName??'-')
+            Text(AppLocales.of(_selected)?.englishName ?? '-')
           ],
         ),
       ),
@@ -129,19 +132,41 @@ class SimpleLangPicker extends StatelessWidget {
               (e) => PopupMenuItem<Locale>(
                 child: Row(
                   children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Text(
+                            e.englishName,
+                            style: TextStyle(
+                              fontSize: 14,
+                              letterSpacing: -0.2,
+                              fontWeight: FontWeight.w300,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            '${e.nativeName}',
+                            style: TextStyle(
+                              fontSize: 11,
+                              letterSpacing: .15,
+                              fontWeight: FontWeight.w400,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 8),
                     Text(
                       e.key.toUpperCase(),
-                      style:
-                          TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(width: 6),
-                    Text(
-                      e.englishName,
-                      style: TextStyle(fontSize: 14),
-                    ),
-                    Text(
-                      ' (${e.nativeName})',
-                      style: TextStyle(fontSize: 12),
+                      style: TextStyle(
+                        fontSize: 9,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ],
                 ),

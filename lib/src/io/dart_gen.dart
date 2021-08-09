@@ -458,7 +458,7 @@ void formatDartFiles() {
 
 void flutterHotReload() {
   if (which('flutter').found) {
-    trace('Running hot-reload...');
+    trace('Running `flutter pub get`...');
     'flutter pub get'.start(
       workingDirectory: configProjectDir,
       detached: true,

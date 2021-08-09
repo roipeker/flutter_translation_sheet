@@ -253,6 +253,10 @@ class EnvConfig {
     return p.canonicalize(p.join(configProjectDir, 'ios'));
   }
 
+  String get macosDirPath {
+    return p.canonicalize(p.join(configProjectDir, 'macos'));
+  }
+
   // String get intlYamlPath {
   //   return !intlEnabled ? '' : joinDir([configProjectDir, 'l10n.yaml']);
   // }
