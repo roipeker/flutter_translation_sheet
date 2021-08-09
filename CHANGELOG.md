@@ -1,3 +1,8 @@
+## [1.0.16+34]
+- remove type matching for optionalParameters in arb generation. 
+  This avoids issues with the main Type
+  Example: `double money` isn't casting `decimalDigits` > `{{money:double:currency(name:"Euro",symbol:"€",decimalDigits:2)}}`
+
 ## [1.0.15+33]
 - readme fixes.
 - fix for locale key in `LangVo`.

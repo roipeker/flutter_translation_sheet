@@ -303,19 +303,19 @@ Map<String, dynamic> _buildMetaVarProperties(String text) {
           if (keyVal.length > 1) {
             final key = keyVal[0].trim();
             final _val = keyVal[1].toLowerCase();
-            late Object? val;
-            if (type == 'num' || type == 'number') {
-              val = num.tryParse(_val) ?? _val;
-            } else if (type == 'int') {
-              val = int.tryParse(_val) ?? _val;
-            } else if (type == 'double' || type == 'float') {
-              val = double.tryParse(_val) ?? _val;
-            } else if (type == 'bool' || type == 'boolean') {
-              val = _val == 'true' || _val == 'yes' || _val != '0';
-            } else {
-              val = _val;
-            }
-            vo['optionalParameters'][key] = val;
+            // late Object? val;
+            // if (type == 'num' || type == 'number') {
+            //   val = num.tryParse(_val) ?? _val;
+            // } else if (type == 'int') {
+            //   val = int.tryParse(_val) ?? _val;
+            // } else if (type == 'double' || type == 'float') {
+            //   val = double.tryParse(_val) ?? _val;
+            // } else if (type == 'bool' || type == 'boolean') {
+            //   val = _val == 'true' || _val == 'yes' || _val != '0';
+            // } else {
+            //   val = _val;
+            // }
+            vo['optionalParameters'][key] = _val;
           } else {
             error('Invalid placeholder format.optionalParameters for $text');
           }

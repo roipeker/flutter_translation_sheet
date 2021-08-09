@@ -19,7 +19,7 @@ void addLocalesInPlist() {
 /// Takes the /ios or /macos [dirPath] and the [name] of the platform to print
 /// messages.
 /// @see [addLocalesInPlist]
-void _buildAppleLocales(String dirPath, String name){
+void _buildAppleLocales(String dirPath, String name) {
   final infoPath = buildPath([dirPath, 'Runner', 'Info.plist']);
   if (!exists(infoPath)) {
     trace('Can\'t locate $name project folder to update locales. Skipping');
