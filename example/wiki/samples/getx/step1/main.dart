@@ -42,7 +42,7 @@ class HomePageView extends StatelessWidget {
             children: <Widget>[
               Text('You have pushed the button this many times:'),
               Obx(
-                    () => Text(
+                () => Text(
                   controller.counterText,
                   style: Theme.of(context).textTheme.headline4,
                 ),

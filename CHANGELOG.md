@@ -1,3 +1,6 @@
+## [1.0.17+35]
+- add support to unwrap long texts `$ref: file.txt`, extension has to be **.txt**. This allows to have long multiline (html/markup) in a plain text file, instead of doing it inside the yaml. 
+
 ## [1.0.16+34]
 - remove type matching for optionalParameters in arb generation. 
   This avoids issues with the main Type

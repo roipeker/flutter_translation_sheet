@@ -33,11 +33,9 @@ String openYaml(String path) {
 }
 
 void _addDoc(String path, Map into) {
-  // trace('the dir is:: ', p.dirname(path));
   // var parentDir = io.File(path).parent.path;
   var parentDir = p.dirname(path);
   var string = openYaml(path);
-  // trace('Opening yaml ', path);
   if (string.isEmpty) {
     print('Yaml file "$path" is empty or doesn\'t exists.');
   } else {
@@ -65,7 +63,18 @@ void _copyDoc(YamlMap doc, String dir, Map into) {
 
       if (value.containsKey(kRef)) {
         var dir2 = joinDir([dir, value[kRef]]);
-        _addDoc(dir2, target);
+
+        /// special case to unwrap plain text files.
+        if (p.extension(dir2) == '.txt') {
+          var string = openString(dir2);
+          if (string.isNotEmpty) {
+            into[k] = string;
+          } else {
+            error('file reference "$dir2" is empty');
+          }
+        } else {
+          _addDoc(dir2, target);
+        }
       } else {
         _copyDoc(value, dir, target);
       }
