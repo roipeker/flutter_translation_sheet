@@ -25,15 +25,16 @@ Compose your strings in yaml/json format and use GoogleSheet for auto translate.
 <details>
 <summary>Click to expand</summary>
 
-- [Wiki 📖](#wiki-📖)
-- [Install 🔧](#install-🔧)
-- [Usage ⚙️](#usage-⚙️)
-  - [Variables 🔩](#variables-🔩)
-  - [Utilities 🔨](#utilities-🔨)
-  - [Intl Support 🧭](#intl-support-🧭)
-  - [Widgets 📐](#widgets-📐)
-- [Considerations 📌](#considerations-📌)
-- [Complementary Plugins 🔌](#complementary-plugins-🔌)
+- [Wiki 📖](#wiki-)
+- [Install 🔧](#install-)
+- [Usage 🚀](#usage-)
+  - [Variables 🔩](#variables-)
+  - [Utilities 🔨](#utilities-)
+  - [Intl Support 🧭](#intl-support-)
+  - [Widgets 📐](#widgets-)
+- [Considerations 📌](#considerations-)
+- [Complementary Plugins 🔌](#complementary-plugins-)
+- [Contributors ✨](#contributors-)
 </details>
 
 
@@ -65,7 +66,7 @@ Check `--help` on any sub-command of `fts`:
 - `fts upgrade`
 - `fts --version`
 
-## Usage ⚙️
+## Usage 🚀
 
 Go with your terminal in any folder (or Flutter project folder), and run `fts run`.
 
