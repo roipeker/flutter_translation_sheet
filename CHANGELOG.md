@@ -1,3 +1,6 @@
+## [1.0.17+36]
+- improved README.md
+
 ## [1.0.17+35]
 - add support to unwrap long texts `$ref: file.txt`, extension has to be **.txt**. This allows to have long multiline (html/markup) in a plain text file, instead of doing it inside the yaml. 
 

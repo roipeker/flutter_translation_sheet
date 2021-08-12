@@ -65,7 +65,10 @@ void _copyDoc(YamlMap doc, String dir, Map into) {
         var dir2 = joinDir([dir, value[kRef]]);
 
         /// special case to unwrap plain text files.
-        if (p.extension(dir2) == '.txt') {
+        final ext = p.extension(dir2);
+        const plainTextExtensions = ['.txt', '.html', '.htm', '.xhtml', '.md'];
+        // if (ext == '.txt' || p.extension(dir2) == '.html') {
+        if (plainTextExtensions.contains(ext)) {
           var string = openString(dir2);
           if (string.isNotEmpty) {
             into[k] = string;

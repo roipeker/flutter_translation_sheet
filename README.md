@@ -12,20 +12,45 @@ Compose your strings in yaml/json format and use GoogleSheet for auto translate.
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-3-blue.svg?style=flat)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
+[![Adobe XD plugin](https://img.shields.io/badge/Adobe%20XD-grey?style=flat&logo=Adobe%20XD&logoColor=white "Download fts extract plugin for Adobe XD")](https://adobe.com/go/cc_plugins_discover_plugin?pluginId=63ac7c32&workflow=share)
+[![Figma plugin](https://img.shields.io/badge/Figma-grey.svg?style=flat&logo=figma&logoColor=white  "Download fts extract plugin for Figma")](https://www.figma.com/community/plugin/1005324910626168012/fts-extractor)
 
 ![GitHub stars](https://img.shields.io/github/stars/roipeker/flutter_translation_sheet?style=social)
 ![GitHub forks](https://img.shields.io/github/forks/roipeker/flutter_translation_sheet?style=social)
 ![GitHub watchers](https://img.shields.io/github/watchers/roipeker/flutter_translation_sheet?style=social)
 ![GitHub followers](https://img.shields.io/github/followers/roipeker?style=social)
 
-### WIKI and setup
+## Table of contents:
 
-Follow the [Wiki pages](https://github.com/roipeker/flutter_translation_sheet/wiki) for detailed instructions on the usage and project examples.
+<details>
+<summary>Click to expand</summary>
+
+- [Wiki 📖](#wiki-📖)
+- [Install 🔧](#install-🔧)
+- [Usage ⚙️](#usage-⚙️)
+  - [Variables 🔩](#variables-🔩)
+  - [Utilities 🔨](#utilities-🔨)
+  - [Intl Support 🧭](#intl-support-🧭)
+  - [Widgets 📐](#widgets-📐)
+- [Considerations 📌](#considerations-📌)
+- [Complementary Plugins 🔌](#complementary-plugins-🔌)
+</details>
 
 
-### 🧰 Install:
+## Wiki 📖
 
-> You need to have `flutter` or `dart` SDK in your System PATH.
+Follow the [Wiki pages](https://github.com/roipeker/flutter_translation_sheet/wiki) for detailed instructions on [setup](https://github.com/roipeker/flutter_translation_sheet/wiki/Google-credentials), [usage](https://github.com/roipeker/flutter_translation_sheet/wiki/Configuration-setup) and [project](https://github.com/roipeker/flutter_translation_sheet/wiki/Integration-with-Flutter-Intl) [examples](https://github.com/roipeker/flutter_translation_sheet/wiki/Integration-with-GetX).
+
+
+## Requirements 📋
+
+For **fts cli** to communicate with Google Sheets, you need to get your [Google Service Credentials](https://github.com/roipeker/flutter_translation_sheet/wiki/Google-credentials).
+
+
+You need to have the latest version of [`Flutter SDK`](https://flutter.dev/docs/get-started/install) or [`Dart SDK`](https://dart.dev/get-dart#install) available in your system PATH.
+
+
+## Install 🔧
 
 ```bash
 flutter pub global activate flutter_translation_sheet
@@ -40,7 +65,7 @@ Check `--help` on any sub-command of `fts`:
 - `fts upgrade`
 - `fts --version`
 
-### ⚙️ Usage:
+## Usage ⚙️
 
 Go with your terminal in any folder (or Flutter project folder), and run `fts run`.
 
@@ -112,7 +137,7 @@ using the latest strings, and manual changes will get lost.
 
 Currently you have to be careful, and keep your manual translations backed up just in case you modify the master language string.
 
-### Variables:
+### Variables 🔩
 
 To store "variables" or placeholders in your strings to be replaced later in your code, use the follow notation:
 
@@ -141,7 +166,7 @@ param_output_pattern: "{{*}}"
 Data-source (your yaml strings) must have this form `{{variable}}` to be interpreted as variables.
 The generated output strings uses `param_output_pattern` configuration to render the variables as you please.
 
-### Utilities:
+### Utilities 🔨
 
 - `fts extract [--path] [--output]`: This tiny utility command performs a shallow search (no syslinks) of your dart classes and uses a basic pattern matching to capture your code's Strings.
 Might come in handy when you wanna localize an app with hardcoded texts. It only process '.dart' files, and the String matching isn't very permissive (single words Strings are skipped).
@@ -161,15 +186,15 @@ Also... when you specify an --output that ends with `.yaml`, you will have a pre
 
 - If you run the cli on macos, `fts` keeps your [iOS app bundle](https://flutter.dev/docs/development/accessibility-and-localization/internationalization#localizing-for-ios-updating-the-ios-app-bundle) synced automatically with the locales! One thing less to worry about.
 
-### arb and Intl:
+### Intl Support 🧭
 
-We provide an experimental support for arb generation. In trconfig.yaml just set:
+**fts** has the ability to generate valid `.arb` files. In `trconfig.yaml` just set:
 
 ```yaml
 output_arb_template: lib/l10n/app_*.arb
 ```
 
-fts has support for .arb readable metadata:
+You can use [`.arb metadata`](https://localizely.com/flutter-arb/ "arb tutorial by localizely") to supply the placeholders format as you would do with the regular `.arb` file:
 ```yaml
   today: "Today is {{date}}, and is hot."
   "@today":
@@ -245,7 +270,7 @@ output arb:
 }
 ```
 
-### 📝 Utilities:
+### Widgets 📐
 
 You can use `SimpleLangPicker()` widget when you generate the dart code (included by default in `TData class]).
 Is meant to be a quick tester to change languages. For example, if you use GetX for translations:
@@ -265,7 +290,7 @@ return Scaffold(
 
 We will try to provide a richer experience integrating more libraries outputs in the future.  
 
-### 📝 Considerations:
+## Considerations 📌
 
 - Is preferable to keep the *trconfig.yaml* in the root of your project, some commands assumes that location (like arb generation).  
 
@@ -294,6 +319,28 @@ locales:
 
 
 ----
+
+## Complementary Plugins 🔌
+
+You can use **fts extractor** plugin to get Strings with auto-generated keys in a tree-like structure, based on Groups and Layers of your design files.
+Similar to [`fts extract` command](#utilities-🔨).
+
+<a href="https://adobe.com/go/cc_plugins_discover_plugin?pluginId=63ac7c32&workflow=share" title="Download plugin for Adobe XD">
+<div style="margin: 32px 0 32px 12px">
+  <img src="https://user-images.githubusercontent.com/33768711/129249431-276cf416-54f8-40b7-a0e3-a37fb3c116b0.png" alt="Adobe XD Logo" width="32" height="32" style="vertical-align:middle;margin-right:12px;stroke-width:3;stroke:#f00"/> 
+  <span style="vertical-align:middle"><strong>fts extractor</strong> plugin for Adobe XD</span>
+</div>
+</a>
+
+<a href="https://www.figma.com/community/plugin/1005324910626168012/fts-extractor" title="Download plugin for Figma">
+<div style="margin: 32px 0 32px 12px">
+  <img src="https://user-images.githubusercontent.com/33768711/129249424-f465deca-dbdd-4836-bfae-9b6deee6103a.png" alt="Figma Logo"   width="32" height="32" style="vertical-align:middle;margin-right:12px"/> 
+  <span style="vertical-align:middle"><strong>fts extractor</strong> plugin for  Figma</span>
+</div>
+</a>
+
+
+
 
 Thanks for passing by!
 

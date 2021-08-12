@@ -196,3 +196,66 @@ String getCodeMapLocaleKeysToMasterText(String theClassName) {
     return output;
   }''';
 }
+
+const kAppLocalizations = '''
+import 'dart:async';
+
+import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:intl/intl.dart' as intl;
+
+##import_locales
+
+abstract class ##className {
+  AppLocalizations(String locale) : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+
+  final String localeName;
+
+  static ##className? of(BuildContext context) {
+    return Localizations.of<##className>(context, ##className);
+  }
+
+  static const LocalizationsDelegate<##className> delegate = _##classNameDelegate();
+  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates = <LocalizationsDelegate<dynamic>>[
+    delegate,
+    GlobalMaterialLocalizations.delegate,
+    GlobalCupertinoLocalizations.delegate,
+    GlobalWidgetsLocalizations.delegate,
+  ];
+
+  static const List<Locale> supportedLocales = <Locale>[
+    ##supportedLocales
+  ];
+
+  ##interfaseWithAllStrings
+}
+
+class _##classNameDelegate extends LocalizationsDelegate<##className> {
+  const _##classNameDelegate();
+
+  @override
+  Future<##className> load(Locale locale) {
+    return SynchronousFuture<##className>(_lookupAppLocalizations(locale));
+  }
+
+  @override
+  // bool isSupported(Locale locale) => <String>['el', 'en', 'es', 'fa', 'ja', 'ru', 'zh'].contains(locale.languageCode);
+  bool isSupported(Locale locale) => <String>[##localesIds].contains(locale.languageCode);
+
+  @override
+  bool shouldReload(_##classNameDelegate old) => false;
+}
+
+##className _lookupAppLocalizations(Locale locale) {
+  
+  /// language+country code specified?
+  ##localizationSwitchReturn
+
+  throw FlutterError(
+    '##className.delegate failed to load unsupported locale "\$locale". This is likely '
+    'an issue with the fts localizations generation tool.'
+  );
+}
+
+''';
