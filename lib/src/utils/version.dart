@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:dcli/dcli.dart';
 import 'package:http/http.dart' as http;
+import 'package:path/path.dart' as p;
 import 'package:yaml/yaml.dart';
 
 import '../data/strings.dart';
@@ -15,7 +16,8 @@ Future<void> upgrade() async {
     trace(green('Upgrading fts....\n'));
     final result =
         'flutter pub global activate flutter_translation_sheet'.start(
-      terminal: true,
+      // terminal: true,
+      runInShell: true,
       progress: Progress(
         (e) => trace(yellow(e, bold: false)),
         stderr: printerr,
@@ -45,12 +47,17 @@ Future<void> printVersion() async {
 Future<String?> currentVersion() async {
   var scriptFile = Platform.script.toFilePath();
   if (CliConfig.isDev) {
-    final str = openString('pubspec.yaml');
+    /// get project dir (../../)
+    var basePath = p.dirname(scriptFile);
+    basePath = p.dirname(basePath);
+    var pubSpec = p.join(basePath, 'pubspec.yaml');
+    final str = openString(pubSpec);
     if (str.isEmpty) return null;
     final data = loadYaml(str);
     if (data is YamlMap) {
-      return data['version'];
+      return 'dev-' + data['version'];
     }
+    return 'Could not find pubspec.yaml version in local enviroment.';
   }
   // trace('script file: ', basename(scriptFile));
   var pathToPubLock =
@@ -88,6 +95,7 @@ Future<void> checkUpdate([bool fromCommand = true]) async {
   }
 
   try {
+    /*
     final latest = await _checkLatestVersion();
     if (latest == null) {
       error('cannot fetch the latest version');
@@ -126,6 +134,7 @@ Future<void> checkUpdate([bool fromCommand = true]) async {
         '\n___________________________________________________\n\n',
       ),
     );
+    */
     final result = confirm(
       yellow('Would you like update to the last version?'),
       defaultValue: true,

@@ -1,5 +1,4 @@
 ![Flutter Tranlsation Sheet header](https://user-images.githubusercontent.com/33768711/127226621-75b35a5e-e50f-45ef-a925-32f4ec6d11d0.png?raw=true)
-
 # Flutter Translation Sheet Generator [fts]
 
 Command line application to make your l10n super fast.
@@ -10,15 +9,49 @@ Compose your strings in yaml/json format and use GoogleSheet for auto translate.
 [![style: pedantic](https://img.shields.io/badge/style-pedantic-blue.svg?&style=flat)](https://pub.dev/packages/pedantic)
 [![buy me a coffee](https://img.shields.io/badge/buy%20me%20a%20coffee-grey.svg?logo=buy-me-a-coffee&style=flat)](https://www.buymeacoffee.com/roipeker)
 ![GitHub last commit](https://img.shields.io/github/last-commit/roipeker/flutter_translation_sheet?color=blue&logo=GitHub&style=flat)
+<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+[![All Contributors](https://img.shields.io/badge/all_contributors-3-blue.svg?style=flat)](#contributors-)
+<!-- ALL-CONTRIBUTORS-BADGE:END -->
+[![Adobe XD plugin](https://img.shields.io/badge/Adobe%20XD-grey?style=flat&logo=Adobe%20XD&logoColor=white "Download fts extract plugin for Adobe XD")](https://adobe.com/go/cc_plugins_discover_plugin?pluginId=63ac7c32&workflow=share)
+[![Figma plugin](https://img.shields.io/badge/Figma-grey.svg?style=flat&logo=figma&logoColor=white  "Download fts extract plugin for Figma")](https://www.figma.com/community/plugin/1005324910626168012/fts-extractor)
 
 ![GitHub stars](https://img.shields.io/github/stars/roipeker/flutter_translation_sheet?style=social)
 ![GitHub forks](https://img.shields.io/github/forks/roipeker/flutter_translation_sheet?style=social)
 ![GitHub watchers](https://img.shields.io/github/watchers/roipeker/flutter_translation_sheet?style=social)
 ![GitHub followers](https://img.shields.io/github/followers/roipeker?style=social)
 
-### 🧰 Install:
+## Table of contents:
 
-> You need to have `flutter` or `dart` SDK in your System PATH.
+<details>
+<summary>Click to expand</summary>
+
+- [Wiki 📖](#wiki-)
+- [Install 🔧](#install-)
+- [Usage 🚀](#usage-)
+  - [Variables 🔩](#variables-)
+  - [Utilities 🔨](#utilities-)
+  - [Intl Support 🧭](#intl-support-)
+  - [Widgets 📐](#widgets-)
+- [Considerations 📌](#considerations-)
+- [Complementary Plugins 🔌](#complementary-plugins-)
+- [Contributors ✨](#contributors-)
+</details>
+
+
+## Wiki 📖
+
+Follow the [Wiki pages](https://github.com/roipeker/flutter_translation_sheet/wiki) for detailed instructions on [setup](https://github.com/roipeker/flutter_translation_sheet/wiki/Google-credentials), [usage](https://github.com/roipeker/flutter_translation_sheet/wiki/Configuration-setup) and [project](https://github.com/roipeker/flutter_translation_sheet/wiki/Integration-with-Flutter-Intl) [examples](https://github.com/roipeker/flutter_translation_sheet/wiki/Integration-with-GetX).
+
+
+## Requirements 📋
+
+For **fts cli** to communicate with Google Sheets, you need to get your [Google Service Credentials](https://github.com/roipeker/flutter_translation_sheet/wiki/Google-credentials).
+
+
+You need to have the latest version of [`Flutter SDK`](https://flutter.dev/docs/get-started/install) or [`Dart SDK`](https://dart.dev/get-dart#install) available in your system PATH.
+
+
+## Install 🔧
 
 ```bash
 flutter pub global activate flutter_translation_sheet
@@ -33,13 +66,13 @@ Check `--help` on any sub-command of `fts`:
 - `fts upgrade`
 - `fts --version`
 
-### ⚙️ Usage:
+## Usage 🚀
 
 Go with your terminal in any folder (or Flutter project folder), and run `fts run`.
 
-First time will create a template for you, and you will have to get your [Google credentials json](https://medium.com/@a.marenkov/how-to-get-credentials-for-google-sheets-456b7e88c430).
+First time will create a template for you, and you will have to get your [Google credentials json](https://github.com/roipeker/flutter_translation_sheet/wiki/Google-credentials/).
 
-Once you get the json, go to `tfconfig.yaml` and in the `gsheet:` there are two ways to fill the credentials (you only need to use one):
+Once you get the json, go to `trconfig.yaml` and in the `gsheet:` there are two ways to fill the credentials (you only need to use one):
 
 1. Add `credentials_path:` followed by the path of your json. You can copy the json file to the root folder of your project. The path can be absolute or relative.
 
@@ -69,7 +102,7 @@ gsheets:
   }
 ```
 
-You can find more information in the comments in `tfconfig.yaml` and fill the `gsheet:` section, and change the output folder as needed.
+You can find more information in the comments in `trconfig.yaml` and fill the `gsheet:` section, and change the output folder as needed.
 
 Once you have your configuration file ready, run `fts` to generate your sample google sheets.
 
@@ -105,7 +138,7 @@ using the latest strings, and manual changes will get lost.
 
 Currently you have to be careful, and keep your manual translations backed up just in case you modify the master language string.
 
-### Variables:
+### Variables 🔩
 
 To store "variables" or placeholders in your strings to be replaced later in your code, use the follow notation:
 
@@ -134,7 +167,7 @@ param_output_pattern: "{{*}}"
 Data-source (your yaml strings) must have this form `{{variable}}` to be interpreted as variables.
 The generated output strings uses `param_output_pattern` configuration to render the variables as you please.
 
-### Utilities:
+### Utilities 🔨
 
 - `fts extract [--path] [--output]`: This tiny utility command performs a shallow search (no syslinks) of your dart classes and uses a basic pattern matching to capture your code's Strings.
 Might come in handy when you wanna localize an app with hardcoded texts. It only process '.dart' files, and the String matching isn't very permissive (single words Strings are skipped).
@@ -154,18 +187,15 @@ Also... when you specify an --output that ends with `.yaml`, you will have a pre
 
 - If you run the cli on macos, `fts` keeps your [iOS app bundle](https://flutter.dev/docs/development/accessibility-and-localization/internationalization#localizing-for-ios-updating-the-ios-app-bundle) synced automatically with the locales! One thing less to worry about.
 
-### arb and Intl:
+### Intl Support 🧭
 
-We have an experimental support for arb generation. In config.yaml just set (or create if it doesnt exists) this field.
-(This tag will soon be changed to something more "generic" as arb output).
+**fts** has the ability to generate valid `.arb` files. In `trconfig.yaml` just set:
 
 ```yaml
-intl:
-  enabled: true
+output_arb_template: lib/l10n/app_*.arb
 ```
 
-
-Example of .arb readable metadata:
+You can use [`.arb metadata`](https://localizely.com/flutter-arb/ "arb tutorial by localizely") to supply the placeholders format as you would do with the regular `.arb` file:
 ```yaml
   today: "Today is {{date}}, and is hot."
   "@today":
@@ -175,6 +205,11 @@ Example of .arb readable metadata:
         type: DateTime
         format: yMMMEd
  ```
+
+As a shortcut, placeholders supports the type and format in arb generation:
+```yaml
+today: "Today is {{date:DateTime:yMMMed()}}, and is hot."
+```
 
 For plurals, we have a custom way of writing the dictionary. Just use `plural:variableName:` so `fts` knows how to generate the String.
 Remember that `other` is mandatory (the default value) when you use plurals. 
@@ -196,7 +231,7 @@ Raw way of adding the metadata:
       other: You have {{count}} new messages
 ```
 
-Previous yaml will output in *lib/l10n/app_en.arb* (or the path you defined in arb-dir inside l10n.yaml) :
+Previous yaml will output :
 `"messageCount": "{count,plural, =0{No new messages}=1{You have 1 new message}=2{You have a couple of messages}other{You have {count} new messages}}",` 
 
 Now you can also capture internal variables in the plural/selector modifiers, and add the type and parsing information into it!  
@@ -209,14 +244,13 @@ messageCount:
       other: You have {{count:int}} new messages
 ```
 
-All {{variables}} supports this special way to define name, type, format, arguments.
+All `{{variables}}` supports this special way to define name, type, format, arguments.
 Useful when you don't want to use the @meta arb approach.
 
 The "format" part applies to [NumberFormatter](https://api.flutter.dev/flutter/intl/NumberFormat-class.html) and [DateFormat](https://api.flutter.dev/flutter/intl/DateFormat-class.html) constructors.
 `{{variable:Type:Format(OptionalNamedArguments)}}` 
 
-
-Selectors (like gender), are also included for the arb generation, although not yet supported on intl for code generation:
+Selectors (like "gender"), are also included for the arb generation, although not yet supported on Flutter's Intl for code generation:
 ```yaml
 roleWelcome:
   selector:role:
@@ -237,7 +271,7 @@ output arb:
 }
 ```
 
-### 📝 Utilities:
+### Widgets 📐
 
 You can use `SimpleLangPicker()` widget when you generate the dart code (included by default in `TData class]).
 Is meant to be a quick tester to change languages. For example, if you use GetX for translations:
@@ -257,7 +291,7 @@ return Scaffold(
 
 We will try to provide a richer experience integrating more libraries outputs in the future.  
 
-### 📝 Considerations:
+## Considerations 📌
 
 - Is preferable to keep the *trconfig.yaml* in the root of your project, some commands assumes that location (like arb generation).  
 
@@ -287,7 +321,50 @@ locales:
 
 ----
 
+## Complementary Plugins 🔌
+
+You can use **fts extractor** plugin to get Strings with auto-generated keys in a tree-like structure, based on Groups and Layers of your design files.
+Similar to [`fts extract` command](#utilities-🔨).
+
+<a href="https://adobe.com/go/cc_plugins_discover_plugin?pluginId=63ac7c32&workflow=share" title="Download plugin for Adobe XD">
+<div style="margin: 32px 0 32px 12px">
+  <img src="https://user-images.githubusercontent.com/33768711/129249431-276cf416-54f8-40b7-a0e3-a37fb3c116b0.png" alt="Adobe XD Logo" width="32" height="32" style="vertical-align:middle;margin-right:12px;stroke-width:3;stroke:#f00"/> 
+  <span style="vertical-align:middle"><strong>fts extractor</strong> plugin for Adobe XD</span>
+</div>
+</a>
+
+<a href="https://www.figma.com/community/plugin/1005324910626168012/fts-extractor" title="Download plugin for Figma">
+<div style="margin: 32px 0 32px 12px">
+  <img src="https://user-images.githubusercontent.com/33768711/129249424-f465deca-dbdd-4836-bfae-9b6deee6103a.png" alt="Figma Logo"   width="32" height="32" style="vertical-align:middle;margin-right:12px"/> 
+  <span style="vertical-align:middle"><strong>fts extractor</strong> plugin for  Figma</span>
+</div>
+</a>
+
+
+
+
 Thanks for passing by!
 
 
 ![](https://estruyf-github.azurewebsites.net/api/VisitorHit?user=roipeker&repo=flutter_translation_sheet&countColorcountColor&countColor=%23323232)
+## Contributors ✨
+
+Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tr>
+    <td align="center"><a href="https://github.com/IsmailAlamKhan"><img src="https://avatars.githubusercontent.com/u/67656229?v=4?s=100" width="100px;" alt=""/><br /><sub><b>IsmailAlamKhan</b></sub></a><br /><a href="#maintenance-IsmailAlamKhan" title="Maintenance">🚧</a> <a href="https://github.com/roipeker/flutter_translation_sheet/commits?author=IsmailAlamKhan" title="Code">💻</a></td>
+    <td align="center"><a href="https://unacorbatanegra.me"><img src="https://avatars.githubusercontent.com/u/44511181?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Nicolas Lopez</b></sub></a><br /><a href="https://github.com/roipeker/flutter_translation_sheet/commits?author=unacorbatanegra" title="Code">💻</a> <a href="#ideas-unacorbatanegra" title="Ideas, Planning, & Feedback">🤔</a></td>
+    <td align="center"><a href="https://github.com/leossmith"><img src="https://avatars.githubusercontent.com/u/4300876?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Leo</b></sub></a><br /><a href="https://github.com/roipeker/flutter_translation_sheet/commits?author=leossmith" title="Documentation">📖</a> <a href="#maintenance-leossmith" title="Maintenance">🚧</a></td>
+  </tr>
+</table>
+
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!

@@ -30,8 +30,11 @@ void loadEnv([String path = defaultConfigEnvPath]) {
   }
   configPath = p.canonicalize(path);
   var doc = loadYaml(data);
-  config.intlEnabled = doc['intl']?['enabled'] ?? false;
-  config.outputJsonDir = doc['output_json_dir'] ?? '';
+  // config.intlEnabled = doc['intl']?['enabled'] ?? false;
+  // config.outputJsonDir = doc['output_json_dir'] ?? '';
+  config.outputJsonTemplate = doc['output_json_template'] ?? '';
+  config.outputArbTemplate = doc['output_arb_template'] ?? '';
+  config._configOutputTemplates();
 
   ///'output/assets/l10n'
   config.entryFile = doc['entry_file'] ?? '';
@@ -191,25 +194,15 @@ Using default {*}''');
 void _parseSheets(YamlMap doc) {
   var credentials = doc['credentials'];
   var credentialsPath = doc['credentials_path'];
-  if (credentials != null) {
-    config.sheetCredentials = credentials;
-  } else if (credentialsPath != null) {
-    var credentialsString = openString(credentialsPath);
-    if (credentialsString.isEmpty) {
-      error(
-          "ERROR: [gsheets:credentials_path:$credentialsPath] doesn\'t exists or is empty.");
-      exit(2);
-    }
-    config.sheetCredentials = credentialsString;
-  }
-  if (config.sheetCredentials == null) {
+  setCredentials(path: credentialsPath, json: credentials);
+  if (!config.isValidCredentials()) {
     trace(
         '''$defaultConfigEnvPath: Please be sure to include your Google Sheet credentials.
 - Use [gsheets:credentials_path:] for a path to your credentials.
 - Use [gsheets:credentials:] to paste credentials Json details.
 
 How to get your credentials?
-https://medium.com/@a.marenkov/how-to-get-credentials-for-google-sheets-456b7e88c430
+https://github.com/roipeker/flutter_translation_sheet/wiki/Google-credentials
 ''');
     exit(2);
   }
@@ -218,16 +211,37 @@ https://medium.com/@a.marenkov/how-to-get-credentials-for-google-sheets-456b7e88
   config.useIterativeCache = doc['use_iterative_cache'] ?? false;
 }
 
+void setCredentials({String? path, Map? json}) {
+  if (json != null) {
+    config.sheetCredentials = json;
+  } else if (path != null) {
+    var credentialsString = openString(path);
+    // if (credentialsString.isEmpty) {
+    //   error(
+    //       "ERROR: [gsheets:credentials_path:$path] doesn\'t exists or is empty.");
+    //   exit(2);
+    // }
+    config.sheetCredentials = credentialsString;
+  }
+}
+
 /// Model to represent the configuration (trconfig.yaml).
 class EnvConfig {
   // String outputDir = 'output';
   String dartOutputDir = '';
+
+  ///@deprecated
   String outputJsonDir = '';
+  String outputJsonTemplate = '';
+  String outputArbTemplate = '';
+
   String entryFile = '';
   String paramOutputPattern = '{*}';
   String paramOutputPattern1 = '{{';
   String paramOutputPattern2 = '}}';
-  bool intlEnabled = false;
+
+  /// @deprecated
+  // bool intlEnabled = false;
 
   /// assigned from [entryFile]
   String inputYamlDir = '';
@@ -239,9 +253,13 @@ class EnvConfig {
     return p.canonicalize(p.join(configProjectDir, 'ios'));
   }
 
-  String get intlYamlPath {
-    return !intlEnabled ? '' : joinDir([configProjectDir, 'l10n.yaml']);
+  String get macosDirPath {
+    return p.canonicalize(p.join(configProjectDir, 'macos'));
   }
+
+  // String get intlYamlPath {
+  //   return !intlEnabled ? '' : joinDir([configProjectDir, 'l10n.yaml']);
+  // }
 
   /// "outputDir + tkeys.dart"
   String dartTKeysId = '';
@@ -256,6 +274,11 @@ class EnvConfig {
 
   String? sheetId, tableId;
   dynamic sheetCredentials;
+
+  bool isValidCredentials() {
+    return sheetCredentials != null &&
+        '$sheetCredentials'.toString().isNotEmpty;
+  }
 
   String get dartTKeysClassname {
     return dartTKeysId.pascalCase;
@@ -284,6 +307,7 @@ class EnvConfig {
   String get inputVarsFile => joinDir([config.inputYamlDir, 'vars.lock']);
 
   bool get hasOutputJsonDir => outputJsonDir.isNotEmpty;
+  bool get hasOutputArbDir => outputArbTemplate.isNotEmpty;
 
   bool isValidSheet() =>
       sheetId != null && tableId != null && sheetCredentials != null;
@@ -307,5 +331,63 @@ Please, set [dart:output_dir:] to use any dart generation capability.
       return true;
     }
     return true;
+  }
+
+  String arbOutputDir = '';
+  String _arbOutputFilename = '';
+
+  String jsonOutputDir = '';
+  String _jsonOutputFilename = '';
+
+  void _configOutputTemplates() {
+    if (outputJsonTemplate.isNotEmpty) {
+      var str = outputJsonTemplate;
+
+      /// json for filename and dir.
+      jsonOutputDir = p.canonicalize(p.dirname(str));
+
+      /// todo: override for now, clear later.
+      outputJsonDir = jsonOutputDir;
+      _jsonOutputFilename = p.basename(str);
+      if (_jsonOutputFilename.split('*').length > 2) {
+        error(AppStrings.kInvalidOutputJsonTemplate);
+        exit(3);
+      }
+    }
+
+    if (outputArbTemplate.isNotEmpty) {
+      var str = outputArbTemplate;
+
+      /// arb for filename and dir.
+      arbOutputDir = p.canonicalize(p.dirname(str));
+      _arbOutputFilename = p.basename(str);
+      if (_arbOutputFilename.split('*').length > 2) {
+        error(AppStrings.kInvalidOutputJsonTemplate);
+        exit(3);
+      }
+    }
+  }
+
+  String getArbFilePath(String locale) {
+    if (hasOutputArbDir) {
+      var name = _arbOutputFilename.replaceAll('*', locale);
+      name = p.basenameWithoutExtension(name);
+
+      /// force extension...
+      name += '.arb';
+      return p.join(arbOutputDir, name);
+    }
+    return '';
+  }
+
+  String getJsonFilePath(String locale) {
+    if (hasOutputJsonDir) {
+      var name = _jsonOutputFilename.replaceAll('*', locale);
+      if (!name.contains('.')) {
+        name += '.json';
+      }
+      return p.join(jsonOutputDir, name);
+    }
+    return '';
   }
 }

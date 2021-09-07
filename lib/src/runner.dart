@@ -26,7 +26,11 @@ class FTSCommandRunner extends CommandRunner<int> {
     addCommand(FetchCommand(startFetch));
     addCommand(RunCommand(startRun));
     addCommand(UpgradeCommand(checkUpdate));
+
+    /// add "init" command when it's ready.
+    // addCommand(InitCommand(initRun));
     addCommand(ExtractStringCommand(extractStrings));
+
     argParser.addFlag(
       'version',
       help: 'Shows the current fts version',
@@ -67,7 +71,7 @@ class FTSCommandRunner extends CommandRunner<int> {
     if (watchFileChanges) {
       await watchChanges();
     } else {
-      await runRun();
+      await execRun();
     }
     exit(1);
   }
@@ -85,7 +89,7 @@ class FTSCommandRunner extends CommandRunner<int> {
       return;
     }
     trace('Some Data changed. ', changePath);
-    await runRun();
+    await execRun();
   }
 
   void watchRun() async {
@@ -94,11 +98,12 @@ class FTSCommandRunner extends CommandRunner<int> {
     }
     sheet.reset();
     startConfig(configPath);
-    await runRun();
+    await execRun();
   }
 
-  Future<void> runRun() async {
+  Future<void> execRun() async {
     isRunActive = true;
+
     /// save json
     var masterMap = buildLocalYamlMap();
     baseCanoMap = buildCanoMap(masterMap);
@@ -107,6 +112,7 @@ class FTSCommandRunner extends CommandRunner<int> {
     /// master language?
     // saveLocaleAsset(config.masterLocale, canoMap);
     await sheet.imtired(baseCanoMap);
+
     trace('⏱ Wait to get the master data translated');
     await Future.delayed(Duration(seconds: 1));
 
@@ -115,12 +121,13 @@ class FTSCommandRunner extends CommandRunner<int> {
     putVarsInMap(localesMap);
     createLocalesFiles(localesMap, masterMap);
     formatDartFiles();
-    if (config.intlEnabled) {
+    if (config.hasOutputArbDir) {
       buildArb(localesMap);
     }
+
     /// add locales in iOS
     addLocalesInPlist();
-    // Runes(string)
+    flutterHotReload();
     trace('👍 Sync process complete');
     isRunActive = false;
   }
@@ -144,11 +151,12 @@ class FTSCommandRunner extends CommandRunner<int> {
     putVarsInMap(localesMap);
     createLocalesFiles(localesMap, masterMap);
     formatDartFiles();
-    if (config.intlEnabled) {
+    if (config.hasOutputArbDir) {
       buildArb(localesMap);
     }
 
     /// add locales in iOS
     addLocalesInPlist();
+    flutterHotReload();
   }
 }

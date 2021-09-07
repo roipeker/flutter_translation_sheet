@@ -13,6 +13,7 @@ import 'logger.dart';
 export 'json2yaml.dart';
 export 'logger.dart';
 export 'version.dart';
+export 'errors.dart';
 
 /// Encodes a json into a tabular format for easy redeability.
 String prettyJson(dynamic json) {
@@ -116,8 +117,13 @@ bool _matchExtension(String path) {
 /// (where your master strings are).
 Future<void> watchChanges() async {
   /// listen to changes in trconfig.yaml
-  trace('👀 watch mode enabled for:\n - 📁 ${config.inputYamlDir}: and\n - 🗒 $configPath\:');
-  print('Press ' + yellow('q') + ' then ' + yellow('Enter') +  ' to exit the program');
+  trace(
+      '👀 watch mode enabled for:\n - 📁 ${config.inputYamlDir}: and\n - 🗒 $configPath\:');
+  print('Press ' +
+      yellow('q') +
+      ' then ' +
+      yellow('Enter') +
+      ' to exit the program');
   _listenConfigChanges();
   _listenMasterStringsFilesChanges();
   await stdin.firstWhere((e) {

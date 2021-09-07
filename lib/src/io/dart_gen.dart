@@ -32,6 +32,11 @@ void createLocalesFiles(
   var translateImports = <String>[];
   var translateLines = <String>[];
   var saveJsonLocales = config.hasOutputJsonDir;
+
+  if (saveJsonLocales) {
+    trace('Saving json locales in ${config.jsonOutputDir}:');
+  }
+
   for (var localeKey in localesMap.keys) {
     // trace('Locale ', localeKey);
     var localeName = normLocale(localeKey);
@@ -92,6 +97,7 @@ abstract class $className {
 /// Generates the export file with the TKeys and TData files.
 void createDartExportFile(List<String> exportPaths) {
   final dir = config.dartOutputDir;
+  exportPaths.sort();
   var fileContents = exportPaths
       .map((path) => 'export "${p.relative(path, from: dir)}";')
       .join('\n');
@@ -127,6 +133,7 @@ String createTranslationFile(
     var _transKeysString = '{\n';
     _transKeysString += translationMaps.join('\n');
     _transKeysString += '  };\n';
+
     _tLocalesCode = '''
   static Map<String, Map<String, String>> byKeys = getByKeys();
   static Map<String, Map<String, String>> getByKeys() => $_transKeysString
@@ -160,6 +167,7 @@ String createTranslationFile(
   }
 
   _translateClassString = '''
+//ignore: avoid_classes_with_only_static_members
 abstract class $_tClassName {
   
   $_tLocalesCode
@@ -170,6 +178,7 @@ abstract class $_tClassName {
   // final _transImportsString = transImports.join('\n');
 // $_transImportsString
   var fileContent = '''
+// ignore_for_file: lines_longer_than_80_chars
 import 'dart:ui';
 import 'package:flutter/material.dart';
 $_imports
@@ -194,6 +203,7 @@ $kSimpleLangPickerWidget
 
 String _buildAppLocalesFileContent(List<String> locales) {
   var fileContent = '''
+//ignore: avoid_classes_with_only_static_members
 abstract class AppLocales {
 ''';
   final _fields = locales.map((String key) {
@@ -248,8 +258,9 @@ abstract class AppLocales {
   return fileContent;
 }
 
+/// Normalize locale [key] to match Flutter's.
 String _localeVarName(String key) {
-  return key.snakeCase;
+  return key.replaceAll('-', '_');
 }
 
 /// Generates the TKeys file from the [map].
@@ -259,13 +270,22 @@ String createTKeyFileFromMap(
   bool includeToString = true,
 }) {
   var className = config.dartTKeysClassname; //'TKeys'
+  changedWords.clear();
   _buildTKeyMap(
     map: map,
     key: className,
     path: '',
     toString: includeToString,
   );
-  final fileContent = _translateKeyClasses.join('\n\n');
+  if (changedWords.isNotEmpty) {
+    print(
+      'These following keys have been changed with a prefix ${cyan("t + key")} because they are reserved words:',
+    );
+    changedWords.forEach((e) => print('- $e > t$e'));
+  }
+  final fileContent =
+      '// ignore_for_file: lines_longer_than_80_chars\n\n ${_translateKeyClasses.join('\n\n')}';
+
   _translateKeyClasses.clear();
   if (save) {
     var filepath = config.dartTkeysPath;
@@ -329,6 +349,12 @@ String _buildTKeyMap({
     // fieldName = fieldName.replaceAll(':', '_');
     fieldName = fieldName.replaceAll(invalidCharsRegExp, '_');
     fieldName = _removeInvalidChars(fieldName);
+    final c = fieldName.toLowerCase();
+    if (reservedWords.contains(c)) {
+      changedWords.add(fieldName);
+      fieldName = 't$fieldName';
+    }
+
     var localPath = path + k;
     String _fieldModifier;
 
@@ -370,21 +396,6 @@ String _buildTKeyMap({
 ''';
   }
 
-//   final tostrName = className;
-//   if (path.isNotEmpty && toString) {
-//     classStr += '''
-//   @override
-//   String toString() => """\\$tostrName:$path''';
-//     if (tostrFields.isNotEmpty) {
-//       classStr += '\n  -fields: ' + tostrFields.join(', ');
-//     }
-//     if (tostrKeys.isNotEmpty) {
-//       classStr += '\n  -keys: ' + tostrKeys.join(', ');
-//     }
-//     classStr += '''""";
-// ''';
-//   }
-
   /// private constructor.
   var classModifier = classCanBeConst ? 'const ' : '';
   classStr += ' $classModifier$className._();\n';
@@ -411,11 +422,9 @@ String getClassName(String name) {
   return name;
 }
 
-// String _cleanLocaleKey(String key) => key.replaceAll('-', '_').trim();
-
 String _buildLocaleObjFromType(String key) {
-  key = normLocale(key);
-  final keys = key.split('-');
+  key = normLocale(key, '_');
+  final keys = key.split('_');
   if (keys.length == 1) {
     return 'Locale("${keys[0]}")';
   }
@@ -447,6 +456,17 @@ void formatDartFiles() {
   }
 }
 
+void flutterHotReload() {
+  if (which('flutter').found) {
+    trace('Running `flutter pub get`...');
+    'flutter pub get'.start(
+      workingDirectory: configProjectDir,
+      detached: true,
+      runInShell: true,
+    );
+  }
+}
+
 /// Saves [localeName] translation [map] in [EnvConfig.outputJsonDir].
 /// With the option to [beautify] the json string output.
 void saveLocaleJsonAsset(
@@ -454,10 +474,82 @@ void saveLocaleJsonAsset(
   KeyMap map, {
   bool beautify = false,
 }) {
-  if (!localeName.endsWith('.json')) {
-    localeName += '.json';
-  }
-  var path = joinDir([config.outputJsonDir, localeName]);
-  trace('Saving locale asset "$localeName" in ', path);
+  /// not valid anymore.
+  // if (!localeName.endsWith('.json')) {
+  //   localeName += '.json';
+  // }
+  // var path = joinDir([config.outputJsonDir, localeName]);
+  var path = config.getJsonFilePath(localeName);
+  // trace('Saving json "$localeName" in ', path);
   saveJson(path, map, beautify: beautify);
 }
+
+/// List of modified words captured based on [reservedWords].
+final changedWords = <String>[];
+
+/// List of Dart reserved words to be escaped in the TKeys output.
+final reservedWords = [
+  'abstract',
+  'else',
+  'import',
+  'show',
+  'as',
+  'enum',
+  'in',
+  'static',
+  'assert',
+  'export',
+  'interface',
+  'super',
+  'async',
+  'extends',
+  'is',
+  'switch',
+  'await',
+  'extension',
+  'late',
+  'sync',
+  'break',
+  'external',
+  'library',
+  'this',
+  'case',
+  'factory',
+  'mixin',
+  'throw',
+  'catch',
+  'false',
+  'new',
+  'true',
+  'class',
+  'final',
+  'null',
+  'try',
+  'const',
+  'finally',
+  'on',
+  'typedef',
+  'continue',
+  'for',
+  'operator',
+  'var',
+  'covariant',
+  'function',
+  'part',
+  'void',
+  'default',
+  'get',
+  'required',
+  'while',
+  'deferred',
+  'hide',
+  'rethrow',
+  'with',
+  'do',
+  'if',
+  'return',
+  'yield',
+  'dynamic',
+  'implements',
+  'set',
+];

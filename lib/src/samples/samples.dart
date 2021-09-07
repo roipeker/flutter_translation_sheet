@@ -26,10 +26,16 @@ home:
 
   static const trconfig = '''
 ## output dir for json translations by locale
-output_json_dir: assets/i18n
+## (*) represents the locale
+output_json_template: assets/i18n/*.json
+
+## output dir for arb translations files by locale
+## Useful if you have intl setup or "Intl plugin" in your IDE.
+## (*) represents the locale
+#output_arb_template: lib/l10n/intl_*
 
 ## main entry file to generate the unique translation json.
-entry_file: assets/fts/sample.yaml
+entry_file: strings/sample.yaml
 
 ## pattern to applies final variables in the generated json/dart Strings.
 ## Enclose * in the pattern you need.
@@ -39,9 +45,6 @@ entry_file: assets/fts/sample.yaml
 ## - Special case when you need * as prefix or suffix, use *? as splitter
 ## ***?** = {{name}} becomes **name**
 param_output_pattern: "{*}"
-
-intl:
-  enabled: false
 
 dart:
   ## Output dir for dart files
@@ -53,7 +56,7 @@ dart:
   ## Translations map class an filename reference.
   translations_id: TData
 
-  ## translations as dart files Maps (available in translations.dart).
+  ## translations as Dart files Maps (available in translations.dart).
   use_maps: false
 
 ## see: https://cloud.google.com/translate/docs/languages
@@ -88,10 +91,12 @@ gsheets:
   ## The spreadsheet "table" where your translation will live.
   worksheet: Sheet1
 ''';
-
 }
 
 const kSimpleLangPickerWidget = r'''
+
+/// Dropdown menu with available locales.
+/// Useful to test changing Locales.
 class SimpleLangPicker extends StatelessWidget {
   final Locale? selected;
   final Function(Locale) onSelected;
@@ -115,7 +120,7 @@ class SimpleLangPicker extends StatelessWidget {
               size: 16,
             ),
             SizedBox(width: 8),
-            Text(AppLocales.of(_selected)?.englishName??'-')
+            Text(AppLocales.of(_selected)?.englishName ?? '-')
           ],
         ),
       ),
@@ -127,19 +132,41 @@ class SimpleLangPicker extends StatelessWidget {
               (e) => PopupMenuItem<Locale>(
                 child: Row(
                   children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Text(
+                            e.englishName,
+                            style: TextStyle(
+                              fontSize: 14,
+                              letterSpacing: -0.2,
+                              fontWeight: FontWeight.w300,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            '${e.nativeName}',
+                            style: TextStyle(
+                              fontSize: 11,
+                              letterSpacing: .15,
+                              fontWeight: FontWeight.w400,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 8),
                     Text(
                       e.key.toUpperCase(),
-                      style:
-                          TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(width: 6),
-                    Text(
-                      e.englishName,
-                      style: TextStyle(fontSize: 14),
-                    ),
-                    Text(
-                      ' (${e.nativeName})',
-                      style: TextStyle(fontSize: 12),
+                      style: TextStyle(
+                        fontSize: 9,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ],
                 ),
@@ -169,3 +196,66 @@ String getCodeMapLocaleKeysToMasterText(String theClassName) {
     return output;
   }''';
 }
+
+const kAppLocalizations = '''
+import 'dart:async';
+
+import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:intl/intl.dart' as intl;
+
+##import_locales
+
+abstract class ##className {
+  AppLocalizations(String locale) : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+
+  final String localeName;
+
+  static ##className? of(BuildContext context) {
+    return Localizations.of<##className>(context, ##className);
+  }
+
+  static const LocalizationsDelegate<##className> delegate = _##classNameDelegate();
+  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates = <LocalizationsDelegate<dynamic>>[
+    delegate,
+    GlobalMaterialLocalizations.delegate,
+    GlobalCupertinoLocalizations.delegate,
+    GlobalWidgetsLocalizations.delegate,
+  ];
+
+  static const List<Locale> supportedLocales = <Locale>[
+    ##supportedLocales
+  ];
+
+  ##interfaseWithAllStrings
+}
+
+class _##classNameDelegate extends LocalizationsDelegate<##className> {
+  const _##classNameDelegate();
+
+  @override
+  Future<##className> load(Locale locale) {
+    return SynchronousFuture<##className>(_lookupAppLocalizations(locale));
+  }
+
+  @override
+  // bool isSupported(Locale locale) => <String>['el', 'en', 'es', 'fa', 'ja', 'ru', 'zh'].contains(locale.languageCode);
+  bool isSupported(Locale locale) => <String>[##localesIds].contains(locale.languageCode);
+
+  @override
+  bool shouldReload(_##classNameDelegate old) => false;
+}
+
+##className _lookupAppLocalizations(Locale locale) {
+  
+  /// language+country code specified?
+  ##localizationSwitchReturn
+
+  throw FlutterError(
+    '##className.delegate failed to load unsupported locale "\$locale". This is likely '
+    'an issue with the fts localizations generation tool.'
+  );
+}
+
+''';

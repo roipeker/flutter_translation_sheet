@@ -1,6 +1,3 @@
-import 'package:dcli/dcli.dart';
-import 'package:yaml/yaml.dart';
-
 import '../../flutter_translation_sheet.dart';
 
 // const _pluralKeysValid = {'one', 'zero', 'other', 'many', 'few', 'two'};
@@ -25,7 +22,9 @@ welcomeUser:
     manager: Hello manager!
     other: Hello visitor.
           ''';
+
 Map<String, dynamic> metaFallbackProperties = {};
+Map<String, dynamic> varsByKeys = {};
 
 /// Creates the `{locale}.arb` files to be used by intl package or similar.
 /// when `config.yaml` has `intl:enabled:true`.
@@ -34,13 +33,7 @@ void buildArb(Map<String, Map<String, String>> map) {
   trace('Building arb files');
   var appName = '';
   // detect if we have a l10n.yaml file.
-  var arbDir = _getArbDir();
-  if (arbDir.isEmpty) {
-    error(
-        '''ERROR: $defaultConfigEnvPath, intl package support is enabled [intl:enabled:true]
-But 'arb-dir:' is not define or l10.yaml not found in your target project.
-Please make sure your trconfig.yaml sits in the root of your project, and l10n.yaml as well.''');
-  }
+  // var arbDir = config.arbOutputDir;
 
   /// look for base locales.
   var sublist = config.locales.where((element) => element.contains('_'));
@@ -61,8 +54,9 @@ Please make sure your trconfig.yaml sits in the root of your project, and l10n.y
       if (appName.isNotEmpty) 'appName': '$appName',
     };
     var localeMap = map[localeKey]!;
-    var pluralMaps = <String, dynamic>{};
-    var selectorMaps = <String, dynamic>{};
+    final pluralMaps = <String, dynamic>{};
+    final selectorMaps = <String, dynamic>{};
+
     // make arb file.
     for (var k in localeMap.keys) {
       if (k.contains(_kSelectorSearch)) {
@@ -72,7 +66,7 @@ Please make sure your trconfig.yaml sits in the root of your project, and l10n.y
           searchKey: _kSelectorSearch,
           targetMap: selectorMaps,
           errorOnVar: _errorStringInvalidSelector,
-          metaVarType: 'String',
+          // metaVarType: 'String',
         );
       } else if (k.contains(_kPluralSearch)) {
         _customModifier(
@@ -87,7 +81,8 @@ Please make sure your trconfig.yaml sits in the root of your project, and l10n.y
         var newKey = k.camelCase;
         var textValue = localeMap[k]!;
         output[newKey] = textValue;
-        _addMetaKey(newKey, textValue, output, metaProperties);
+        _addSimpleVarsMetadata(newKey, textValue, output);
+        // _addMetaKey(newKey, textValue, output, metaFallbackProperties);
       }
     }
 
@@ -105,14 +100,36 @@ Please make sure your trconfig.yaml sits in the root of your project, and l10n.y
       _addMetaKey(k, output[k], output, metaProperties);
       _addMetaKey(k, output[k], output, metaFallbackProperties);
     }
-
     var jsonString = prettyJson(output);
-    var outputFilename = 'app_' + localeKey + '.arb';
-    var outputPath = joinDir([arbDir, outputFilename]);
+    var outputPath = config.getArbFilePath(localeKey);
     saveString(outputPath, jsonString);
   }
   trace('arb files generated');
   // runPubGet();
+}
+
+/// generate the metadata key directly from the message if it contains
+/// placeholders.
+void _addSimpleVarsMetadata(
+  String targetKey,
+  String value,
+  Map<String, dynamic> output,
+) {
+  var metaKey = '@' + targetKey;
+  if (varsByKeys.containsKey(targetKey)) {
+    output[metaKey] = <String, dynamic>{
+      'description': 'Auto-generated for $targetKey',
+    };
+
+    /// add the placeholders in the meta key.
+    output[metaKey]['placeholders'] ??= <String, dynamic>{};
+
+    /// clean the placeholder in the original `key`.
+    output[targetKey] = _saveVarsFromString(
+      value,
+      output[metaKey]['placeholders'],
+    );
+  }
 }
 
 /// Parses and adds the needed @metadata for arb files.
@@ -124,8 +141,6 @@ void _customModifier({
   required Map targetMap,
   required String errorOnVar,
 }) {
-  // _addSelector(key: k, value: localeMap[k], targetMap: selectorMaps, errorOnVar: _errorStringInvalidSelector);
-  // var idx1 = key.indexOf(_kSelectorSearch);
   var idx1 = key.indexOf(searchKey);
   var targetKey = key.substring(0, idx1);
   targetKey = targetKey.camelCase;
@@ -137,9 +152,14 @@ void _customModifier({
     return;
   }
   if (!(targetMap[targetKey] as Map).containsKey('var')) {
-    targetMap[targetKey]['var'] = mainToken.split(':').last;
+    final _parts = mainToken.split(':');
+    targetMap[targetKey]['var'] = _parts[1];
+    if (_parts.length > 2) {
+      targetMap[targetKey]['varType'] = _parts[2];
+    }
   }
   String varToken = targetMap[targetKey]['var']!;
+  var varTokenType = targetMap[targetKey]['varType'];
   var selectorKey = keys.last;
   var metaKey = '@' + targetKey;
   metaFallbackProperties[metaKey] ??= <String, dynamic>{
@@ -153,12 +173,25 @@ void _customModifier({
     _map[varToken] = <String, dynamic>{};
     if (metaVarType != null) {
       _map[varToken]!['type'] = metaVarType;
+    } else if (varTokenType != null) {
+      /// fallback type in key definition.
+      /// "selector:gender:String:"
+      _map[varToken]!['type'] = varTokenType;
     }
   }
   var _map = metaFallbackProperties[metaKey]!['placeholders'];
   value = _saveVarsFromString(value, _map);
   targetMap[targetKey][selectorKey] = value;
 }
+
+// "sampler": "{timer, select, morning {Order your breakfast now} noon {Order your lunch now} night { Order your dinner now} other {Order your snack now.}}",
+// "@sampler": {
+// "description": "Auto-generated for sampler",
+// "placeholders": {
+// "timer": {}
+// }
+// }
+// }
 
 /// Adds a new metakey to [output]
 void _addMetaKey(String newKey, String textValue, Map output, Map metaMap) {
@@ -169,7 +202,6 @@ void _addMetaKey(String newKey, String textValue, Map output, Map metaMap) {
   final metaKey = '@$newKey';
   if (metaMap.containsKey(metaKey)) {
     output[metaKey] = Map.from(metaMap[metaKey]);
-    // trace("Meta map has it! ${metaKey} /// ${metaMap[metaKey]}");
   } else {
     output[metaKey] = <String, dynamic>{};
   }
@@ -191,17 +223,21 @@ const _emptyVarMap = <String, dynamic>{};
 /// basedir.
 String _saveVarsFromString(String value, Map saveTo) {
   final textVars = _varsFromString(value);
+  // trace("So the::: ", textVars,  ' -- ', value, '-- saveInd:', saveTo);
   var cleanedValue = value;
   if (textVars.isNotEmpty) {
+    // trace("CLeaned pre:: ", cleanedValue, '===', textVars);
     textVars.forEach((key, value) {
       /// take complex {vars:type:format(params)} and replace the value with the simple var name.
       if (value is Map && value.containsKey('_text')) {
         cleanedValue = cleanedValue.replaceAll(value['_text'], key);
         value.remove('_text');
       }
-      return saveTo.putIfAbsent(key, () => value);
+      saveTo[key] = value;
+      // return saveTo.putIfAbsent(key, () => value);
     });
   }
+  // trace("Cleaned value::", cleanedValue);
   return cleanedValue;
 }
 
@@ -212,7 +248,7 @@ Map<String, dynamic> _varsFromString(String text) {
     if (res.isNotEmpty) {
       var output = <String, dynamic>{};
       res.forEach((e) {
-        /// todo: analyze more data in the var type.
+        /// todo: Analyze more data in the var type.
         if (e.contains(':')) {
           var propData = _buildMetaVarProperties(e);
           output[propData['name']] = propData['data'];
@@ -226,6 +262,13 @@ Map<String, dynamic> _varsFromString(String text) {
   return _emptyVarMap;
 }
 
+const _kDefaultVarTypeFormats = <String, String>{
+  'num': 'decimalPattern',
+  'double': 'decimalPattern',
+  'int': 'decimalPattern',
+  'DateTime': 'yMd',
+};
+
 /// capture format/type/parameters from a composed variable {{name:String}}.
 Map<String, dynamic> _buildMetaVarProperties(String text) {
   final parts = text.split(':');
@@ -234,6 +277,11 @@ Map<String, dynamic> _buildMetaVarProperties(String text) {
   var vo = <String, dynamic>{
     'type': type,
   };
+
+  /// analyze if `type` requires a Format for intl generation.
+  if (parts.isEmpty && _kDefaultVarTypeFormats.containsKey(type)) {
+    parts.add(_kDefaultVarTypeFormats[type]!);
+  }
   if (parts.isNotEmpty) {
     var msg = parts.join(':');
     var startIndex = msg.indexOf('(');
@@ -255,19 +303,19 @@ Map<String, dynamic> _buildMetaVarProperties(String text) {
           if (keyVal.length > 1) {
             final key = keyVal[0].trim();
             final _val = keyVal[1].toLowerCase();
-            late Object? val;
-            if (type == 'num' || type == 'number') {
-              val = num.tryParse(_val) ?? _val;
-            } else if (type == 'int') {
-              val = int.tryParse(_val) ?? _val;
-            } else if (type == 'double' || type == 'float') {
-              val = double.tryParse(_val) ?? _val;
-            } else if (type == 'bool' || type == 'boolean') {
-              val = _val == 'true' || _val == 'yes' || _val != '0';
-            } else {
-              val = _val;
-            }
-            vo['optionalParameters'][key] = val;
+            // late Object? val;
+            // if (type == 'num' || type == 'number') {
+            //   val = num.tryParse(_val) ?? _val;
+            // } else if (type == 'int') {
+            //   val = int.tryParse(_val) ?? _val;
+            // } else if (type == 'double' || type == 'float') {
+            //   val = double.tryParse(_val) ?? _val;
+            // } else if (type == 'bool' || type == 'boolean') {
+            //   val = _val == 'true' || _val == 'yes' || _val != '0';
+            // } else {
+            //   val = _val;
+            // }
+            vo['optionalParameters'][key] = _val;
           } else {
             error('Invalid placeholder format.optionalParameters for $text');
           }
@@ -292,10 +340,17 @@ String _resolveSelectorTextFromMap(Map map) {
     error(
         'select: keys must contain the type "$_selectorMandatory" as default.');
   }
+
+  /// Remove `varType` if we have type info inside the field name.
+  /// "selector:gender:String"
+  map.remove('varType');
   var varKey = map.remove('var');
-  str += '{$varKey, select, ';
+
+  /// Format is critical to be accepted by intl tools.
+  /// NO SPACES at the end.
+  str += '{$varKey, select,';
   for (var k in map.keys) {
-    str += '$k {${map[k]}} ';
+    str += ' $k{${map[k]}}';
   }
   str += '}';
   return str;
@@ -320,19 +375,19 @@ String _resolvePluralTextFromMap(Map map) {
 }
 
 /// Returns the folder to save the `.arb` output.
-String _getArbDir() {
-  var intlPath = config.intlYamlPath;
-  if (intlPath.isNotEmpty && exists(intlPath)) {
-    var data = openString(intlPath);
-    if (data.isEmpty) {
-      return '';
-    }
-    var doc = loadYaml(data);
-    var arbDir = doc['arb-dir'];
-    return joinDir([configProjectDir, arbDir]);
-  }
-  return '';
-}
+// String _getArbDir() {
+//   var intlPath = config.intlYamlPath;
+//   if (intlPath.isNotEmpty && exists(intlPath)) {
+//     var data = openString(intlPath);
+//     if (data.isEmpty) {
+//       return '';
+//     }
+//     var doc = loadYaml(data);
+//     var arbDir = doc['arb-dir'];
+//     return joinDir([configProjectDir, arbDir]);
+//   }
+//   return '';
+// }
 
 final _matchArbPlaceholderRegExp = RegExp(r'\{(.+?)\}');
 

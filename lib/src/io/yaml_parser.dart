@@ -33,11 +33,9 @@ String openYaml(String path) {
 }
 
 void _addDoc(String path, Map into) {
-  // trace('the dir is:: ', p.dirname(path));
   // var parentDir = io.File(path).parent.path;
   var parentDir = p.dirname(path);
   var string = openYaml(path);
-  // trace('Opening yaml ', path);
   if (string.isEmpty) {
     print('Yaml file "$path" is empty or doesn\'t exists.');
   } else {
@@ -65,7 +63,21 @@ void _copyDoc(YamlMap doc, String dir, Map into) {
 
       if (value.containsKey(kRef)) {
         var dir2 = joinDir([dir, value[kRef]]);
-        _addDoc(dir2, target);
+
+        /// special case to unwrap plain text files.
+        final ext = p.extension(dir2);
+        const plainTextExtensions = ['.txt', '.html', '.htm', '.xhtml', '.md'];
+        // if (ext == '.txt' || p.extension(dir2) == '.html') {
+        if (plainTextExtensions.contains(ext)) {
+          var string = openString(dir2);
+          if (string.isNotEmpty) {
+            into[k] = string;
+          } else {
+            error('file reference "$dir2" is empty');
+          }
+        } else {
+          _addDoc(dir2, target);
+        }
       } else {
         _copyDoc(value, dir, target);
       }
@@ -90,6 +102,7 @@ Map<String, dynamic> metaProperties = {};
 
 KeyMap _canoMap(Map<String, dynamic> content) {
   final output = <String, String>{};
+
   void buildKeys(Map<String, dynamic> inner, String prop) {
     for (var k in inner.keys) {
       if (k.startsWith('@')) {
@@ -148,6 +161,7 @@ void putVarsInMap(Map<String, Map<String, String>> map) {
       if (varsMap.containsKey(key)) {
         var text = localeMap[key]!;
         localeMap[key] = replaceVars(VarsCap(text, varsMap[key]!));
+        varsByKeys[key] = varsMap[key];
       }
     }
   }
@@ -169,8 +183,12 @@ void buildVarsInMap(Map<String, String> map) {
   }
   entryDataHasVars = varsKeys.isNotEmpty;
   if (entryDataHasVars) {
-    var varsContent = json2yaml(varsKeys, yamlStyle: YamlStyle.generic);
-    // trace('Vars content: ', varsContent);
+    var varsContent = json2yaml(
+      varsKeys,
+      yamlStyle: YamlStyle.generic,
+    );
+//     trace('Vars content: ', varsContent);
+
     saveString(config.inputVarsFile, varsContent);
     trace(
         'Found ${varsKeys.keys.length} key(s) with placeholders.\n - ${config.inputVarsFile}:');
