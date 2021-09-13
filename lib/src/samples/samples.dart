@@ -115,11 +115,11 @@ class SimpleLangPicker extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
+            const Icon(
               Icons.translate,
               size: 16,
             ),
-            SizedBox(width: 8),
+            const SizedBox(width: 8),
             Text(AppLocales.of(_selected)?.englishName ?? '-')
           ],
         ),
@@ -138,7 +138,7 @@ class SimpleLangPicker extends StatelessWidget {
                         children: [
                           Text(
                             e.englishName,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 14,
                               letterSpacing: -0.2,
                               fontWeight: FontWeight.w300,
@@ -148,8 +148,8 @@ class SimpleLangPicker extends StatelessWidget {
                           ),
                           const SizedBox(height: 2),
                           Text(
-                            '${e.nativeName}',
-                            style: TextStyle(
+                            e.nativeName,
+                            style: const TextStyle(
                               fontSize: 11,
                               letterSpacing: .15,
                               fontWeight: FontWeight.w400,
@@ -163,7 +163,7 @@ class SimpleLangPicker extends StatelessWidget {
                     const SizedBox(width: 8),
                     Text(
                       e.key.toUpperCase(),
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 9,
                         fontWeight: FontWeight.bold,
                       ),

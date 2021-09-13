@@ -311,6 +311,8 @@ final invalidCharsRegExp = RegExp(
   unicode: false,
 );
 
+final onlyDigitRegExp = RegExp(r'\d');
+
 /// TKeys Map generation.
 String _buildTKeyMap({
   required JsonMap map,
@@ -345,16 +347,23 @@ String _buildTKeyMap({
     }
 
     /// TODO: find bad characters for the field...
-    var fieldName = k.trim().camelCase;
+    var fieldName = k.trim();
     // fieldName = fieldName.replaceAll(':', '_');
     fieldName = fieldName.replaceAll(invalidCharsRegExp, '_');
     fieldName = _removeInvalidChars(fieldName);
+
+    /// adjust variable to not be private.
+    if( fieldName.startsWith('_')){
+      fieldName = fieldName.substring(1);
+    }
     final c = fieldName.toLowerCase();
-    if (reservedWords.contains(c)) {
+    /// check for reserved key words or if we are left with a digit only field
+    /// name.
+    if ( reservedWords.contains(c) || c.startsWith(onlyDigitRegExp)) {
       changedWords.add(fieldName);
       fieldName = 't$fieldName';
     }
-
+    fieldName = fieldName.camelCase;
     var localPath = path + k;
     String _fieldModifier;
 

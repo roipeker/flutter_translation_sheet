@@ -291,6 +291,7 @@ return Scaffold(
 
 We will try to provide a richer experience integrating more libraries outputs in the future.  
 
+---
 ## Considerations 📌
 
 - Is preferable to keep the *trconfig.yaml* in the root of your project, some commands assumes that location (like arb generation).  
@@ -318,13 +319,12 @@ locales:
 
 - If the row count from keys is different from the master language, it will invalidate the entire sheet.
 
-
-----
+---
 
 ## Complementary Plugins 🔌
 
 You can use **fts extractor** plugin to get Strings with auto-generated keys in a tree-like structure, based on Groups and Layers of your design files.
-Similar to [`fts extract` command](#utilities-🔨).
+Similar to [`fts extract` command](#utilities-).
 
 <a href="https://adobe.com/go/cc_plugins_discover_plugin?pluginId=63ac7c32&workflow=share" title="Download plugin for Adobe XD">
 <div style="margin: 32px 0 32px 12px">
@@ -341,12 +341,8 @@ Similar to [`fts extract` command](#utilities-🔨).
 </a>
 
 
+---
 
-
-Thanks for passing by!
-
-
-![](https://estruyf-github.azurewebsites.net/api/VisitorHit?user=roipeker&repo=flutter_translation_sheet&countColorcountColor&countColor=%23323232)
 ## Contributors ✨
 
 Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
@@ -368,3 +364,8 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
+
+
+Thanks for passing by!
+
+![](https://estruyf-github.azurewebsites.net/api/VisitorHit?user=roipeker&repo=flutter_translation_sheet&countColorcountColor&countColor=%23323232)

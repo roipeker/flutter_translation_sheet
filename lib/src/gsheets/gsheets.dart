@@ -753,12 +753,12 @@ class FileResource {
   final String name;
   final String mimeType;
 
-  FileResource._({
-    required this.kind,
-    required this.id,
-    required this.name,
-    required this.mimeType,
-  });
+  // FileResource._({
+  //   required this.kind,
+  //   required this.id,
+  //   required this.name,
+  //   required this.mimeType,
+  // });
 
   FileResource._fromJson(Map<String, dynamic> json)
       : kind = json['kind'],
