@@ -353,13 +353,14 @@ String _buildTKeyMap({
     fieldName = _removeInvalidChars(fieldName);
 
     /// adjust variable to not be private.
-    if( fieldName.startsWith('_')){
+    if (fieldName.startsWith('_')) {
       fieldName = fieldName.substring(1);
     }
     final c = fieldName.toLowerCase();
+
     /// check for reserved key words or if we are left with a digit only field
     /// name.
-    if ( reservedWords.contains(c) || c.startsWith(onlyDigitRegExp)) {
+    if (reservedWords.contains(c) || c.startsWith(onlyDigitRegExp)) {
       changedWords.add(fieldName);
       fieldName = 't$fieldName';
     }

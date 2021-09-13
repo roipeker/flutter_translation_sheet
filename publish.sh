@@ -1,3 +1,4 @@
 #!/bin/sh -x
-dartfmt -w .
+#dartfmt -w .
+dart format --fix .
 dart pub publish
