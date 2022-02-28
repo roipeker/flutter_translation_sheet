@@ -353,7 +353,6 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <table>
   <tr>
     <td align="center"><a href="https://github.com/IsmailAlamKhan"><img src="https://avatars.githubusercontent.com/u/67656229?v=4?s=100" width="100px;" alt=""/><br /><sub><b>IsmailAlamKhan</b></sub></a><br /><a href="#maintenance-IsmailAlamKhan" title="Maintenance">🚧</a> <a href="https://github.com/roipeker/flutter_translation_sheet/commits?author=IsmailAlamKhan" title="Code">💻</a></td>
-    <td align="center"><a href="https://unacorbatanegra.me"><img src="https://avatars.githubusercontent.com/u/44511181?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Nicolas Lopez</b></sub></a><br /><a href="https://github.com/roipeker/flutter_translation_sheet/commits?author=unacorbatanegra" title="Code">💻</a> <a href="#ideas-unacorbatanegra" title="Ideas, Planning, & Feedback">🤔</a></td>
     <td align="center"><a href="https://github.com/leossmith"><img src="https://avatars.githubusercontent.com/u/4300876?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Leo</b></sub></a><br /><a href="https://github.com/roipeker/flutter_translation_sheet/commits?author=leossmith" title="Documentation">📖</a> <a href="#maintenance-leossmith" title="Maintenance">🚧</a></td>
   </tr>
 </table>
