@@ -1,3 +1,6 @@
+## [1.0.19]
+- updated all dependencies to latest versions.
+
 ## [1.0.18+39]
 - improved code generation to match styling on latest `flutter_lints` in Flutter 2.5
 - make TKeys generation camelCase, and ensures no fields ends up private, or illegal (starts with number). 
