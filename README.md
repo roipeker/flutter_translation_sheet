@@ -291,6 +291,7 @@ return Scaffold(
 
 We will try to provide a richer experience integrating more libraries outputs in the future.  
 
+---
 ## Considerations 📌
 
 - Is preferable to keep the *trconfig.yaml* in the root of your project, some commands assumes that location (like arb generation).  
@@ -318,13 +319,12 @@ locales:
 
 - If the row count from keys is different from the master language, it will invalidate the entire sheet.
 
-
-----
+---
 
 ## Complementary Plugins 🔌
 
 You can use **fts extractor** plugin to get Strings with auto-generated keys in a tree-like structure, based on Groups and Layers of your design files.
-Similar to [`fts extract` command](#utilities-🔨).
+Similar to [`fts extract` command](#utilities-).
 
 <a href="https://adobe.com/go/cc_plugins_discover_plugin?pluginId=63ac7c32&workflow=share" title="Download plugin for Adobe XD">
 <div style="margin: 32px 0 32px 12px">
@@ -341,12 +341,8 @@ Similar to [`fts extract` command](#utilities-🔨).
 </a>
 
 
+---
 
-
-Thanks for passing by!
-
-
-![](https://estruyf-github.azurewebsites.net/api/VisitorHit?user=roipeker&repo=flutter_translation_sheet&countColorcountColor&countColor=%23323232)
 ## Contributors ✨
 
 Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
@@ -357,7 +353,6 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <table>
   <tr>
     <td align="center"><a href="https://github.com/IsmailAlamKhan"><img src="https://avatars.githubusercontent.com/u/67656229?v=4?s=100" width="100px;" alt=""/><br /><sub><b>IsmailAlamKhan</b></sub></a><br /><a href="#maintenance-IsmailAlamKhan" title="Maintenance">🚧</a> <a href="https://github.com/roipeker/flutter_translation_sheet/commits?author=IsmailAlamKhan" title="Code">💻</a></td>
-    <td align="center"><a href="https://unacorbatanegra.me"><img src="https://avatars.githubusercontent.com/u/44511181?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Nicolas Lopez</b></sub></a><br /><a href="https://github.com/roipeker/flutter_translation_sheet/commits?author=unacorbatanegra" title="Code">💻</a> <a href="#ideas-unacorbatanegra" title="Ideas, Planning, & Feedback">🤔</a></td>
     <td align="center"><a href="https://github.com/leossmith"><img src="https://avatars.githubusercontent.com/u/4300876?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Leo</b></sub></a><br /><a href="https://github.com/roipeker/flutter_translation_sheet/commits?author=leossmith" title="Documentation">📖</a> <a href="#maintenance-leossmith" title="Maintenance">🚧</a></td>
   </tr>
 </table>
@@ -368,3 +363,8 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
+
+
+Thanks for passing by!
+
+![](https://estruyf-github.azurewebsites.net/api/VisitorHit?user=roipeker&repo=flutter_translation_sheet&countColorcountColor&countColor=%23323232)

@@ -12,7 +12,7 @@ class SheetParser {
   late final _api = GSheets(config.sheetCredentials);
   Spreadsheet? _sheet;
   late Worksheet _table;
-  late List<List<Cell>> _initialCellRows;
+  // late List<List<Cell>> _initialCellRows;
   late List<String> colsHeaders;
 
   String get spritesheetUrl =>
@@ -74,12 +74,11 @@ Open $spritesheetUrl and check the available tabs at the bottom.
     return lastRow.isNotEmpty;
   }
 
-  bool _warnedIterativeCalculationConfig = false;
-
-  void _warnIterativeCalculation() {
-    if (_warnedIterativeCalculationConfig) return;
-    _warnedIterativeCalculationConfig = true;
-  }
+  // bool _warnedIterativeCalculationConfig = false;
+  // void _warnIterativeCalculation() {
+  //   if (_warnedIterativeCalculationConfig) return;
+  //   _warnedIterativeCalculationConfig = true;
+  // }
 
   List<String> _generateGoogleTranslateColumn({
     required int fromRow,
