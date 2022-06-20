@@ -1,0 +1,6 @@
+## Sample home section.
+---
+title: Home screen
+subtitle: Welcome Home
+counter: You pressed the counter {{count}} times
+

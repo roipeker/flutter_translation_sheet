@@ -164,7 +164,7 @@ class InitCommand extends Command<int> {
 Usage:
 fts init --credentials path/to/credentials
 
-How to get your credentials?
+${white("How to get your credentials?", bold: true)} 
 https://github.com/roipeker/flutter_translation_sheet/wiki/Google-credentials
 ''');
       exit(2);
@@ -212,7 +212,8 @@ void startConfig(String path) {
     if (!useCreateTemplate) {
       var m1 = grey('${CliConfig.cliName} run', background: AnsiColor.black);
       var m2 = grey('${CliConfig.cliName} -h', background: AnsiColor.black);
-      var msg = '$m1 with a configuration file or see $m2 for more help.';
+      var msg =
+          '${white('Use', bold: false)} $m1 with a configuration file or see $m2 for more help.';
       print(msg);
       // trace(' trcli again with a configuration file or check trcli -h for more help.');
       exit(0);

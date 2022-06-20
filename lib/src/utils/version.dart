@@ -88,34 +88,36 @@ Future<String?> currentVersion() async {
 /// Checks if there's a new version available on pub.dev and allows the user
 /// to install them.
 Future<void> checkUpdate([bool fromCommand = true]) async {
-  if (CliConfig.isDev) return;
-
+  // if (CliConfig.isDev) {
+  //   trace('\nCan\'t update when running on dev enviroment');
+  //   return;
+  // }
   if (fromCommand) {
     trace('\nChecking for updates...');
   }
 
   try {
-    /*
     final latest = await _checkLatestVersion();
     if (latest == null) {
-      error('cannot fetch the latest version');
+      if (fromCommand) {
+        error('Cannot fetch the latest published version');
+      }
       return;
     }
     final current = await currentVersion();
     if (current == null) {
       if (fromCommand) {
-        error('there was an error reading the current version');
+        error('There was an error reading the current version');
       }
       return;
     }
     final compare = compareSemver(current, latest);
     if (compare >= 0) {
       if (fromCommand) {
-        trace(cyan('fts already on the latest version'));
+        trace(cyan('You are using the latest version of fts.'));
       }
       return;
     }
-
     final c = orange(current);
     final l = green(latest);
     trace(
@@ -134,14 +136,14 @@ Future<void> checkUpdate([bool fromCommand = true]) async {
         '\n___________________________________________________\n\n',
       ),
     );
-    */
-    final result = confirm(
-      yellow('Would you like update to the last version?'),
-      defaultValue: true,
-    );
-    if (result) {
-      return upgrade();
-    }
+
+    // final result = confirm(
+    //   yellow('Would you like update to the last version?'),
+    //   defaultValue: true,
+    // );
+    // if (result) {
+    // return upgrade();
+    // }
   } on Exception {
     return;
   }
@@ -164,9 +166,13 @@ Future<String?> _checkLatestVersion() async {
 /// Compares a [version] against [other]
 /// returns negative if [version] is ordered before
 /// positive if [version] is ordered after
+/// Doesnt considere incremental builds +VALUE
 /// 0 if its the same
 /// from `cli_notify`
 int compareSemver(String version, String other) {
+  version = version.replaceAll('dev-', '');
+  other = other.replaceAll('dev-', '');
+
   final regExp = RegExp(
     r'^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(-[a-zA-Z\d][-a-zA-Z.\d]*)?(\+[a-zA-Z\d][-a-zA-Z.\d]*)?$',
   );
@@ -176,7 +182,7 @@ int compareSemver(String version, String other) {
       final otherMatches = regExp.firstMatch(other);
 
       var result = 0;
-
+      // print("versions $versionMatches -- $otherMatches");
       if (versionMatches == null || otherMatches == null) {
         return result;
       }
@@ -191,7 +197,6 @@ int compareSemver(String version, String other) {
         final versionMatch = versionMatches.group(idx) ?? '';
         final otherMatch = otherMatches.group(idx) ?? '';
         // PreRelease group
-
         final versionNumber = int.tryParse(versionMatch);
         final otherNumber = int.tryParse(otherMatch);
         if (versionMatch != otherMatch) {

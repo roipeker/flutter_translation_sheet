@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:dcli/dcli.dart';
 import 'package:flutter_translation_sheet/flutter_translation_sheet.dart';
 import 'package:flutter_translation_sheet/src/utils/utils.dart';
 
@@ -12,16 +13,20 @@ void createSampleContent() {
 
   /// create config yaml
   createSampleConfig();
-  trace('''Please, fill
-  
+
+  trace(
+    'File ${cyan(defaultConfigEnvPath)} and ${cyan("samples/")} created at ${cyan(Directory.current.path)}',
+  );
+
+  trace(white('''
+Please, open and fill the following details in ${cyan(defaultConfigEnvPath)} and run ${white("fts", bold: true)} again
+ 
 gsheet:
   credentials_path:
   spreadsheet_id:
   worksheet:
-  
-in $defaultConfigEnvPath and run the command again.''');
-  trace(
-      '$defaultConfigEnvPath and sample files created in ${Directory.current}');
+''', bold: false));
+
   // if (which('code').found) {
   //   var useOpen =
   //       confirm(yellow('Do you wanna open VisualCode?'), defaultValue: false);

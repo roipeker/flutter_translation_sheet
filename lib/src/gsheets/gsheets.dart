@@ -299,6 +299,7 @@ class GSheets {
 }
 
 enum ValueRenderOption { formattedValue, unformattedValue, formula }
+
 enum ValueInputOption { userEntered, raw }
 
 /// Representation of a [Spreadsheet], manages [Worksheet]s.

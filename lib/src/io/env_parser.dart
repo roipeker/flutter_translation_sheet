@@ -201,8 +201,8 @@ void _parseSheets(YamlMap doc) {
 - Use [gsheets:credentials_path:] for a path to your credentials.
 - Use [gsheets:credentials:] to paste credentials Json details.
 
-How to get your credentials?
-https://github.com/roipeker/flutter_translation_sheet/wiki/Google-credentials
+${white("How to get your credentials?", bold: true)}
+${cyan("https://github.com/roipeker/flutter_translation_sheet/wiki/Google-credentials", bold: false)}
 ''');
     exit(2);
   }

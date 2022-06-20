@@ -1,3 +1,7 @@
+## [1.0.19]
+- updated to dart sdk 2.17.
+- removed auto check for upgrade version.
+- fixed some styling for text in ANSI color output.
 ## [1.0.18+39]
 - improved code generation to match styling on latest `flutter_lints` in Flutter 2.5
 - make TKeys generation camelCase, and ensures no fields ends up private, or illegal (starts with number). 

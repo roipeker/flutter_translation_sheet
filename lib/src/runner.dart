@@ -44,9 +44,9 @@ class FTSCommandRunner extends CommandRunner<int> {
       final _args = parse(args);
       final cmd = _args.command?.name;
       final res = await runCommand(_args) ?? ExitCode.success.code;
-      if (cmd != 'upgrade') {
-        await checkUpdate(false);
-      }
+      // if (cmd != 'upgrade') {
+      //   await checkUpdate(false);
+      // }
       return res;
     } catch (e) {
       error(e);
