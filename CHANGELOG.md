@@ -1,3 +1,6 @@
+## [1.0.20]
+- added CLI check and warning for Sheet locale to avoid potential errors with the formula.
+- updated README.
 ## [1.0.19]
 - updated to dart sdk 2.17.
 - removed auto check for upgrade version.

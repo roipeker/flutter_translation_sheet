@@ -167,7 +167,8 @@ class GSheets {
     final renderOption = _parseRenderOption(render);
     final inputOption = _parseInputOption(input);
     final spreadsheetId = jsonDecode(response.body)['spreadsheetId'];
-    final sheets = (jsonDecode(response.body)['sheets'] as List)
+    final _json = jsonDecode(response.body);
+    final sheets = (_json['sheets'] as List)
         .map((json) => Worksheet._fromJson(
               json,
               client,
@@ -182,6 +183,7 @@ class GSheets {
       sheets,
       renderOption,
       inputOption,
+      _json['properties'],
     );
   }
 
@@ -209,9 +211,11 @@ class GSheets {
     });
     final response = await client.get('$_sheetsEndpoint$spreadsheetId'.toUri());
     checkResponse(response);
+    // print("RESULT! ${response.body}");
     final renderOption = _parseRenderOption(render);
     final inputOption = _parseInputOption(input);
-    final sheets = (jsonDecode(response.body)['sheets'] as List)
+    final _json = jsonDecode(response.body);
+    final sheets = (_json['sheets'] as List)
         .where(gridSheetsFilter)
         .map((json) => Worksheet._fromJson(
               json,
@@ -227,6 +231,7 @@ class GSheets {
       sheets,
       renderOption,
       inputOption,
+      _json['properties']!,
     );
   }
 
@@ -302,9 +307,35 @@ enum ValueRenderOption { formattedValue, unformattedValue, formula }
 
 enum ValueInputOption { userEntered, raw }
 
+class SpreadsheetProperties {
+  //  "title": "DETO Translation",
+  //   "locale": "en_US",
+  //   "autoRecalc": "ON_CHANGE",
+  //   "timeZone": "Europe/Paris",
+  //   "defaultFormat": {
+
+  final String title, locale, autoRecalc, timeZone;
+  const SpreadsheetProperties({
+    required this.title,
+    required this.locale,
+    required this.autoRecalc,
+    required this.timeZone,
+  });
+
+  static SpreadsheetProperties fromJson(Map<String, dynamic> data) {
+    return SpreadsheetProperties(
+      title: data['title'],
+      locale: data['locale'],
+      autoRecalc: data['autoRecalc'],
+      timeZone: data['timeZone'],
+    );
+  }
+}
+
 /// Representation of a [Spreadsheet], manages [Worksheet]s.
 class Spreadsheet {
   final AutoRefreshingAuthClient _client;
+  late final SpreadsheetProperties properties;
 
   /// [Spreadsheet]'s id
   final String id;
@@ -319,6 +350,7 @@ class Spreadsheet {
   /// Determines how input data should be interpreted.
   /// https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption
   final String inputOption;
+  final Map<String, dynamic> jsonProperties;
 
   Spreadsheet._(
     this._client,
@@ -326,7 +358,10 @@ class Spreadsheet {
     this.sheets,
     this.renderOption,
     this.inputOption,
-  );
+    this.jsonProperties,
+  ) {
+    properties = SpreadsheetProperties.fromJson(jsonProperties);
+  }
 
   /// Applies one or more updates to the spreadsheet.
   /// [About batchUpdate](https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/batchUpdate)

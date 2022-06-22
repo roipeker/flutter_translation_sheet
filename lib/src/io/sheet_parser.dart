@@ -46,6 +46,9 @@ class SheetParser {
 ''');
       exit(2);
     }
+
+    checkAndWarnForLocale();
+
     var table = _sheet!.worksheetByTitle(config.tableId!);
     if (table != null) {
       _table = table;
@@ -677,6 +680,37 @@ Please follow https://medium.com/@a.marenkov/how-to-get-credentials-for-google-s
     ];
     var result = await _sheet!.batchUpdate(list);
     return jsonDecode(result.body);
+  }
+
+  /// Checks if the Sheet has a "valid" locale for the translate formula.
+  void checkAndWarnForLocale() {
+    /// Using , for formulas
+    // all india variants: te_IN,kn_IN,hi_IN,
+    // zh_HK,ar_EG,zh_CN,en_CA,es_MX
+    // cy_GB,en_GB,en_US,mn_MN,ja_JP,iw_IL,
+    final s = _sheet;
+    if (s == null) return;
+    final locale = s.properties.locale.toLowerCase();
+    trace("Sheet's locale ${white(locale)} ");
+    final valid1 = ['gb', 'us', 'il', 'in', 'cn', 'jp'].any(locale.endsWith);
+    final valid2 = ['zh', 'en'].any(locale.startsWith);
+    final valid3 = ['es_mx', 'ar_eg', 'mn_mn'].any(locale.startsWith);
+    if (!valid1 && !valid2 && !valid3) {
+      trace('''
+${red("WARNING!")}
+fts uses the US format for the translation formula (using "," as separator instead of ";" )
+Seems like your Google Sheet locale is set to ${s.properties.locale}, which is 
+potentially incompatible and might show ${red("#ERROR!")} (Formula parse error.)
+
+To fix this, open $spritesheetUrl 
+go to ${white("File > Settings")} and under ${white("General")} 
+set your Locale to ${cyan("United States")}.
+
+Optionally, follow the steps on https://support.google.com/docs/answer/58515
+
+''');
+    }
+    // trace("Super local", _sheet?.properties.locale);
   }
 }
 

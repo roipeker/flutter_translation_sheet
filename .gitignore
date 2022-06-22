@@ -34,4 +34,5 @@ example/data/output/
 google_credentials.json
 config_env.yaml
 trconfig.yaml
+./strings/
 dev-assets/

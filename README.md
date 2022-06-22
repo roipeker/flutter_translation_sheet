@@ -112,10 +112,13 @@ Take the sample data input as reference, and use it in your own project.
 
 You can leave a terminal open and use the `run` command while listening for file changes in your master strings folder, or your *trconfig.yaml*:
 `fts run --watch`.
-You can exit the watch with `q` and then press `Enter`.
+You can exit the watcher with `q` and then press `Enter`.
 
 ⚠️ **Warning**:
 > Watch out how often you modify the files and save them. Remember that your Google service account has [usage limits](https://developers.google.com/sheets/api/reference/limits). 
+
+> Make sure that your Spreadsheet uses "United States" as Locale in the Settings. See [Considerations 📌](#considerations-).
+
 
 
 After a while of not using it, Google Sheet performance slow down on every request, so it might take a little longer to get the output generated.
@@ -273,7 +276,7 @@ output arb:
 
 ### Widgets 📐
 
-You can use `SimpleLangPicker()` widget when you generate the dart code (included by default in `TData class]).
+You can use `SimpleLangPicker()` widget when you generate the dart code (included by default in `TData` class]).
 Is meant to be a quick tester to change languages. For example, if you use GetX for translations:
 ```dart
 return Scaffold(
@@ -293,6 +296,9 @@ We will try to provide a richer experience integrating more libraries outputs in
 
 ---
 ## Considerations 📌
+
+- Make sure your Spreadsheet is using "United States" or "United Kingdom" Locale (File > Settings > General > Locale), to avoid formula's errors.
+*fts* notifies about non-supported locales anyway.
 
 - Is preferable to keep the *trconfig.yaml* in the root of your project, some commands assumes that location (like arb generation).  
 
