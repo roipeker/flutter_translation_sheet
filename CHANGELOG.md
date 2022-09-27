@@ -1,3 +1,6 @@
+## [1.0.21]
+- Fix: .arb variables not being generated.
+
 ## [1.0.20]
 - added CLI check and warning for Sheet locale to avoid potential errors with the formula.
 - updated README.
