@@ -30,7 +30,7 @@ Map<String, dynamic> varsByKeys = {};
 /// when `config.yaml` has `intl:enabled:true`.
 /// Takes the [map] with all the translations to generates the files.
 void buildArb(Map<String, Map<String, String>> map) {
-  trace('Building arb files');
+  trace('Building arb files ... ');
   var appName = '';
   // detect if we have a l10n.yaml file.
   // var arbDir = config.arbOutputDir;
@@ -81,7 +81,9 @@ void buildArb(Map<String, Map<String, String>> map) {
         var newKey = k.camelCase;
         var textValue = localeMap[k]!;
         output[newKey] = textValue;
-        _addSimpleVarsMetadata(newKey, textValue, output);
+        /// we are sending the original Key ("k", field name separated by dots)
+        /// to make compatible with `varsByKeys` accessible and read keys.
+        _addSimpleVarsMetadata(k, newKey, textValue, output);
         // _addMetaKey(newKey, textValue, output, metaFallbackProperties);
       }
     }
@@ -111,16 +113,16 @@ void buildArb(Map<String, Map<String, String>> map) {
 /// generate the metadata key directly from the message if it contains
 /// placeholders.
 void _addSimpleVarsMetadata(
+  String originalKey,
   String targetKey,
   String value,
   Map<String, dynamic> output,
 ) {
   var metaKey = '@' + targetKey;
-  if (varsByKeys.containsKey(targetKey)) {
+  if (varsByKeys.containsKey(originalKey)) {
     output[metaKey] = <String, dynamic>{
-      'description': 'Auto-generated for $targetKey',
+      'description': 'Auto-generated for $originalKey',
     };
-
     /// add the placeholders in the meta key.
     output[metaKey]['placeholders'] ??= <String, dynamic>{};
 
