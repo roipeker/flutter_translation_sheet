@@ -7,8 +7,11 @@ import 'package:flutter_translation_sheet/src/utils/errors.dart';
 /// entry point of the program.
 /// Delegates arguments to the CommandRunner.
 Future<void> main(List<String> args) async {
-  _checkEnviroment();
+  _checkEnvironment();
   try {
+    if(args.isEmpty){
+      args = ['run'];
+    }
     exit(await FTSCommandRunner().run(args));
   } on GSheetsException catch (e) {
     gsheetError(e);
@@ -16,8 +19,8 @@ Future<void> main(List<String> args) async {
   }
 }
 
-/// Initializes the execution enviroment for the script.
+/// Initializes the execution environment for the script.
 /// [CliConfig.isDev] is `true` when runs locally.
-void _checkEnviroment() async {
+void _checkEnvironment() async {
   CliConfig.isDev = Platform.script.toString().endsWith('main.dart');
 }

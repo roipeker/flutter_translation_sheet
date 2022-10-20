@@ -107,29 +107,16 @@ class SimpleLangPicker extends StatelessWidget {
   }) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    final _selected = selected ?? AppLocales.supportedLocales.first;
+    final selectedValue = selected ?? AppLocales.supportedLocales.first;
     return PopupMenuButton<Locale>(
       tooltip: 'Select language',
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Icon(
-              Icons.translate,
-              size: 16,
-            ),
-            const SizedBox(width: 8),
-            Text(AppLocales.of(_selected)?.englishName ?? '-')
-          ],
-        ),
-      ),
-      initialValue: _selected,
+      initialValue: selectedValue,
       onSelected: onSelected,
       itemBuilder: (_) {
         return AppLocales.available
             .map(
               (e) => PopupMenuItem<Locale>(
+                value: e.locale,
                 child: Row(
                   children: [
                     Expanded(
@@ -170,11 +157,24 @@ class SimpleLangPicker extends StatelessWidget {
                     ),
                   ],
                 ),
-                value: e.locale,
               ),
             )
             .toList(growable: false);
       },
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(
+              Icons.translate,
+              size: 16,
+            ),
+            const SizedBox(width: 8),
+            Text(AppLocales.of(selectedValue)?.englishName ?? '-')
+          ],
+        ),
+      ),
     );
   }
 }
@@ -188,10 +188,13 @@ String getCodeMapLocaleKeysToMasterText(String theClassName) {
       Map<String, String> localeMap,
       {Map<String, String>? masterMap,}) {
     final output = <String, String>{};
-    final _masterMap =
-        masterMap ?? $theClassName.byKeys[AppLocales.available.first.key]!;
+    final inputMap =
+        masterMap ?? $theClassName.byKeys[AppLocales.available.first.key];
+        if(inputMap == null) {
+          throw Exception("No master map found for locale: \${AppLocales.available.first.key}");
+        }
     for (var k in localeMap.keys) {
-      output[_masterMap[k]!] = localeMap[k]!;
+      output[inputMap[k]!] = localeMap[k]!;
     }
     return output;
   }''';
@@ -258,4 +261,220 @@ class _##classNameDelegate extends LocalizationsDelegate<##className> {
   );
 }
 
+''';
+
+// import 'dart:convert';
+// import 'package:flutter/foundation.dart';
+// import 'package:flutter/material.dart';
+// import 'package:flutter/services.dart';
+// import 'dart:ui';
+const kFtsUtils = '''
+##imports
+
+class Fts {
+  static const List<String> _rtlLanguages = <String>[
+    'ar',
+    'fa',
+    'he',
+    'ps',
+    'ur'
+  ];
+
+  static get _binding => WidgetsFlutterBinding.ensureInitialized();
+
+  static Map<String, Map<String, String>> get _translations {
+    if (kDebugMode) {
+      // reactive to hot reload. 
+      return ##tData.getByKeys();
+    } else {
+      // required hot restart. 
+      return ##tData.byKeys;
+    }
+  }
+  
+  static Locale? _locale;
+  
+  static late Locale fallbackLocale;
+  
+  static final onLocaleChanged = ValueNotifier(
+    AppLocales.supportedLocales.first,
+  );
+
+  static TextDirection get textDirection => _textDirection;
+
+  static Locale get locale {
+    return _locale ?? AppLocales.supportedLocales.first;
+  }
+
+  static var _textDirection = TextDirection.ltr;
+
+  static set locale(Locale value) {
+    value = _safeLocale(value);
+    if (!AppLocales.supportedLocales.contains(value)) {
+      return;
+    }
+    _locale = value;
+    _textDirection = _rtlLanguages.contains(value.languageCode)
+        ? TextDirection.rtl
+        : TextDirection.ltr;
+    onLocaleChanged.value = _locale!;
+
+    ##loadJsonSetLocale
+  }
+
+  static void _notifyUpdate() {
+    _binding.addPostFrameCallback((timeStamp) {
+      _binding.performReassemble();
+    });
+  }
+
+  static String tr(
+    String key, {
+    Map<String, Object>? namedArgs,
+    List<Object>? args,
+  }) {
+    if (Fts._locale == null) {
+      init();
+    }
+    late String text;
+    final map = _translations;
+    if (hasTr(key)) {
+      text = map['\$_locale']![key]!;
+    } else {
+      var fallback = '\$fallbackLocale';
+      if (map.containsKey(fallback)) {
+        text = map[fallback]![key] ?? key;
+      } else {
+        text = key;
+      }
+    }
+    
+    if (text.contains('@:')) {
+      RegExp(r'@:(\\S+)').allMatches(text).forEach((match) {
+        final toReplace = match.group(0)!;
+        final findKey = match.group(1)!;
+        if (!hasTr(findKey)) {
+          print('Fts, linked key not found: \$findKey');
+        } else {
+          text = text.replaceAll(toReplace, findKey.tr());
+        }
+      });
+    }
+    
+    if (namedArgs != null && namedArgs.isNotEmpty) {
+      namedArgs.forEach((key, value) {
+        // text = text.replaceAll('{\$key}', '\$value');
+        text = text.replaceAll('##namedArgsPattern', '\$value');
+      });
+    }
+
+    if (args != null && args.isNotEmpty) {
+      for (final a in args) {
+        text = text.replaceFirst(RegExp(r'##argsPattern'), '\$a');
+      }
+    }
+    return text;
+  }
+
+  static bool hasTr(String key) {
+    final map = _translations;
+    return map['\$_locale']?.containsKey(key) == true;
+  }
+
+  static Future<void> init({
+    Locale? locale,
+    Locale? fallbackLocale,
+  }) async {
+    Fts.fallbackLocale = fallbackLocale ?? AppLocales.supportedLocales.first;
+    
+    ##loadJsonFallback
+    
+    locale ??= deviceLocale;
+    Fts.locale = locale;
+  }
+
+  static Locale get deviceLocale =>
+      WidgetsFlutterBinding.ensureInitialized().window.locale;
+
+  static Locale _safeLocale(Locale value) {
+    var clean = value;
+    if (value.countryCode != null) {
+      clean = Locale(value.languageCode);
+    }
+    return clean;
+  }
+
+  ##loadJsonMethod
+}
+
+##decodeTranslationMethod
+
+extension FtsStringExtension on String {
+  String tr({
+    Map<String, Object>? namedArgs,
+    List<Object>? args,
+  }) =>
+      Fts.tr(this, namedArgs: namedArgs, args: args);
+}
+
+/// Use `MaterialApp.localizationsDelegates: const [FtsDelegate()],`
+/// Basic delegate for TextDirection
+class _FtsLocalization implements WidgetsLocalizations {
+  const _FtsLocalization();
+
+  @override
+  TextDirection get textDirection => Fts.textDirection;
+}
+
+class FtsDelegate extends LocalizationsDelegate<WidgetsLocalizations> {
+  final localization = const _FtsLocalization();
+
+  const FtsDelegate();
+
+  @override
+  bool isSupported(Locale locale) => true;
+
+  @override
+  Future<WidgetsLocalizations> load(Locale locale) async => localization;
+
+  @override
+  bool shouldReload(FtsDelegate old) => false;
+}
+''';
+
+/// ##loadJsonSetLocale
+const kLoadJsonSetLocale = '''
+    if (!_translations.containsKey('\$_locale')) {
+      _load(_locale!).then((_) {
+        _notifyUpdate();
+      });
+    } else {
+      _notifyUpdate();
+    }
+''';
+
+// ##loadJsonFallback
+const kLoadJsonFallback = '''
+  _load(Fts.fallbackLocale);
+''';
+
+/// ##jsonDir
+//##loadJsonMethod
+const kLoadJsonMethod = '''
+  static Future<void> _load(Locale value) {
+    final key = '\$value';
+    if (_translations.containsKey(key)) {
+      return Future.value();
+    }
+    return rootBundle
+        .loadString('##jsonDir\$key.json')
+        .then((data) async {
+      _translations[key] = await compute(_decodeTranslation, data);
+    });
+  }
+ ''';
+
+// ##decodeTranslationMethod
+const kDecodeTranslationMethod = '''
+  Map<String, String> _decodeTranslation(String data) => Map<String, String>.from(jsonDecode(data));
 ''';

@@ -13,7 +13,7 @@ import 'utils.dart';
 /// runs the [upgrade] command: `fts upgrade`
 Future<void> upgrade() async {
   if (which('flutter').found) {
-    trace(green('Upgrading fts....\n'));
+    trace(green('Upgrading fts (global package) ...\n'));
     final result =
         'flutter pub global activate flutter_translation_sheet'.start(
       // terminal: true,

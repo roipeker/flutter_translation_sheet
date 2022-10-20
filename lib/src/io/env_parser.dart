@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:dcli/dcli.dart';
 import 'package:flutter_translation_sheet/flutter_translation_sheet.dart';
+import 'package:googleapis/servicemanagement/v1.dart';
 import 'package:path/path.dart' as p;
 import 'package:yaml/yaml.dart';
 
@@ -20,18 +21,31 @@ String get configProjectDir {
 }
 
 /// Loads the configuration file from [path].
-void loadEnv([String path = defaultConfigEnvPath]) {
-  var data = openString(path);
-  if (data.isEmpty) {
-    trace(
-        'ERROR: "$defaultConfigEnvPath" file not found, creating from template.');
-    createSampleConfig();
-    exit(0);
+void loadEnv({
+  String path = defaultConfigEnvPath,
+  YamlMap? parsedDoc,
+}) {
+  late YamlMap doc;
+  if (parsedDoc == null) {
+    var data = openString(path);
+    if (data.isEmpty) {
+      trace(
+          'ERROR: "$defaultConfigEnvPath" file not found, creating from template.');
+      createSampleConfig();
+      exit(0);
+    }
+    configPath = p.canonicalize(path);
+    doc = loadYaml(data);
+  } else {
+    doc = parsedDoc;
   }
-  configPath = p.canonicalize(path);
-  var doc = loadYaml(data);
+
   // config.intlEnabled = doc['intl']?['enabled'] ?? false;
   // config.outputJsonDir = doc['output_json_dir'] ?? '';
+  if (doc['output_fts_utils'] != null && doc['output_fts_utils'] is! bool) {
+    error('Invalid value for `output_fts_utils` in $path, must be a boolean.');
+    exit(1);
+  }
   config.outputJsonTemplate = doc['output_json_template'] ?? '';
   config.outputArbTemplate = doc['output_arb_template'] ?? '';
   config._configOutputTemplates();
@@ -39,10 +53,15 @@ void loadEnv([String path = defaultConfigEnvPath]) {
   ///'output/assets/l10n'
   config.entryFile = doc['entry_file'] ?? '';
   config.dartOutputDir = doc?['dart']?['output_dir'] ?? '';
+  config.dartOutputFtsUtils = doc?['dart']['output_fts_utils'] ?? false;
   config.dartTKeysId = doc?['dart']?['keys_id'] ?? '';
   config.useDartMaps = doc?['dart']?['use_maps'] ?? false;
   config.dartTranslationsId = doc?['dart']?['translations_id'] ?? '';
   config.paramOutputPattern = doc?['param_output_pattern'] ?? '';
+  config.resolveLinkedKeys = doc?['resolve_linked_keys'] ?? false;
+  config.paramFtsUtilsArgsPattern =
+      doc?['dart']?['fts_utils_args_pattern'] ?? '%s';
+
   _configParamOutput();
   if (config.dartOutputDir.isNotEmpty) {
     config.dartOutputDir = p.canonicalize(config.dartOutputDir);
@@ -222,6 +241,16 @@ void setCredentials({String? path, Map? json}) {
     //   exit(2);
     // }
     config.sheetCredentials = credentialsString;
+  } else {
+    final sysPath = Platform.environment['FTS_CREDENTIALS'];
+    if (sysPath != null) {
+      // print('spreadsheet id:\n - ' + magenta(config.sheetId!));
+      trace('fts detected ' +
+          magenta('FTS_CREDENTIALS') +
+          ' variable in your system environment. Using it.');
+      var credentialsString = openString(sysPath);
+      config.sheetCredentials = credentialsString;
+    }
   }
 }
 
@@ -232,10 +261,15 @@ class EnvConfig {
 
   ///@deprecated
   String outputJsonDir = '';
+
+  bool dartOutputFtsUtils = false;
+
   String outputJsonTemplate = '';
   String outputArbTemplate = '';
 
   String entryFile = '';
+  bool resolveLinkedKeys = false;
+  String paramFtsUtilsArgsPattern = '%s';
   String paramOutputPattern = '{*}';
   String paramOutputPattern1 = '{{';
   String paramOutputPattern2 = '}}';
@@ -293,6 +327,10 @@ class EnvConfig {
     return joinDir([dartOutputDir, filename]);
   }
 
+  String get dartFtsUtilsPath {
+    return joinDir([dartOutputDir, 'utils.dart']);
+  }
+
   String get dartTkeysPath {
     final filename = dartTKeysId.snakeCase + '.dart';
     return joinDir([dartOutputDir, filename]);
@@ -304,9 +342,10 @@ class EnvConfig {
 
   bool get validTranslationFile => dartTranslationsId.isNotEmpty;
 
-  String get inputVarsFile => joinDir([config.inputYamlDir, 'vars.lock']);
+  String get inputVarsFile => joinDir([config.inputYamlDir, '.vars.lock']);
 
   bool get hasOutputJsonDir => outputJsonDir.isNotEmpty;
+
   bool get hasOutputArbDir => outputArbTemplate.isNotEmpty;
 
   bool isValidSheet() =>

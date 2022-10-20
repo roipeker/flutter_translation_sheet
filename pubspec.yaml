@@ -1,9 +1,10 @@
 name: flutter_translation_sheet
-description: Flutter Translation Sheet (fts) is a simple tool to help you with
-  localization (l10n), using automatic GoogleSheet translations via
-  (GTranslate), generating json, arb and dart files.
-version: 1.0.21
+description: Flutter Translation Sheet (fts) is a simple tool to help you with localization (l10n), using automatic GoogleSheet translations via Google Translate, generating json, arb and dart files.
+version: 1.0.22
+maintainer: Rodrigo López (@roipeker)
 homepage: https://github.com/roipeker/flutter_translation_sheet
+repository: https://github.com/roipeker/flutter_translation_sheet/
+issue_tracker: https://github.com/roipeker/flutter_translation_sheet/issues
 
 executables:
   fts: main

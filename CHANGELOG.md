@@ -1,3 +1,20 @@
+## [1.0.22]
+- fix generated dart files format.
+- made "run" the default command when no arguments are passed.
+- add support for dev_dependencies.
+- add support to read the configuration (key `fts:`) from pubspec.
+- add support to read the configuration PATH (key `fts: "path.yaml"`) from pubspec.
+- fix some code formatting.
+- add support for auto-include json assets folder in pubspec.flutter.assets
+- add `Fts` (and utils) to quickly test the internationalization in your app. `output_fts_utils: true` in the configuration.
+- add support for `FTS_CREDENTIALS` environment variable.
+- hide vars files, rename `vars.lock` to `.vars.lock`
+- when `Fts` is used (.tr() extension), you can specify `fts_utils_args_pattern: "%s"` for not-named variables. 
+- add support for linked keys in vars, in the format {{@:title}}, fts does not include `param_output_pattern` in those cases.
+- add support to resolve linked keys in `Fts` at runtime.
+- add support to resolve linked keys at build time (add to root config `resolve_linked_keys: true`).
+ 
+
 ## [1.0.21]
 - Fix: .arb variables not being generated.
 

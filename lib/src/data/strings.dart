@@ -37,3 +37,22 @@ Example:
 // ''';
 
 }
+
+const kHasAssetsKey = '''
+  assets:
+''';
+const kHasAssetsReplace = '''
+  assets:
+    - ##replace
+''';
+
+const kNoAssetsKey = '''
+flutter:
+''';
+const kNoAssetsReplace = '''
+flutter:
+  
+  assets:
+    - ##replace
+''';
+

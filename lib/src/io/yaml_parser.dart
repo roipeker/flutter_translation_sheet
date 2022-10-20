@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter_translation_sheet/flutter_translation_sheet.dart';
 import 'package:path/path.dart' as p;
 import 'package:yaml/yaml.dart';
@@ -155,13 +157,35 @@ void putVarsInMap(Map<String, Map<String, String>> map) {
     varsMap['$key'] =
         Map.from(value).map((key, value) => MapEntry('$key', '$value'));
   });
+  var linkedKeys = [];
   for (var localeKey in map.keys) {
     final localeMap = map[localeKey]!;
     for (var key in localeMap.keys) {
       if (varsMap.containsKey(key)) {
         var text = localeMap[key]!;
-        localeMap[key] = replaceVars(VarsCap(text, varsMap[key]!));
+        text = replaceVars(VarsCap(text, varsMap[key]!));
         varsByKeys[key] = varsMap[key];
+        if (config.resolveLinkedKeys && text.contains('@:')) {
+          linkedKeys.add(key);
+        }
+        localeMap[key] = text;
+      }
+    }
+
+    if (config.resolveLinkedKeys && linkedKeys.isNotEmpty) {
+      for (var key in linkedKeys) {
+        var text = localeMap[key]!;
+        RegExp(r'@:(.*?)#').allMatches(text).forEach((match) {
+          final toReplace = match.group(0)!;
+          var findKey = match.group(1)!;
+          if (!localeMap.containsKey(findKey)) {
+            error(
+                'Can\'t find linked key "$findKey" to replace, make sure is correct.');
+            exit(3);
+          }
+          text = text.replaceAll(toReplace, localeMap[findKey]!);
+        });
+        localeMap[key] = text;
       }
     }
   }
@@ -230,9 +254,18 @@ String replaceVars(VarsCap vars) {
       var _key = words[i];
       var key = _key.replaceAll(_replaceAndLeaveDigitVar, '');
       var value = vars.vars[key]!;
-      //// special characters taken in account?
-      // value = value.replaceAll(r'$', '\\\$');
-      str = str.replaceAll(_key, '$start$value$end');
+      if (value.startsWith('@:')) {
+        /// If we resolve linked keys we play safe with the key.
+        if (config.resolveLinkedKeys) {
+          str = str.replaceAll(_key, '$value#');
+        } else {
+          str = str.replaceAll(_key, '$value');
+        }
+      } else {
+        //// special characters taken in account?
+        // value = value.replaceAll(r'$', '\\\$');
+        str = str.replaceAll(_key, '$start$value$end');
+      }
     }
   }
   return str;

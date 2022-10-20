@@ -26,7 +26,6 @@ class FTSCommandRunner extends CommandRunner<int> {
     addCommand(FetchCommand(startFetch));
     addCommand(RunCommand(startRun));
     addCommand(UpgradeCommand(checkUpdate));
-
     /// add "init" command when it's ready.
     // addCommand(InitCommand(initRun));
     addCommand(ExtractStringCommand(extractStrings));
@@ -73,13 +72,13 @@ class FTSCommandRunner extends CommandRunner<int> {
     } else {
       await execRun();
     }
-    exit(1);
+    exit(0);
   }
 
   /// executes the logic for `fts fetch`
   Future<void> startFetch() async {
     await runFetch();
-    exit(1);
+    exit(0);
   }
 
   bool isRunActive = false;

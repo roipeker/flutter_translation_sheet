@@ -35,13 +35,14 @@ void createLocalesFiles(
 
   if (saveJsonLocales) {
     trace('Saving json locales in ${config.jsonOutputDir}:');
+    addAssetsToPubSpec();
   }
 
-  for (var localeKey in localesMap.keys) {
+    for (var localeKey in localesMap.keys) {
     // trace('Locale ', localeKey);
     var localeName = normLocale(localeKey);
     var localeMap = localesMap[localeKey]!;
-
+    // trace("Locale map: $localeKey / $localeMap");
     /// save json files.
     if (saveJsonLocales) {
       saveLocaleJsonAsset(
@@ -87,11 +88,80 @@ abstract class $className {
     dartExportPaths.add(config.dartTranslationPath);
   }
 
+  if (config.dartOutputFtsUtils) {
+    createFtsUtilsFile();
+    dartExportPaths.add(config.dartFtsUtilsPath);
+  }
+
   /// create root file export for dartOutput dir.
   if (dartExportPaths.isNotEmpty) {
     /// create export file.
     createDartExportFile(dartExportPaths);
   }
+}
+
+void createFtsUtilsFile() {
+  var fileContent = kFtsUtils;
+  // fileContent = fileContent.replaceAll('##importPath', import);
+  fileContent =
+      fileContent.replaceAll('##tData', config.dartTranslationClassname);
+
+  var imports = [
+    p.basename(config.dartOutputDir) + '.dart',
+    "package:flutter/widgets.dart",
+    "package:flutter/foundation.dart",
+  ];
+
+  if (config.hasOutputJsonDir) {
+    imports.addAll([
+      "dart:convert",
+      "package:flutter/foundation.dart",
+      "package:flutter/services.dart",
+    ]);
+
+    fileContent =
+        fileContent.replaceAll('##loadJsonSetLocale', kLoadJsonSetLocale);
+    fileContent =
+        fileContent.replaceAll('##loadJsonFallback', kLoadJsonFallback);
+    var loadJsonString = kLoadJsonMethod;
+
+    // var jsonOutput = config.outputJsonTemplate;
+    var jsonOutputDir = p.dirname(config.outputJsonTemplate) + '/';
+    loadJsonString = loadJsonString.replaceAll('##jsonDir', jsonOutputDir);
+    fileContent = fileContent.replaceAll('##loadJsonMethod', loadJsonString);
+
+    fileContent = fileContent.replaceAll(
+        '##decodeTranslationMethod', kDecodeTranslationMethod);
+  } else {
+    fileContent =
+        fileContent.replaceAll('##loadJsonSetLocale', '_notifyUpdate();');
+    fileContent = fileContent.replaceAll('##loadJsonFallback', '');
+    fileContent = fileContent.replaceAll('##loadJsonMethod', '');
+    fileContent = fileContent.replaceAll('##decodeTranslationMethod', '');
+  }
+
+  fileContent = fileContent.replaceFirst(
+    '##argsPattern',
+    config.paramFtsUtilsArgsPattern,
+  );
+
+  fileContent = fileContent.replaceFirst(
+    '##namedArgsPattern',
+    config.paramOutputPattern.replaceFirst('*', '\$key'),
+  );
+
+  var importString = imports.map((e) => "import '$e';").join('\n');
+  fileContent = fileContent.replaceAll('##imports', importString);
+
+  saveString(config.dartFtsUtilsPath, fileContent);
+
+  // trace("Base name? ${}");
+  // exportPaths.sort();
+  // var fileContents = exportPaths
+  //     .map((path) => 'export "${p.relative(path, from: dir)}";')
+  //     .join('\n');
+  // var exportFilePath = p.join(dir, p.basename(dir) + '.dart');
+  // print("EXPORT PATH: $exportFilePath");
 }
 
 /// Generates the export file with the TKeys and TData files.
@@ -456,9 +526,10 @@ void runPubGet() {
 void formatDartFiles() {
   /// format dart files.
   if (config.validTranslationFile || config.validTKeyFile) {
-    if (which('dartfmt').found) {
-      'dartfmt -w ${config.dartOutputDir}'.start(
-        workingDirectory: config.dartOutputDir,
+    if (which('flutter').found) {
+      // 'dartfmt -w ${config.dartOutputDir}'.start(
+      'flutter format --fix ${config.dartOutputDir}'.start(
+        // workingDirectory: config.dartOutputDir,
         detached: true,
         runInShell: false,
       );
