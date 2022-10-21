@@ -108,6 +108,19 @@ void _inspectRecursive(String path) {
         }
         val = val.replaceAll('"', '\\"');
         val = val.replaceAll('\\{{', '{{');
+        if (num.tryParse(val) != null) {
+          continue;
+        }
+        /// skip only var text.
+        if(val.startsWith('{{') && val.endsWith('}}') && val.lastIndexOf('{{')==0){
+          continue;
+        }
+        /// skip whatever has no grapheme character in any text (like $21.99, --** #$!@ etc)
+        if(!_anyKindOfLetterRegExp.hasMatch(val)){
+          // print("skip $val");
+          continue;
+        }
+
         var _key = key + 'text${j + 1}';
         ++j;
         canoMap[_key] = val;
@@ -174,6 +187,8 @@ final varMatching = RegExp(
 );
 final varReplacer = RegExp(r'[\$|\{\}]');
 
+/// matches any charset, but only graphemes (glyphs) are captured.
+final _anyKindOfLetterRegExp = RegExp(r'\p{L}', unicode: true, dotAll: true, caseSensitive: false);
 /// Reads [file] from the extraction recursion, using [populate] List to store
 /// the matching Strings.
 void _takeFile(File file, List<String> populate) {
@@ -205,7 +220,9 @@ void _takeFile(File file, List<String> populate) {
         str = str.replaceAll('#%^*', '"');
       }
       str = _replaceVarsInString(str);
-      populate.add(str);
+      if (str.isNotEmpty) {
+        populate.add(str);
+      }
     }
   }
 
@@ -222,7 +239,9 @@ void _takeFile(File file, List<String> populate) {
         str = str.replaceAll('#%^*', '"');
       }
       str = _replaceVarsInString(str);
-      populate.add(str);
+      if (str.isNotEmpty) {
+        populate.add(str);
+      }
     }
   }
 }
@@ -234,13 +253,20 @@ String _replaceVarsInString(String str) {
     return str;
   }
   var captures = varMatching.allMatches(str);
-  captures.forEach((element) {
+  for (var element in captures) {
     var capturedString = element.group(0)!;
     var varName = capturedString.replaceAll(varReplacer, '');
 
     /// take the last element.
     varName = varName.split('.').last.camelCase;
     str = str.replaceAll(capturedString, '{{$varName}}');
-  });
+
+    /// optimization, skip text if its only a variable.
+    if (captures.length == 1) {
+      if (str == '{{$varName}}') {
+        return '';
+      }
+    }
+  }
   return str;
 }

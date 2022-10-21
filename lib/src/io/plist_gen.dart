@@ -20,7 +20,8 @@ void addLocalesInPlist() {
 /// messages.
 /// @see [addLocalesInPlist]
 void _buildAppleLocales(String dirPath, String name) {
-  final infoPath = buildPath([dirPath, 'Runner', 'Info.plist']);
+  var infoPath = buildPath([dirPath, 'Runner', 'Info.plist']);
+
   if (!exists(infoPath)) {
     trace('Can\'t locate $name project folder to update locales. Skipping');
     return;
@@ -34,7 +35,7 @@ void _buildAppleLocales(String dirPath, String name) {
     // </array>
     var localesString = jsonEncode(config.locales);
     var cmd =
-        'plutil -replace CFBundleLocalizations -json \'$localesString\' $infoPath';
+        'plutil -replace CFBundleLocalizations -json \'$localesString\' "$infoPath"';
     cmd.run;
     trace('locales for $name updated:\n - $infoPath:');
   }
