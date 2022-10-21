@@ -31,7 +31,7 @@ Future<void> upgrade() async {
 
 /// shows the version number in the Terminal.
 Future<void> printVersion() async {
-  final current = await currentVersion();
+  final current = currentVersion();
   if (current == null) {
     error('There was an error reading the current version');
   } else {
@@ -42,11 +42,15 @@ Future<void> printVersion() async {
 /// Returns the current fts version.
 /// Validating if it runs in local mode [CliConfig.isDev], or installed as
 /// snapshot.
-Future<String?> currentVersion() async {
+String? currentVersion() {
   var scriptFile = Platform.script.toFilePath();
   if (CliConfig.isDev) {
-    /// get project dir (../../)
+    /// navigate up in the folders up to the project dir
+    /// ./flutter_translation_sheet/.dart_tool/pub/bin/flutter_translation_sheet/
     var basePath = p.dirname(scriptFile);
+    basePath = p.dirname(basePath);
+    basePath = p.dirname(basePath);
+    basePath = p.dirname(basePath);
     basePath = p.dirname(basePath);
     var pubSpec = p.join(basePath, 'pubspec.yaml');
     final str = openString(pubSpec);
@@ -61,7 +65,9 @@ Future<String?> currentVersion() async {
   var pathToPubLock =
       canonicalize(join(dirname(scriptFile), '../pubspec.lock'));
   var str = openString(pathToPubLock);
-  if (str.isEmpty) return null;
+  if (str.isEmpty) {
+    return null;
+  }
   var yaml = loadYaml(str);
   if (yaml['packages'][CliConfig.packageName] == null) {
     /// running local version? might read the pubspec here.
@@ -102,7 +108,7 @@ Future<void> checkUpdate([bool fromCommand = true]) async {
       }
       return;
     }
-    final current = await currentVersion();
+    final current = currentVersion();
     if (current == null) {
       if (fromCommand) {
         error('There was an error reading the current version');

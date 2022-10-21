@@ -1,3 +1,8 @@
+## [1.0.25]
+- internal fix to check if its running locally in dev mode.
+- fix for Windows shell. (thanks @IsmailAlamKhan)
+- fixes on `Fts` when loading from json.
+
 ## [1.0.24]
 - put back dependencies constrains for release.
 - put back `fts upgrade` code.

@@ -103,9 +103,8 @@ abstract class $className {
 void createFtsUtilsFile() {
   var fileContent = kFtsUtils;
   // fileContent = fileContent.replaceAll('##importPath', import);
-  fileContent =
-      fileContent.replaceAll('##tData', config.dartTranslationClassname);
 
+  var resolveTranslationCode = '';
   var imports = [
     p.basename(config.dartOutputDir) + '.dart',
     "package:flutter/widgets.dart",
@@ -132,22 +131,28 @@ void createFtsUtilsFile() {
 
     fileContent = fileContent.replaceAll(
         '##decodeTranslationMethod', kDecodeTranslationMethod);
+    resolveTranslationCode = kResolveTranslationJson;
   } else {
     fileContent =
         fileContent.replaceAll('##loadJsonSetLocale', '_notifyUpdate();');
     fileContent = fileContent.replaceAll('##loadJsonFallback', '');
     fileContent = fileContent.replaceAll('##loadJsonMethod', '');
     fileContent = fileContent.replaceAll('##decodeTranslationMethod', '');
+    resolveTranslationCode = kResolveTranslationMap;
   }
+
+  fileContent =
+      fileContent.replaceAll('##resolveTranslations', resolveTranslationCode);
 
   fileContent = fileContent.replaceFirst(
     '##argsPattern',
     config.paramFtsUtilsArgsPattern,
   );
+  fileContent =
+      fileContent.replaceAll('##tData', config.dartTranslationClassname);
 
   var patt = config.paramOutputPattern;
   if (patt.isEmpty || patt == '*') {
-    trace("PARAM ISFUCKED! $patt");
     patt = '{*}';
   }
   patt = patt.replaceFirst('*', '\$key');
@@ -541,7 +546,7 @@ void formatDartFiles() {
       'flutter format --fix ${config.dartOutputDir}'.start(
         // workingDirectory: config.dartOutputDir,
         detached: true,
-        runInShell: false,
+        runInShell: true,
       );
     }
   }

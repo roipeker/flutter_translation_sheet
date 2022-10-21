@@ -431,13 +431,7 @@ class Fts {
   static WidgetsBinding get _binding => WidgetsFlutterBinding.ensureInitialized();
   static bool useMasterTextAsKey = false;
   static Map<String, Map<String, String>> get _translations {
-    if (kDebugMode) {
-      // reactive to hot reload. 
-      return !useMasterTextAsKey ? ##tData.getByKeys() : ##tData.getByText();
-    } else {
-      // required hot restart. 
-      return !useMasterTextAsKey ? ##tData.byKeys : ##tData.byText;
-    }
+    ##resolveTranslations
   }
   
   static Locale? _locale;
@@ -533,10 +527,10 @@ class Fts {
     return map['\$_locale']?.containsKey(key) == true;
   }
 
-  static Future<void> init({
+  static void init({
     Locale? locale,
     Locale? fallbackLocale,
-  }) async {
+  }) {
     final originalCallback = _binding.platformDispatcher.onLocaleChanged;
     _binding.platformDispatcher.onLocaleChanged = () {
       originalCallback?.call();
@@ -627,12 +621,31 @@ const kLoadJsonMethod = '''
     return rootBundle
         .loadString('##jsonDir\$key.json')
         .then((data) async {
-      _translations[key] = await compute(_decodeTranslation, data);
+      final map = await compute(_decodeTranslation, data);
+      ##tData.byKeys[key] = map;
+      if(useMasterTextAsKey){
+        ##tData.byText[key] = ##tData.mapLocaleKeysToMasterText(map);
+      }
     });
   }
  ''';
 
 // ##decodeTranslationMethod
 const kDecodeTranslationMethod = '''
-  Map<String, String> _decodeTranslation(String data) => Map<String, String>.from(jsonDecode(data));
+  Map<String, String> _decodeTranslation(String data) => Map<String, String>.from(jsonDecode(data) as Map);
+''';
+
+// ##resolveTranslation
+const kResolveTranslationMap = '''
+    if (kDebugMode) {
+      // reactive to hot reload. 
+      return !useMasterTextAsKey ? ##tData.getByKeys() : ##tData.getByText();
+    } else {
+      // required for hot restart. 
+      return !useMasterTextAsKey ? ##tData.byKeys : ##tData.byText;
+    }
+''';
+
+const kResolveTranslationJson = '''
+   return !useMasterTextAsKey ? ##tData.byKeys : ##tData.byText;
 ''';
