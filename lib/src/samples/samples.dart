@@ -95,7 +95,6 @@ gsheets:
 ''';
 }
 
-
 const kLangPickerCupertino = r'''
 /// Simple language picker (Cupertino style).
 typedef SimpleLangPicker = LangPickerCupertino;

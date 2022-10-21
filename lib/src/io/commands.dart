@@ -16,7 +16,6 @@ class ExtractStringCommand extends Command<int> {
   final String name = 'extract';
   final Future Function() exec;
 
-
   ExtractStringCommand(this.exec) {
     argParser.addOption('path',
         abbr: 'p',
@@ -31,8 +30,7 @@ class ExtractStringCommand extends Command<int> {
     argParser.addFlag('clean',
         defaultsTo: false,
         abbr: 'c',
-        help:
-        'Clean results, preventing duplicates');
+        help: 'Clean results, preventing duplicates');
 
     argParser.addOption('output',
         defaultsTo: 'strings.yaml',
@@ -285,6 +283,7 @@ void startConfig(String path) {
   var f = File(path);
   if (!f.existsSync()) {
     error('Error: $path config file not found');
+
     /// ask to create from template.
     var useCreateTemplate = confirm(
         yellow(

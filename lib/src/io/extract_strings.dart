@@ -182,10 +182,10 @@ void _takeFile(File file, List<String> populate) {
   var hasEscaped1 = str.contains("\\'");
   var hasEscaped2 = str.contains('\\"');
 
-  if(hasEscaped1){
+  if (hasEscaped1) {
     str = str.replaceAll("\\'", '*^%#');
   }
-  if(hasEscaped2){
+  if (hasEscaped2) {
     str = str.replaceAll('\\"', '#%^*');
   }
 
@@ -198,10 +198,10 @@ void _takeFile(File file, List<String> populate) {
     str = str.trim();
     var hasSpace = extractPermissive || str.contains(' ');
     if (str.isNotEmpty && hasSpace && !str.contains(_pathRegExp)) {
-      if(hasEscaped1){
+      if (hasEscaped1) {
         str = str.replaceAll('*^%#', "'");
       }
-      if(hasEscaped2){
+      if (hasEscaped2) {
         str = str.replaceAll('#%^*', '"');
       }
       str = _replaceVarsInString(str);
@@ -215,10 +215,10 @@ void _takeFile(File file, List<String> populate) {
     str = str.trim();
     var hasSpace = extractPermissive || str.contains(' ');
     if (str.isNotEmpty && hasSpace && !str.contains(_pathRegExp)) {
-      if(hasEscaped1){
+      if (hasEscaped1) {
         str = str.replaceAll('*^%#', "'");
       }
-      if(hasEscaped2){
+      if (hasEscaped2) {
         str = str.replaceAll('#%^*', '"');
       }
       str = _replaceVarsInString(str);

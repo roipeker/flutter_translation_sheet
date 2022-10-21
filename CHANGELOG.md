@@ -1,3 +1,7 @@
+## [1.0.24]
+- put back dependencies constrains for release.
+- put back `fts upgrade` code.
+
 ## [1.0.23]
 - fix bug with empty `param_output_pattern` and `Fts.tr(namedArgs:)`
 - added `fts extract --exclude path1,pathN` to exclude paths from capture.
