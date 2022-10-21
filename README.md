@@ -41,6 +41,25 @@ Manage all your Strings and translation from a single place.
 
 
 ## News 📰
+Since v1.0.23:
+
+`fts extract --exclude path1,pathN` excludes paths from the extraction capture.
+`fts extract --clean` removes duplicated text results.
+
+If you capture your text with `extract` from a source code, you could use
+`Fts.useMasterTextAsKey=true`, to use the master text as key for translation, 
+for example `"Hello world".tr()`
+ 
+You can detect OS locale changes with
+```dart
+Fts.onSystemLocaleChanged.addListener((){
+  print(Fts.deviceLocale);
+});
+```
+Receives the events when the window detects a locale change (like Android 13 feature)
+
+SimpleLangPicker now is `LangPickerMaterial` and a new iOS flavor, `LangPickerCupertino`.
+
 
 Since v1.0.22:
 
@@ -83,11 +102,11 @@ Keys.title.tr();
 ```
 
 If you work with RTL languages, you can use `Fts.textDirection` to assign the `Directionality`.
-Or better, use the `FtsDelegate()` !
+Or better, use the `Fts.delegate` !
 
 ```dart
 return MaterialApp(
-  localizationsDelegates: const [FtsDelegate()],
+  localizationsDelegates: const [Fts.delegate],
   home: MyHomePage(),
 );
 ```
@@ -434,14 +453,17 @@ output arb:
 
 ### Widgets 📐
 
-You can use `SimpleLangPicker()` widget when you generate the dart code (included by default in `TData` class]).
+/// Simple language picker (Cupertino style).
+You can use `LangPickerMaterial()` and `LangPickerCupertino()` widgets when you generate the dart code (included by default in `TData` class]).
+
 Is meant to be a quick tester to change languages. For example, if you use GetX for translations:
+
 ```dart
 return Scaffold(
   appBar: AppBar(
     title: Text(widget.title),
     actions: [
-      SimpleLangPicker(
+      LangPickerMaterial(
         onSelected: Get.updateLocale,
         selected: Get.locale,
       ),

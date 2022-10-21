@@ -81,6 +81,7 @@ void buildArb(Map<String, Map<String, String>> map) {
         var newKey = k.camelCase;
         var textValue = localeMap[k]!;
         output[newKey] = textValue;
+
         /// we are sending the original Key ("k", field name separated by dots)
         /// to make compatible with `varsByKeys` accessible and read keys.
         _addSimpleVarsMetadata(k, newKey, textValue, output);
@@ -123,6 +124,7 @@ void _addSimpleVarsMetadata(
     output[metaKey] = <String, dynamic>{
       'description': 'Auto-generated for $originalKey',
     };
+
     /// add the placeholders in the meta key.
     output[metaKey]['placeholders'] ??= <String, dynamic>{};
 

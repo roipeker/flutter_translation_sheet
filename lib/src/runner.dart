@@ -26,8 +26,6 @@ class FTSCommandRunner extends CommandRunner<int> {
     addCommand(FetchCommand(startFetch));
     addCommand(RunCommand(startRun));
     addCommand(UpgradeCommand(checkUpdate));
-    /// add "init" command when it's ready.
-    // addCommand(InitCommand(initRun));
     addCommand(ExtractStringCommand(extractStrings));
 
     argParser.addFlag(
@@ -41,12 +39,12 @@ class FTSCommandRunner extends CommandRunner<int> {
   Future<int> run(Iterable<String> args) async {
     try {
       final _args = parse(args);
-      final cmd = _args.command?.name;
-      final res = await runCommand(_args) ?? ExitCode.success.code;
+      return await runCommand(_args) ?? ExitCode.success.code;
+      // final cmd = _args.command?.name;
       // if (cmd != 'upgrade') {
       //   await checkUpdate(false);
       // }
-      return res;
+      // return res;
     } catch (e) {
       error(e);
     }
@@ -77,6 +75,7 @@ class FTSCommandRunner extends CommandRunner<int> {
 
   /// executes the logic for `fts fetch`
   Future<void> startFetch() async {
+    print("RUN FETCH!");
     await runFetch();
     exit(0);
   }

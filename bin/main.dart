@@ -9,7 +9,7 @@ import 'package:flutter_translation_sheet/src/utils/errors.dart';
 Future<void> main(List<String> args) async {
   _checkEnvironment();
   try {
-    if(args.isEmpty){
+    if (args.isEmpty) {
       args = ['run'];
     }
     exit(await FTSCommandRunner().run(args));

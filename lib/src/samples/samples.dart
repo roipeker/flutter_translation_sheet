@@ -11,8 +11,11 @@ counter: You pressed the counter {{count}} times
 
   static const sample = '''
 ## sample translation, entry file.
+
 ---
+
 title: Welcome to Flutter Translation Sheet tool
+
 body: |
   This is a sample body
   to check the translation system
@@ -22,12 +25,13 @@ body: |
 ## content of the file will be unwrapped into the key.
 home:
   \$ref: home.yaml
+
 ''';
 
   static const trconfig = '''
 ## output dir for json translations by locale
 ## (*) represents the locale
-output_json_template: assets/i18n/*.json
+#output_json_template: assets/i18n/*.json
 
 ## output dir for arb translations files by locale
 ## Useful if you have intl setup or "Intl plugin" in your IDE.
@@ -44,20 +48,24 @@ entry_file: strings/sample.yaml
 ## (*) = {{name}} becomes (name)
 ## - Special case when you need * as prefix or suffix, use *? as splitter
 ## ***?** = {{name}} becomes **name**
-param_output_pattern: "{*}"
+#param_output_pattern: "{*}"
 
 dart:
   ## Output dir for dart files
   output_dir: lib/i18n
 
+  output_fts_utils: true
+  
+  #fts_utils_args_pattern: {}
+
   ## Translation Key class and filename reference
-  keys_id: TKeys
+  keys_id: Strings
 
   ## Translations map class an filename reference.
-  translations_id: TData
+  translations_id: Translations
 
-  ## translations as Dart files Maps (available in translations.dart).
-  use_maps: false
+  ## translations as Dart files Maps (practical for hot-reload)
+  use_maps: true
 
 ## see: https://cloud.google.com/translate/docs/languages
 ## All locales to be supported.
@@ -65,23 +73,17 @@ locales:
   - en
   - es
   - ja
+  - ar
 
 ## Google Sheets Configuration
 ## How to get your credentials?
 ## see: https://github.com/roipeker/flutter_translation_sheet/wiki/Google-credentials
 gsheets:
-
-  ## For a performance boost on big datasets, to try to use the GoogleTranslate formula once,
-  ## enable "Iterative Calculations" manually in your worksheet to avoid the #VALUE error.
-  ## Go to:
-  ## File > Spreadsheet Settings > Calculation > set "Iterative calculation" to "On"
-  ## Or check:
-  ## https://support.google.com/docs/answer/58515?hl=en&co=GENIE.Platform%3DDesktop#zippy=%2Cchoose-how-often-formulas-calculate
-  use_iterative_cache: false
-
   ## Use relative or absolute path to your json credentials.
   ## Check the wiki for a step by step tutorial:
   ## https://github.com/roipeker/flutter_translation_sheet/wiki/Google-credentials
+  ## Or you can set the var FTS_CREDENTIALS=path/credentials.json in your OS System 
+  ## Enviroment.
   credentials_path:
   
   ## Open your google sheet and copy the SHEET_ID from the url:
@@ -89,90 +91,228 @@ gsheets:
   spreadsheet_id:
 
   ## The spreadsheet "table" where your translation will live.
-  worksheet: Sheet1
+  #worksheet: Sheet1
 ''';
 }
 
-const kSimpleLangPickerWidget = r'''
 
-/// Dropdown menu with available locales.
+const kLangPickerCupertino = r'''
+/// Simple language picker (Cupertino style).
+typedef SimpleLangPicker = LangPickerCupertino;
+class LangPickerCupertino extends StatefulWidget {
+  final Locale selected;
+  final ValueChanged<Locale> onSelected;
+  final bool changeOnScroll, showFlag, showNativeName, showLocaleCode;
+
+  const LangPickerCupertino({
+    super.key,
+    required this.selected,
+    required this.onSelected,
+    this.changeOnScroll = false,
+    this.showFlag = false,
+    this.showNativeName = true,
+    this.showLocaleCode = true,
+  });
+
+  @override
+  createState() => _LangPickerCupertinoState();
+}
+
+class _LangPickerCupertinoState extends State<LangPickerCupertino> {
+  @override
+  void didUpdateWidget(covariant LangPickerCupertino oldWidget) {
+    if (oldWidget.selected != widget.selected) {
+      setState(() {});
+    }
+    super.didUpdateWidget(oldWidget);
+  }
+
+  late FixedExtentScrollController scrollController;
+
+  LangVo? get selected => AppLocales.of(widget.selected);
+
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoButton(
+      onPressed: openPicker,
+      child: Text(selected?.englishName ?? 'Choose language'),
+    );
+  }
+
+  Future<void> openPicker() async {
+    await showCupertinoModalPopup<void>(
+      context: context,
+      builder: (context) {
+        scrollController = FixedExtentScrollController(
+          initialItem:
+              selected == null ? 0 : AppLocales.available.indexOf(selected!),
+        );
+        return Container(
+          height: 216,
+          padding: const EdgeInsets.only(top: 6.0),
+          margin: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+          ),
+          color: CupertinoColors.systemBackground.resolveFrom(context),
+          child: SafeArea(
+            top: false,
+            child: _buildPicker(),
+          ),
+        );
+      },
+    );
+    if (!widget.changeOnScroll) {
+      var index = scrollController.selectedItem;
+      index %= AppLocales.available.length;
+      widget.onSelected(AppLocales.available[index].locale);
+    }
+  }
+
+  Widget _buildPicker() {
+    return Directionality(
+      textDirection: TextDirection.ltr,
+      child: CupertinoPicker(
+        magnification: 1.22,
+        squeeze: 1.2,
+        useMagnifier: false,
+        itemExtent: 40,
+        scrollController: scrollController,
+        onSelectedItemChanged: (index) {
+          if (widget.changeOnScroll) {
+            widget.onSelected(AppLocales.available[index].locale);
+          }
+        },
+        looping: true,
+        children: List<Widget>.generate(
+          AppLocales.available.length,
+          (index) {
+            final vo = AppLocales.available[index];
+            return Center(
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (widget.showNativeName)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                      child: Text(
+                        vo.nativeName,
+                        style: const TextStyle(fontSize: 14),
+                      ),
+                    ),
+                  if (widget.showFlag)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                      child: Text(vo.flagChar),
+                    ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                    child: Text(vo.englishName),
+                  ),
+                  if (widget.showLocaleCode)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                      child: Text(
+                        vo.locale.toString().toUpperCase(),
+                        style: const TextStyle(
+                          fontSize: 11,
+                          letterSpacing: 1,
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+''';
+const kLangPickerMaterial = r'''
+
+/// Dropdown menu with available locales. (Material style)
 /// Useful to test changing Locales.
-class SimpleLangPicker extends StatelessWidget {
+class LangPickerMaterial extends StatelessWidget {
   final Locale? selected;
   final Function(Locale) onSelected;
-  const SimpleLangPicker({
-    Key? key,
+  const LangPickerMaterial({
+    super.key,
     this.selected,
     required this.onSelected,
-  }) : super(key: key);
+  });
   @override
   Widget build(BuildContext context) {
     final selectedValue = selected ?? AppLocales.supportedLocales.first;
-    return PopupMenuButton<Locale>(
-      tooltip: 'Select language',
-      initialValue: selectedValue,
-      onSelected: onSelected,
-      itemBuilder: (_) {
-        return AppLocales.available
-            .map(
-              (e) => PopupMenuItem<Locale>(
-                value: e.locale,
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Text(
-                            e.englishName,
-                            style: const TextStyle(
-                              fontSize: 14,
-                              letterSpacing: -0.2,
-                              fontWeight: FontWeight.w300,
+    return Material(
+      type: MaterialType.transparency,
+      child: PopupMenuButton<Locale>(
+        tooltip: 'Select language',
+        initialValue: selectedValue,
+        onSelected: onSelected,
+        itemBuilder: (_) {
+          return AppLocales.available
+              .map(
+                (e) => PopupMenuItem<Locale>(
+                  value: e.locale,
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Text(
+                              e.englishName,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                letterSpacing: -0.2,
+                                fontWeight: FontWeight.w300,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                             ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          const SizedBox(height: 2),
-                          Text(
-                            e.nativeName,
-                            style: const TextStyle(
-                              fontSize: 11,
-                              letterSpacing: .15,
-                              fontWeight: FontWeight.w400,
+                            const SizedBox(height: 2),
+                            Text(
+                              e.nativeName,
+                              style: const TextStyle(
+                                fontSize: 11,
+                                letterSpacing: .15,
+                                fontWeight: FontWeight.w400,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                             ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      e.key.toUpperCase(),
-                      style: const TextStyle(
-                        fontSize: 9,
-                        fontWeight: FontWeight.bold,
+                      const SizedBox(width: 8),
+                      Text(
+                        e.key.toUpperCase(),
+                        style: const TextStyle(
+                          fontSize: 9,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
+              )
+              .toList(growable: false);
+        },
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(
+                Icons.translate,
+                size: 16,
               ),
-            )
-            .toList(growable: false);
-      },
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Icon(
-              Icons.translate,
-              size: 16,
-            ),
-            const SizedBox(width: 8),
-            Text(AppLocales.of(selectedValue)?.englishName ?? '-')
-          ],
+              const SizedBox(width: 8),
+              Text(AppLocales.of(selectedValue)?.englishName ?? '-')
+            ],
+          ),
         ),
       ),
     );
@@ -280,15 +420,17 @@ class Fts {
     'ur'
   ];
 
-  static get _binding => WidgetsFlutterBinding.ensureInitialized();
-
+  static const FtsDelegate delegate = FtsDelegate();
+  
+  static WidgetsBinding get _binding => WidgetsFlutterBinding.ensureInitialized();
+  static bool useMasterTextAsKey = false;
   static Map<String, Map<String, String>> get _translations {
     if (kDebugMode) {
       // reactive to hot reload. 
-      return ##tData.getByKeys();
+      return !useMasterTextAsKey ? ##tData.getByKeys() : ##tData.getByText();
     } else {
       // required hot restart. 
-      return ##tData.byKeys;
+      return !useMasterTextAsKey ? ##tData.byKeys : ##tData.byText;
     }
   }
   
@@ -296,6 +438,10 @@ class Fts {
   
   static late Locale fallbackLocale;
   
+  static final onSystemLocaleChanged = ValueNotifier(
+    deviceLocale,
+  );
+
   static final onLocaleChanged = ValueNotifier(
     AppLocales.supportedLocales.first,
   );
@@ -385,6 +531,12 @@ class Fts {
     Locale? locale,
     Locale? fallbackLocale,
   }) async {
+    final originalCallback = _binding.platformDispatcher.onLocaleChanged;
+    _binding.platformDispatcher.onLocaleChanged = () {
+      originalCallback?.call();
+      onSystemLocaleChanged.value = _binding.platformDispatcher.locale;
+    };
+    
     Fts.fallbackLocale = fallbackLocale ?? AppLocales.supportedLocales.first;
     
     ##loadJsonFallback
@@ -393,9 +545,9 @@ class Fts {
     Fts.locale = locale;
   }
 
-  static Locale get deviceLocale =>
-      WidgetsFlutterBinding.ensureInitialized().window.locale;
+  static Locale get deviceLocale => _binding.platformDispatcher.locale;
 
+  // only support country code for now.
   static Locale _safeLocale(Locale value) {
     var clean = value;
     if (value.countryCode != null) {

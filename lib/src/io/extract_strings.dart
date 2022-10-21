@@ -2,13 +2,14 @@ import 'dart:io';
 
 import 'package:dcli/dcli.dart';
 import 'package:flutter_translation_sheet/flutter_translation_sheet.dart';
-import 'package:flutter_translation_sheet/src/utils/json2yaml.dart';
 import 'package:path/path.dart' as p;
 
 String libFolder = '';
 String extractStringOutputFile = '';
 bool extractPermissive = false;
 String extractAllowedExtensions = 'dart';
+String extractExcludePaths = '';
+bool extractCleanResults = false;
 
 /// Logic for `fts extract`
 Future<void> extractStrings() async {
@@ -43,17 +44,40 @@ void _inspectRecursive(String path) {
   var dir = Directory(path);
   var allowedExtensions = extractAllowedExtensions.split(',').map((e) {
     var ext = e.trim();
-    if (!ext.startsWith('.')) return '.$ext';
+    if (!ext.startsWith('.')) {
+      return '.$ext';
+    }
     return ext;
   }).toList(growable: false);
+
   trace('Accepting extensions: ', allowedExtensions.join(', '));
   if (extractPermissive) {
     trace('Running in permissive move, strings without spaces are captured');
   }
   var allFileEntities = dir.listSync(recursive: true);
+
+  var excludePathsList = [];
+  extractExcludePaths = extractExcludePaths.trim();
+  if (extractExcludePaths.isNotEmpty) {
+    excludePathsList = extractExcludePaths
+        .split(',')
+        .map((e) => e.trim())
+        .toList(growable: false);
+  }
+  final hasExcludePaths = excludePathsList.isNotEmpty;
   final files = allFileEntities
       .where((e) {
+        if (hasExcludePaths) {
+          for (final p in excludePathsList) {
+            if (e.path.contains(p)) {
+              return false;
+            }
+          }
+        }
         if (e is File) {
+          if (p.basename(e.path).startsWith('.')) {
+            return false;
+          }
           var ext = p.extension(e.path, 1);
           return allowedExtensions.contains(ext);
         }
@@ -63,18 +87,35 @@ void _inspectRecursive(String path) {
       .cast<File>();
 
   trace('Inspecting ${files.length} files');
-
+  var uniqueTextCollection = <String>[];
+  var duplicatesCount = 0;
   final canoMap = <String, String>{};
   for (final f in files) {
     var populatorSub = <String>[];
     _takeFile(f, populatorSub);
     if (populatorSub.isNotEmpty) {
       var key = _getKey(f.path);
+      var j = 0;
       for (var i = 0; i < populatorSub.length; ++i) {
-        var _key = key + 'text${i + 1}';
-        canoMap[_key] = populatorSub[i];
+        var val = populatorSub[i];
+        if (extractCleanResults) {
+          if (!uniqueTextCollection.contains(val)) {
+            uniqueTextCollection.add(val);
+          } else {
+            ++duplicatesCount;
+            continue;
+          }
+        }
+        val = val.replaceAll('"', '\\"');
+        val = val.replaceAll('\\{{', '{{');
+        var _key = key + 'text${j + 1}';
+        ++j;
+        canoMap[_key] = val;
       }
     }
+  }
+  if (extractCleanResults) {
+    trace('Skipped $duplicatesCount duplicates.');
   }
 
   /// create keys.
@@ -94,6 +135,7 @@ void _inspectRecursive(String path) {
     var parts = k.split('.');
     buildInnerMap(parts, jsonMap, canoMap[k]!);
   }
+
   trace('We found ${canoMap.keys.length} strings in $libFolder');
   var finalPath = extractStringOutputFile;
   var ext = p.extension(finalPath);
@@ -106,7 +148,7 @@ void _inspectRecursive(String path) {
   if (isJson) {
     contentString = prettyJson(jsonMap);
   } else {
-    contentString = json2yaml(jsonMap, yamlStyle: YamlStyle.pubspecYaml);
+    contentString = json2yaml(jsonMap, yamlStyle: YamlStyle.generic);
   }
   saveString(finalPath, contentString);
   trace('Extracted strings saved in $finalPath');
@@ -137,6 +179,16 @@ final varReplacer = RegExp(r'[\$|\{\}]');
 void _takeFile(File file, List<String> populate) {
   var str = file.readAsStringSync();
   str = str.replaceAll(_regexR1, '');
+  var hasEscaped1 = str.contains("\\'");
+  var hasEscaped2 = str.contains('\\"');
+
+  if(hasEscaped1){
+    str = str.replaceAll("\\'", '*^%#');
+  }
+  if(hasEscaped2){
+    str = str.replaceAll('\\"', '#%^*');
+  }
+
   var fusion = _regex4.allMatches(str);
   var fusion2 = _regexMultiline.allMatches(str);
 
@@ -146,6 +198,12 @@ void _takeFile(File file, List<String> populate) {
     str = str.trim();
     var hasSpace = extractPermissive || str.contains(' ');
     if (str.isNotEmpty && hasSpace && !str.contains(_pathRegExp)) {
+      if(hasEscaped1){
+        str = str.replaceAll('*^%#', "'");
+      }
+      if(hasEscaped2){
+        str = str.replaceAll('#%^*', '"');
+      }
       str = _replaceVarsInString(str);
       populate.add(str);
     }
@@ -157,6 +215,12 @@ void _takeFile(File file, List<String> populate) {
     str = str.trim();
     var hasSpace = extractPermissive || str.contains(' ');
     if (str.isNotEmpty && hasSpace && !str.contains(_pathRegExp)) {
+      if(hasEscaped1){
+        str = str.replaceAll('*^%#', "'");
+      }
+      if(hasEscaped2){
+        str = str.replaceAll('#%^*', '"');
+      }
       str = _replaceVarsInString(str);
       populate.add(str);
     }

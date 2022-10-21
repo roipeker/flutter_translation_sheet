@@ -7,7 +7,6 @@ import 'package:path/path.dart' as p;
 import 'package:yaml/yaml.dart';
 
 import '../data/strings.dart';
-import 'logger.dart';
 import 'utils.dart';
 
 /// runs the [upgrade] command: `fts upgrade`

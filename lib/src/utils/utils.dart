@@ -6,9 +6,7 @@ import 'package:flutter_translation_sheet/flutter_translation_sheet.dart';
 import 'package:path/path.dart' as p;
 import 'package:watcher/watcher.dart';
 
-import '../common.dart';
 import '../runner.dart';
-import 'logger.dart';
 
 export 'json2yaml.dart';
 export 'logger.dart';

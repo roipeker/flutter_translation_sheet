@@ -38,7 +38,7 @@ void createLocalesFiles(
     addAssetsToPubSpec();
   }
 
-    for (var localeKey in localesMap.keys) {
+  for (var localeKey in localesMap.keys) {
     // trace('Locale ', localeKey);
     var localeName = normLocale(localeKey);
     var localeMap = localesMap[localeKey]!;
@@ -145,9 +145,15 @@ void createFtsUtilsFile() {
     config.paramFtsUtilsArgsPattern,
   );
 
+  var patt = config.paramOutputPattern;
+  if (patt.isEmpty || patt == '*') {
+    trace("PARAM ISFUCKED! $patt");
+    patt = '{*}';
+  }
+  patt = patt.replaceFirst('*', '\$key');
   fileContent = fileContent.replaceFirst(
     '##namedArgsPattern',
-    config.paramOutputPattern.replaceFirst('*', '\$key'),
+    patt,
   );
 
   var importString = imports.map((e) => "import '$e';").join('\n');
@@ -250,6 +256,7 @@ abstract class $_tClassName {
   var fileContent = '''
 // ignore_for_file: lines_longer_than_80_chars
 import 'dart:ui';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 $_imports
 
@@ -259,8 +266,11 @@ $_classAppLocales
 
 $_kLangVoTemplate
 
-/// demo widget
-$kSimpleLangPickerWidget
+/// demo widgets
+
+$kLangPickerMaterial
+
+$kLangPickerCupertino
 
 ''';
   if (save) {

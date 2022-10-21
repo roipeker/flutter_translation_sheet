@@ -55,4 +55,3 @@ flutter:
   assets:
     - ##replace
 ''';
-

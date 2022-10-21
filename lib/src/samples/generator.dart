@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:dcli/dcli.dart';
 import 'package:flutter_translation_sheet/flutter_translation_sheet.dart';
-import 'package:flutter_translation_sheet/src/utils/utils.dart';
 
 import 'samples.dart';
 
@@ -22,9 +21,8 @@ void createSampleContent() {
 Please, open and fill the following details in ${cyan(defaultConfigEnvPath)} and run ${white("fts", bold: true)} again
  
 gsheet:
-  credentials_path:
+  credentials_path: (if you did not define FTS_CREDENTIALS in your system enviroment)
   spreadsheet_id:
-  worksheet:
 ''', bold: false));
 
   // if (which('code').found) {

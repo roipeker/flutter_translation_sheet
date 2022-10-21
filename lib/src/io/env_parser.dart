@@ -2,11 +2,8 @@ import 'dart:io';
 
 import 'package:dcli/dcli.dart';
 import 'package:flutter_translation_sheet/flutter_translation_sheet.dart';
-import 'package:googleapis/servicemanagement/v1.dart';
 import 'package:path/path.dart' as p;
 import 'package:yaml/yaml.dart';
-
-import '../utils/utils.dart';
 
 const defaultConfigEnvPath = 'trconfig.yaml';
 EnvConfig config = EnvConfig._();
@@ -57,7 +54,7 @@ void loadEnv({
   config.dartTKeysId = doc?['dart']?['keys_id'] ?? '';
   config.useDartMaps = doc?['dart']?['use_maps'] ?? false;
   config.dartTranslationsId = doc?['dart']?['translations_id'] ?? '';
-  config.paramOutputPattern = doc?['param_output_pattern'] ?? '';
+  config.paramOutputPattern = doc?['param_output_pattern'] ?? '{*}';
   config.resolveLinkedKeys = doc?['resolve_linked_keys'] ?? false;
   config.paramFtsUtilsArgsPattern =
       doc?['dart']?['fts_utils_args_pattern'] ?? '%s';
@@ -115,9 +112,9 @@ See https://cloud.google.com/translate/docs/languages for a list of supported tr
         exit(2);
       }
       if (config.tableId == null) {
+        config.tableId = 'Sheet1';
         trace(
-            '$defaultConfigEnvPath: [gsheets:worksheet] not defined, add it.');
-        exit(2);
+            '$defaultConfigEnvPath: [gsheets:worksheet] not defined, will default to "Sheet1", make sure it matches.');
       }
       var _sheetUrl =
           'https://docs.google.com/spreadsheets/d/${config.sheetId}/edit#gid=0';

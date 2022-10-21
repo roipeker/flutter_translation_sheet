@@ -1,9 +1,6 @@
-import 'dart:convert';
 import 'dart:io';
 
-import 'package:args/args.dart';
 import 'package:args/command_runner.dart';
-import 'package:args/src/arg_parser.dart';
 import 'package:dcli/dcli.dart';
 import 'package:flutter_translation_sheet/flutter_translation_sheet.dart';
 import 'package:yaml/yaml.dart';
@@ -19,10 +16,24 @@ class ExtractStringCommand extends Command<int> {
   final String name = 'extract';
   final Future Function() exec;
 
+
   ExtractStringCommand(this.exec) {
     argParser.addOption('path',
         abbr: 'p',
-        help: 'Set the /lib folder to search for Strings in dart files.');
+        help:
+            'Path used to search for strings (recursive), for example, pass the /lib folder to search for Strings in dart files.');
+    argParser.addOption('exclude',
+        defaultsTo: null,
+        abbr: 'r',
+        help:
+            'Comma separated list of files and folders to be excluded from the extraction.');
+
+    argParser.addFlag('clean',
+        defaultsTo: false,
+        abbr: 'c',
+        help:
+        'Clean results, preventing duplicates');
+
     argParser.addOption('output',
         defaultsTo: 'strings.yaml',
         abbr: 'o',
@@ -36,7 +47,7 @@ class ExtractStringCommand extends Command<int> {
         abbr: 's',
         help:
             'Toggles permissive mode, capturing strings without spaces in it.');
-    addConfigOption(argParser);
+    // addConfigOption(argParser);
   }
 
   @override
@@ -51,6 +62,12 @@ class ExtractStringCommand extends Command<int> {
     }
     if (argResults!.wasParsed('permissive')) {
       extractPermissive = argResults!['permissive']!;
+    }
+    if (argResults!.wasParsed('exclude')) {
+      extractExcludePaths = argResults!['exclude']!;
+    }
+    if (argResults!.wasParsed('clean')) {
+      extractCleanResults = argResults!['clean']!;
     }
     if (argResults!.wasParsed('path')) {
       libFolder = argResults!['path']!.trim();
@@ -268,7 +285,6 @@ void startConfig(String path) {
   var f = File(path);
   if (!f.existsSync()) {
     error('Error: $path config file not found');
-
     /// ask to create from template.
     var useCreateTemplate = confirm(
         yellow(

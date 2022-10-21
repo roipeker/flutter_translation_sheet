@@ -5,4 +5,3 @@ export 'src/common.dart';
 export 'package:recase/recase.dart';
 export 'src/samples/generator.dart';
 export 'src/data/strings.dart';
-export 'src/commands/commands.dart';

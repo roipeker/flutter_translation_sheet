@@ -1,3 +1,13 @@
+## [1.0.23]
+- fix bug with empty `param_output_pattern` and `Fts.tr(namedArgs:)`
+- added `fts extract --exclude path1,pathN` to exclude paths from capture.
+- added `fts extract --clean` to remove duplicated records.
+- added `Fts.useMasterTextAsKey` to use master text as key for translation, for example `"Hello".tr()`
+- added `Fts.onSystemLocaleChanged` notifier, receives the events when the window detects a locale change (like on Android 13)
+- change pubspec dependencies to NOT force any constrains (and avoid errors on flutter pub get)
+- cleaned up code.
+- renamed SimpleLangPicker to LangPickerMaterial and added LangPickerCupertino
+
 ## [1.0.22]
 - fix generated dart files format.
 - made "run" the default command when no arguments are passed.
