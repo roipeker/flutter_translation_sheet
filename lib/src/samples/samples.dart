@@ -101,12 +101,13 @@ typedef SimpleLangPicker = LangPickerCupertino;
 class LangPickerCupertino extends StatefulWidget {
   final Locale selected;
   final ValueChanged<Locale> onSelected;
-  final bool changeOnScroll, showFlag, showNativeName, showLocaleCode;
+  final bool changeOnScroll, showFlag, showNativeName, showLocaleCode, looping;
 
   const LangPickerCupertino({
     super.key,
     required this.selected,
     required this.onSelected,
+    this.looping = false,
     this.changeOnScroll = false,
     this.showFlag = false,
     this.showNativeName = true,
@@ -120,7 +121,13 @@ class LangPickerCupertino extends StatefulWidget {
 class _LangPickerCupertinoState extends State<LangPickerCupertino> {
   @override
   void didUpdateWidget(covariant LangPickerCupertino oldWidget) {
-    if (oldWidget.selected != widget.selected) {
+    if (oldWidget.selected != widget.selected ||
+      oldWidget.looping != widget.looping ||
+      oldWidget.changeOnScroll != widget.changeOnScroll ||
+      oldWidget.showFlag != widget.showFlag ||
+      oldWidget.showNativeName != widget.showNativeName ||
+      oldWidget.showLocaleCode != widget.showLocaleCode
+    ) {
       setState(() {});
     }
     super.didUpdateWidget(oldWidget);
@@ -181,7 +188,7 @@ class _LangPickerCupertinoState extends State<LangPickerCupertino> {
             widget.onSelected(AppLocales.available[index].locale);
           }
         },
-        looping: true,
+        looping: widget.looping,
         children: List<Widget>.generate(
           AppLocales.available.length,
           (index) {
