@@ -1,6 +1,9 @@
 ## [1.0.26]
 - fix posix path issue (plutil cli call on macos when absolute paths have spaces)
 - improved `fts extract`, now skips captured text that's only number, a variable, or a group of chars that have no grapheme (in any charset). 
+- add locales to build.gradle resConfigs and android:localeConfig for Android 33+
+- added missing language codes from https://cloud.google.com/translate/docs/languages
+- added language code sanity check for the GoogleTranslate formula. (full Locales headers are supported now).
 
 ## [1.0.25]
 - internal fix to check if its running locally in dev mode.

@@ -20,7 +20,7 @@ String prettyJson(dynamic json) {
 
 /// Save the [content] in [path] file, creating the [path] if doesn't exists.
 void saveString(String path, String content) {
-  var f = File('$path');
+  var f = File(path);
   if (!f.existsSync()) {
     f.createSync(recursive: true);
   }

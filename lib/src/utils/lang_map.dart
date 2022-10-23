@@ -66,6 +66,11 @@ const kLangMap = <String, Map<String, String>>{
     'englishName': 'Akan',
     'emoji': '🏳',
   },
+  'am': {
+    'nativeName': 'አማርኛ',
+    'englishName': 'Amharic',
+    'emoji': '🇪🇹',
+  },
   'ar': {
     'nativeName': 'العربية',
     'englishName': 'Arabic',
@@ -86,7 +91,17 @@ const kLangMap = <String, Map<String, String>>{
     'englishName': 'Arabic (Saudi Arabia)',
     'emoji': '🇸🇦',
   },
+  'as': {
+    'nativeName': 'অসমীয়া',
+    'englishName': 'Assamese',
+    'emoji': '🇮🇳',
+  },
   'ay-bo': {
+    'nativeName': 'Aymar aru',
+    'englishName': 'Aymara',
+    'emoji': '🇧🇴',
+  },
+  'ay': {
     'nativeName': 'Aymar aru',
     'englishName': 'Aymara',
     'emoji': '🇧🇴',
@@ -101,7 +116,17 @@ const kLangMap = <String, Map<String, String>>{
     'englishName': 'Azerbaijani',
     'emoji': '🇦🇿',
   },
+  'bm': {
+    'nativeName': 'بامبارا',
+    'englishName': 'Bambara',
+    'emoji': '🇲🇱',
+  },
   'be-by': {
+    'nativeName': 'Беларуская',
+    'englishName': 'Belarusian',
+    'emoji': '🇧🇾',
+  },
+  'be': {
     'nativeName': 'Беларуская',
     'englishName': 'Belarusian',
     'emoji': '🇧🇾',
@@ -131,12 +156,22 @@ const kLangMap = <String, Map<String, String>>{
     'englishName': 'Bengali (Bangladesh)',
     'emoji': '🇧🇩',
   },
+  'bho': {
+    'nativeName': 'भोजपुरी',
+    'englishName': 'Bhojpuri',
+    'emoji': '🇮🇳',
+  },
   'br': {
     'nativeName': 'Brezhoneg',
     'englishName': 'Breton',
     'emoji': '🇫🇷',
   },
   'bs-ba': {
+    'nativeName': 'Bosanski',
+    'englishName': 'Bosnian',
+    'emoji': '🇧🇦',
+  },
+  'bs': {
     'nativeName': 'Bosanski',
     'englishName': 'Bosnian',
     'emoji': '🇧🇦',
@@ -156,10 +191,20 @@ const kLangMap = <String, Map<String, String>>{
     'englishName': 'Kaqchikel',
     'emoji': '🇬🇹',
   },
+  'ceb': {
+    'nativeName': 'Sugbuanon',
+    'englishName': 'Cebuano',
+    'emoji': '🇵🇭',
+  },
   'ck-us': {
     'nativeName': 'ᏣᎳᎩ (tsalagi)',
     'englishName': 'Cherokee',
     'emoji': '🇺🇸',
+  },
+  'co': {
+    'nativeName': 'corsu',
+    'englishName': 'Corsican',
+    'emoji': '🇫🇷',
   },
   'cs': {
     'nativeName': 'Čeština',
@@ -214,6 +259,21 @@ const kLangMap = <String, Map<String, String>>{
   'dsb': {
     'nativeName': 'Dolnoserbšćina',
     'englishName': 'Lower Sorbian',
+    'emoji': '🏳',
+  },
+  'dv': {
+    'nativeName': 'ދިވެހި',
+    'englishName': 'Dhivehi',
+    'emoji': '🇮🇳',
+  },
+  'doi': {
+    'nativeName': 'डोगरी',
+    'englishName': 'Dogri',
+    'emoji': '🇮🇳',
+  },
+  'ee': {
+    'nativeName': 'Ewe',
+    'englishName': 'Ewe',
     'emoji': '🏳',
   },
   'el': {
@@ -451,6 +511,31 @@ const kLangMap = <String, Map<String, String>>{
     'englishName': 'Gaelic',
     'emoji': '🇬🇧',
   },
+  'st': {
+    'nativeName': 'Sotho',
+    'englishName': 'Sesotho',
+    'emoji': '🇿🇦',
+  },
+  'sn': {
+    'nativeName': 'chiShona',
+    'englishName': 'Shona',
+    'emoji': '🇿🇼',
+  },
+  'sd': {
+    'nativeName': 'سنڌي',
+    'englishName': 'Sindhi',
+    'emoji': '🇮🇳',
+  },
+  'si': {
+    'nativeName': 'සිංහල',
+    'englishName': 'Sinhala',
+    'emoji': '🇱🇰',
+  },
+  'nso': {
+    'nativeName': 'Pedi',
+    'englishName': 'Sepedi',
+    'emoji': '🇿🇦',
+  },
   'gl': {
     'nativeName': 'Galego',
     'englishName': 'Galician',
@@ -481,12 +566,32 @@ const kLangMap = <String, Map<String, String>>{
     'englishName': 'Classical Greek',
     'emoji': '🇺🇾',
   },
+  'ha': {
+    'nativeName': 'Hausa',
+    'englishName': 'Hausa',
+    'emoji': '🏳',
+  },
+  'haw': {
+    'nativeName': 'Hawaiano',
+    'englishName': 'Hawaiano',
+    'emoji': '🏳',
+  },
+  'ht': {
+    'nativeName': 'Kreyòl ayisyen',
+    'englishName': 'Haitian Creole',
+    'emoji': '🇭🇹',
+  },
   'he': {
     'nativeName': 'עברית‏',
     'englishName': 'Hebrew',
     'emoji': '🇮🇱',
   },
   'he-il': {
+    'nativeName': 'עברית‏',
+    'englishName': 'Hebrew',
+    'emoji': '🇮🇱',
+  },
+  'iw': {
     'nativeName': 'עברית‏',
     'englishName': 'Hebrew',
     'emoji': '🇮🇱',
@@ -500,6 +605,11 @@ const kLangMap = <String, Map<String, String>>{
     'nativeName': 'हिन्दी',
     'englishName': 'Hindi',
     'emoji': '🇮🇳',
+  },
+  'hmn': {
+    'nativeName': 'Hmoob',
+    'englishName': 'Hmong',
+    'emoji': '🏳',
   },
   'hr': {
     'nativeName': 'Hrvatski',
@@ -516,11 +626,6 @@ const kLangMap = <String, Map<String, String>>{
     'englishName': 'Upper Sorbian',
     'emoji': '🏳',
   },
-  'ht': {
-    'nativeName': 'Kreyòl',
-    'englishName': 'Haitian Creole',
-    'emoji': '🇭🇹',
-  },
   'hu': {
     'nativeName': 'Magyar',
     'englishName': 'Hungarian',
@@ -530,6 +635,11 @@ const kLangMap = <String, Map<String, String>>{
     'nativeName': 'Magyar',
     'englishName': 'Hungarian',
     'emoji': '🇭🇺',
+  },
+  'hy': {
+    'nativeName': 'Հայերեն',
+    'englishName': 'Armenian',
+    'emoji': '🇦🇲',
   },
   'hy-am': {
     'nativeName': 'Հայերեն',
@@ -556,6 +666,16 @@ const kLangMap = <String, Map<String, String>>{
     'englishName': 'Icelandic (Iceland)',
     'emoji': '🇮🇸',
   },
+  'ig': {
+    'nativeName': 'Ásụ̀sụ́ Ìgbò',
+    'englishName': 'Igbo',
+    'emoji': '🇳🇬',
+  },
+  'ilo': {
+    'nativeName': 'Iloko',
+    'englishName': 'Ilocano',
+    'emoji': '🇵🇭',
+  },
   'it': {
     'nativeName': 'Italiano',
     'englishName': 'Italian',
@@ -576,7 +696,12 @@ const kLangMap = <String, Map<String, String>>{
     'englishName': 'Japanese (Japan)',
     'emoji': '🇯🇵',
   },
-  'jv-id': {
+  'jv': {
+    'nativeName': 'Basa Jawa',
+    'englishName': 'Javanese',
+    'emoji': '🇮🇩',
+  },
+  'jw': {
     'nativeName': 'Basa Jawa',
     'englishName': 'Javanese',
     'emoji': '🇮🇩',
@@ -596,6 +721,11 @@ const kLangMap = <String, Map<String, String>>{
     'englishName': 'Kazakh',
     'emoji': '🇰🇿',
   },
+  'kk': {
+    'nativeName': 'Қазақша',
+    'englishName': 'Kazakh',
+    'emoji': '🇰🇿',
+  },
   'km': {
     'nativeName': 'ភាសាខ្មែរ',
     'englishName': 'Khmer',
@@ -605,6 +735,16 @@ const kLangMap = <String, Map<String, String>>{
     'nativeName': 'ភាសាខ្មែរ',
     'englishName': 'Khmer',
     'emoji': '🇰🇭',
+  },
+  'gom': {
+    'nativeName': 'कोंकणी',
+    'englishName': 'Konkani',
+    'emoji': '🇮🇳',
+  },
+  'rw': {
+    'nativeName': 'Ikinyarwanda',
+    'englishName': 'Kinyarwanda',
+    'emoji': '🏳',
   },
   'kab': {
     'nativeName': 'Taqbaylit',
@@ -631,10 +771,30 @@ const kLangMap = <String, Map<String, String>>{
     'englishName': 'Korean (Korea)',
     'emoji': '🇰🇷',
   },
+  'kri': {
+    'nativeName': 'Krio',
+    'englishName': 'Krio',
+    'emoji': '🇸🇱',
+  },
+  'ku': {
+    'nativeName': 'Kurdî',
+    'englishName': 'Kurdish',
+    'emoji': '🇹🇷',
+  },
   'ku-tr': {
     'nativeName': 'Kurdî',
     'englishName': 'Kurdish',
     'emoji': '🇹🇷',
+  },
+  'ckb': {
+    'nativeName': 'سۆرانی',
+    'englishName': 'Kurdish (Sorani)',
+    'emoji': '🇮🇶',
+  },
+  'ky': {
+    'nativeName': 'Кыргыз тили',
+    'englishName': 'Kyrgyz',
+    'emoji': '🏳',
   },
   'kw': {
     'nativeName': 'Kernewek',
@@ -645,6 +805,11 @@ const kLangMap = <String, Map<String, String>>{
     'nativeName': 'Latin',
     'englishName': 'Latin',
     'emoji': '🏳',
+  },
+  'lo': {
+    'nativeName': 'ພາສາລາວ',
+    'englishName': 'Lao',
+    'emoji': '🇱🇦',
   },
   'la-va': {
     'nativeName': 'Latin',
@@ -671,6 +836,11 @@ const kLangMap = <String, Map<String, String>>{
     'englishName': 'Lithuanian',
     'emoji': '🇱🇹',
   },
+  'lg': {
+    'nativeName': 'Oluganda',
+    'englishName': 'Luganda',
+    'emoji': '🇺🇬',
+  },
   'lv': {
     'nativeName': 'Latviešu',
     'englishName': 'Latvian',
@@ -681,12 +851,17 @@ const kLangMap = <String, Map<String, String>>{
     'englishName': 'Latvian',
     'emoji': '🇱🇻',
   },
+  'ln': {
+    'nativeName': 'Ngala',
+    'englishName': 'Lingala',
+    'emoji': '🇨🇩',
+  },
   'mai': {
     'nativeName': 'मैथिली, মৈথিলী',
     'englishName': 'Maithili',
     'emoji': '🏳',
   },
-  'mg-mg': {
+  'mg': {
     'nativeName': 'Malagasy',
     'englishName': 'Malagasy',
     'emoji': '🇲🇬',
@@ -726,6 +901,16 @@ const kLangMap = <String, Map<String, String>>{
     'englishName': 'Marathi',
     'emoji': '🇮🇳',
   },
+  'mni-Mtei': {
+    'nativeName': 'Manipuri',
+    'englishName': 'Meiteilon (Manipuri)',
+    'emoji': '🇮🇳',
+  },
+  'lus': {
+    'nativeName': 'Mizo ṭawng',
+    'englishName': 'Mizo',
+    'emoji': '🏳',
+  },
   'ms': {
     'nativeName': 'Bahasa Melayu',
     'englishName': 'Malay',
@@ -735,6 +920,11 @@ const kLangMap = <String, Map<String, String>>{
     'nativeName': 'Bahasa Melayu',
     'englishName': 'Malay',
     'emoji': '🇲🇾',
+  },
+  'mi': {
+    'nativeName': 'Māori',
+    'englishName': 'Maori',
+    'emoji': '🇳🇿',
   },
   'mt': {
     'nativeName': 'Malti',
@@ -796,10 +986,25 @@ const kLangMap = <String, Map<String, String>>{
     'englishName': 'Norwegian (nynorsk)',
     'emoji': '🇳🇴',
   },
+  'ny': {
+    'nativeName': 'Nyanja',
+    'englishName': 'Chewa',
+    'emoji': '🏳',
+  },
   'oc': {
     'nativeName': 'Occitan',
     'englishName': 'Occitan',
     'emoji': '🏴󠁥󠁳󠁣󠁴󠁿',
+  },
+  'om': {
+    'nativeName': 'Afaan Oromoo',
+    'englishName': 'Oromo',
+    'emoji': '🏳',
+  },
+  'or': {
+    'nativeName': 'ଓଡ଼ିଆ',
+    'englishName': 'Oriya',
+    'emoji': '🇮🇳',
   },
   'or-in': {
     'nativeName': 'ଓଡ଼ିଆ',
@@ -826,6 +1031,11 @@ const kLangMap = <String, Map<String, String>>{
     'englishName': 'Polish',
     'emoji': '🇵🇱',
   },
+  'ps': {
+    'nativeName': 'پښتو',
+    'englishName': 'Pashto',
+    'emoji': '🇦🇫',
+  },
   'ps-af': {
     'nativeName': 'پښتو',
     'englishName': 'Pashto',
@@ -845,6 +1055,11 @@ const kLangMap = <String, Map<String, String>>{
     'nativeName': 'Português (Portugal)',
     'englishName': 'Portuguese (Portugal)',
     'emoji': '🇵🇹',
+  },
+  'qu': {
+    'nativeName': 'Qhichwa',
+    'englishName': 'Quechua',
+    'emoji': '🇵🇪',
   },
   'qu-pe': {
     'nativeName': 'Qhichwa',
@@ -875,6 +1090,16 @@ const kLangMap = <String, Map<String, String>>{
     'nativeName': 'Русский',
     'englishName': 'Russian',
     'emoji': '🇷🇺',
+  },
+  'sm': {
+    'nativeName': 'Gagana faʻa Sāmoa',
+    'englishName': 'Samoan',
+    'emoji': '🇼🇸',
+  },
+  'sa': {
+    'nativeName': 'संस्कृतम्',
+    'englishName': 'Sanskrit',
+    'emoji': '🏳',
   },
   'sa-in': {
     'nativeName': 'संस्कृतम्',
@@ -916,7 +1141,7 @@ const kLangMap = <String, Map<String, String>>{
     'englishName': 'Slovenian',
     'emoji': '🇸🇮',
   },
-  'so-so': {
+  'so': {
     'nativeName': 'Soomaaliga',
     'englishName': 'Somali',
     'emoji': '🇸🇴',
@@ -1006,9 +1231,29 @@ const kLangMap = <String, Map<String, String>>{
     'englishName': 'Thai (Thailand)',
     'emoji': '🇹🇭',
   },
+  'ti': {
+    'nativeName': 'ትግርኛ',
+    'englishName': 'Tigrinya',
+    'emoji': '🏳',
+  },
+  'ts': {
+    'nativeName': 'Xitsonga',
+    'englishName': 'Tsonga',
+    'emoji': '🏳',
+  },
+  'tk': {
+    'nativeName': 'türkmençe',
+    'englishName': 'Turkmen',
+    'emoji': '🏳',
+  },
+  'fil': {
+    'nativeName': 'Filipino (Tagalog)',
+    'englishName': 'Filipino (Tagalog)',
+    'emoji': '🇵🇭',
+  },
   'tl': {
-    'nativeName': 'Filipino',
-    'englishName': 'Filipino',
+    'nativeName': 'Wikang Tagalog',
+    'englishName': 'Tagalog',
     'emoji': '🇵🇭',
   },
   'tl-ph': {
@@ -1031,7 +1276,7 @@ const kLangMap = <String, Map<String, String>>{
     'englishName': 'Turkish',
     'emoji': '🇹🇷',
   },
-  'tt-ru': {
+  'tt': {
     'nativeName': 'татарча',
     'englishName': 'Tatar',
     'emoji': '🇷🇺',
@@ -1046,6 +1291,16 @@ const kLangMap = <String, Map<String, String>>{
     'englishName': 'Ukrainian',
     'emoji': '🇺🇦',
   },
+  'ug': {
+    'nativeName': 'ئۇيغۇر تىلى',
+    'englishName': 'Uyghur',
+    'emoji': '🇨🇳',
+  },
+  'uz': {
+    'nativeName': 'Oʻzbekcha',
+    'englishName': 'Uzbek',
+    'emoji': '🏳',
+  },
   'ur': {
     'nativeName': 'اردو',
     'englishName': 'Urdu',
@@ -1056,16 +1311,12 @@ const kLangMap = <String, Map<String, String>>{
     'englishName': 'Urdu',
     'emoji': '🇵🇰',
   },
-  'uz': {
-    'nativeName': 'O\'zbek',
-    'englishName': 'Uzbek',
-    'emoji': '🇺🇿',
-  },
   'uz-uz': {
     'nativeName': 'O\'zbek',
     'englishName': 'Uzbek',
     'emoji': '🇺🇿',
   },
+  'xh': {'nativeName': 'isiXhosa', 'englishName': 'Xhosa', 'emoji': '🇿🇦'},
   'vi': {
     'nativeName': 'Tiếng Việt',
     'englishName': 'Vietnamese',
@@ -1077,13 +1328,19 @@ const kLangMap = <String, Map<String, String>>{
     'emoji': '🇻🇳'
   },
   'xh-za': {'nativeName': 'isiXhosa', 'englishName': 'Xhosa', 'emoji': '🇿🇦'},
+  'yo': {'nativeName': 'Èdè Yorùbá', 'englishName': 'Yoruba', 'emoji': '🏳'},
+  'zu': {'nativeName': 'isiZulu', 'englishName': 'Zulu', 'emoji': '🇿🇦'},
   'yi': {'nativeName': 'ייִדיש', 'englishName': 'Yiddish', 'emoji': '🕎'},
   'yi-de': {
     'nativeName': 'ייִדיש (German)',
     'englishName': 'Yiddish (German)',
     'emoji': '🇩🇪'
   },
-  'zh': {'nativeName': '中文', 'englishName': 'Chinese', 'emoji': '🇨🇳'},
+  'zh': {
+    'nativeName': '中文',
+    'englishName': 'Chinese Simplified',
+    'emoji': '🇨🇳'
+  },
   'zh-hans': {
     'nativeName': '中文简体',
     'englishName': 'Chinese Simplified',

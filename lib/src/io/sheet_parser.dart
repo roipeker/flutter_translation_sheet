@@ -12,6 +12,7 @@ class SheetParser {
   late final _api = GSheets(config.sheetCredentials);
   Spreadsheet? _sheet;
   late Worksheet _table;
+
   // late List<List<Cell>> _initialCellRows;
   late List<String> colsHeaders;
 
@@ -95,19 +96,20 @@ Open $spritesheetUrl and check the available tabs at the bottom.
     var toLocaleColumn = remoteHeader.indexOf(toLocale) + 1;
     var toColumnLetter = _getColumnLetter(toLocaleColumn);
     // _warnIterativeCalculation();
-
+    var sanitizedFromLocale = sanitizeLocale(fromLocale);
+    var sanitizedToLocale = sanitizeLocale(toLocale);
     for (var i = 0; i < len; ++i) {
       var row = fromRow + i;
-      var label = fromColumnLetter + '$row';
+      var label = '$fromColumnLetter$row';
       var cellData = '';
       if (!config.useIterativeCache) {
-        cellData = 'GOOGLETRANSLATE($label, "$fromLocale", "$toLocale")';
+        cellData = 'GOOGLETRANSLATE($label, "$sanitizedFromLocale", "$sanitizedToLocale")';
         // cellData = 'IF(ISBLANK(TRIM($label)), "", $cellData)';
         cellData = 'IF(LEN(TRIM($label)), $cellData, "")';
         cellData = '=$cellData';
       } else {
-        var formula = 'GOOGLETRANSLATE($label, "$fromLocale", "$toLocale")';
-        var currentCell = toColumnLetter + '$row';
+        var formula = 'GOOGLETRANSLATE($label, "$sanitizedFromLocale", "$sanitizedToLocale")';
+        var currentCell = '$toColumnLetter$row';
         cellData = '=IF(IFERROR($currentCell)<>0,$currentCell, $formula)';
         // var cellData = '=IF($currentCell<>"",$currentCell, $formula)';
         // =IF(IFERROR(A1)<>0, A1, GOOGLEFINANCE(...))
@@ -124,10 +126,13 @@ Open $spritesheetUrl and check the available tabs at the bottom.
     var masterCol = remoteHeader.indexOf(masterLanguage) + 1;
     var label = _getColumnLetter(masterCol) + '$row';
     String cellData;
+    var sanitizedFromLocale = sanitizeLocale(masterLanguage);
+    var sanitizedToLocale = sanitizeLocale(toLocale);
+
     if (!config.useIterativeCache) {
-      cellData = '=GOOGLETRANSLATE($label, "$masterLanguage", "$toLocale")';
+      cellData = '=GOOGLETRANSLATE($label, "$sanitizedFromLocale", "$sanitizedToLocale")';
     } else {
-      var formula = 'GOOGLETRANSLATE($label, "$masterLanguage", "$toLocale")';
+      var formula = 'GOOGLETRANSLATE($label, "$sanitizedFromLocale", "$sanitizedToLocale")';
       var toColumnLetter = remoteHeader.indexOf(toLocale) + 1;
       var currentCell = _getColumnLetter(toColumnLetter) + '$row';
       cellData = '=IF(IFERROR($currentCell)<>0,$currentCell, $formula)';
@@ -713,6 +718,195 @@ Optionally, follow the steps on https://support.google.com/docs/answer/58515
     // trace("Super local", _sheet?.properties.locale);
   }
 }
+
+/// Sanitize to Google Translate language code.
+/// https://cloud.google.com/translate/docs/languages
+/// Full locales are usually not allowed and will display an ERROR.
+
+final _sanitizeLocaleCached = <String, String>{
+
+};
+
+String sanitizeLocale(String locale, {bool throwOnError = false, bool verbose=true}) {
+  if(_sanitizeLocaleCached[locale] != null) {
+    return _sanitizeLocaleCached[locale]!;
+  }
+  var originalLocale = locale;
+  /// ISO-639 codes
+  locale = locale.replaceAll('_', '-');
+  if (locale.contains('-')) {
+    if (kLangIsoAllowed.contains(locale.toLowerCase())) {
+      _sanitizeLocaleCached[originalLocale] = locale;
+      return locale;
+    }
+    final lang = locale.split('-')[0];
+    if (lang.length < 2 || lang.length > 3) {
+      if (throwOnError) {
+        throw 'Invalid language code "$locale"';
+      } else {
+        return lang;
+      }
+    }
+    final keys = kGoogleLanguages.keys;
+    if (!keys.contains(lang)) {
+      if (throwOnError) {
+        throw 'Invalid language code for GoogleTranslate "$locale"';
+      } else {
+        return lang;
+      }
+    }
+    if(verbose){
+      trace('Using code ISO-639 "$lang" for locale "$originalLocale"');
+    }
+    _sanitizeLocaleCached[originalLocale] = lang;
+    return lang;
+  }
+  _sanitizeLocaleCached[originalLocale] = locale;
+  return locale;
+}
+
+/// google codes.
+// Language	ISO-639 code
+const kLangIsoAllowed = ['zh-cn', 'zh-tw', 'mni-mtei'];
+const kGoogleLanguages = {
+  'af': 'Afrikaans',
+  'sq': 'Albanian',
+  'am': 'Amharic',
+  'ar': 'Arabic',
+  'hy': 'Armenian',
+  'as': 'Assamese',
+  'ay': 'Aymara',
+  'az': 'Azerbaijani',
+  'bm': 'Bambara',
+  'eu': 'Basque',
+  'be': 'Belarusian',
+  'bn': 'Bengali',
+  'bho': 'Bhojpuri',
+  'bs': 'Bosnian',
+  'bg': 'Bulgarian',
+  'ca': 'Catalan',
+  'ceb': 'Cebuano',
+  'zh': 'Chinese (Simplified)',
+  'zh-CN': 'Chinese (Simplified)',
+  'zh-TW': 'Chinese (Traditional)',
+  'co': 'Corsican',
+  'hr': 'Croatian',
+  'cs': 'Czech',
+  'da': 'Danish',
+  'dv': 'Dhivehi',
+  'doi': 'Dogri',
+  'nl': 'Dutch',
+  'en': 'English',
+  'eo': 'Esperanto',
+  'et': 'Estonian',
+  'ee': 'Ewe',
+  'fil': 'Filipino (Tagalog)',
+  'fi': 'Finnish',
+  'fr': 'French',
+  'fy': 'Frisian',
+  'gl': 'Galician',
+  'ka': 'Georgian',
+  'de': 'German',
+  'el': 'Greek',
+  'gn': 'Guarani',
+  'gu': 'Gujarati',
+  'ht': 'Haitian Creole',
+  'ha': 'Hausa',
+  'haw': 'Hawaiian',
+  'he': 'Hebrew',
+  'iw': 'Hebrew',
+  'hi': 'Hindi',
+  'hmn': 'Hmong',
+  'hu': 'Hungarian',
+  'is': 'Icelandic',
+  'ig': 'Igbo',
+  'ilo': 'Ilocano',
+  'id': 'Indonesian',
+  'ga': 'Irish',
+  'it': 'Italian',
+  'ja': 'Japanese',
+  'jv': 'Javanese',
+  'jw': 'Javanese',
+  'kn': 'Kannada',
+  'kk': 'Kazakh',
+  'km': 'Khmer',
+  'rw': 'Kinyarwanda',
+  'gom': 'Konkani',
+  'ko': 'Korean',
+  'kri': 'Krio',
+  'ku': 'Kurdish',
+  'ckb': 'Kurdish (Sorani)',
+  'ky': 'Kyrgyz',
+  'lo': 'Lao',
+  'la': 'Latin',
+  'lv': 'Latvian',
+  'ln': 'Lingala',
+  'lt': 'Lithuanian',
+  'lg': 'Luganda',
+  'lb': 'Luxembourgish',
+  'mk': 'Macedonian',
+  'mai': 'Maithili',
+  'mg': 'Malagasy',
+  'ms': 'Malay',
+  'ml': 'Malayalam',
+  'mt': 'Maltese',
+  'mi': 'Maori',
+  'mr': 'Marathi',
+  'mni-Mtei': 'Meiteilon (Manipuri)',
+  'lus': 'Mizo',
+  'mn': 'Mongolian',
+  'my': 'Myanmar (Burmese)',
+  'ne': 'Nepali',
+  'no': 'Norwegian',
+  'ny': 'Nyanja (Chichewa)',
+  'or': 'Odia (Oriya)',
+  'om': 'Oromo',
+  'ps': 'Pashto',
+  'fa': 'Persian',
+  'pl': 'Polish',
+  'pt': 'Portuguese (Portugal, Brazil)',
+  'pa': 'Punjabi',
+  'qu': 'Quechua',
+  'ro': 'Romanian',
+  'ru': 'Russian',
+  'sm': 'Samoan',
+  'sa': 'Sanskrit',
+  'gd': 'Scots Gaelic',
+  'nso': 'Sepedi',
+  'sr': 'Serbian',
+  'st': 'Sesotho',
+  'sn': 'Shona',
+  'sd': 'Sindhi',
+  'si': 'Sinhala (Sinhalese)',
+  'sk': 'Slovak',
+  'sl': 'Slovenian',
+  'so': 'Somali',
+  'es': 'Spanish',
+  'su': 'Sundanese',
+  'sw': 'Swahili',
+  'sv': 'Swedish',
+  'tl': 'Tagalog (Filipino)',
+  'tg': 'Tajik',
+  'ta': 'Tamil',
+  'tt': 'Tatar',
+  'te': 'Telugu',
+  'th': 'Thai',
+  'ti': 'Tigrinya',
+  'ts': 'Tsonga',
+  'tr': 'Turkish',
+  'tk': 'Turkmen',
+  'ak': 'Twi (Akan)',
+  'uk': 'Ukrainian',
+  'ur': 'Urdu',
+  'ug': 'Uyghur',
+  'uz': 'Uzbek',
+  'vi': 'Vietnamese',
+  'cy': 'Welsh',
+  'xh': 'Xhosa',
+  'yi': 'Yiddish',
+  'yo': 'Yoruba',
+  'zu': 'Zulu',
+};
 
 final int _char_a = 'A'.codeUnitAt(0);
 

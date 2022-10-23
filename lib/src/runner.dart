@@ -6,7 +6,9 @@ import 'package:dcli/dcli.dart';
 import 'package:io/io.dart';
 
 import 'data/strings.dart';
+import 'io/android_gen.dart';
 import 'io/io.dart';
+import 'utils/locales_list.dart';
 import 'utils/utils.dart';
 
 export 'data/strings.dart';
@@ -27,6 +29,7 @@ class FTSCommandRunner extends CommandRunner<int> {
     addCommand(RunCommand(startRun));
     addCommand(UpgradeCommand(checkUpdate));
     addCommand(ExtractStringCommand(extractStrings));
+    addCommand(LocaleSelectionCommand(showGoogleLocaleList));
 
     argParser.addFlag(
       'version',
@@ -75,7 +78,6 @@ class FTSCommandRunner extends CommandRunner<int> {
 
   /// executes the logic for `fts fetch`
   Future<void> startFetch() async {
-    print("RUN FETCH!");
     await runFetch();
     exit(0);
   }
@@ -125,6 +127,7 @@ class FTSCommandRunner extends CommandRunner<int> {
 
     /// add locales in iOS
     addLocalesInPlist();
+    addLocalesInAndroid();
     flutterHotReload();
     trace('👍 Sync process complete');
     isRunActive = false;
@@ -155,6 +158,7 @@ class FTSCommandRunner extends CommandRunner<int> {
 
     /// add locales in iOS
     addLocalesInPlist();
+    addLocalesInAndroid();
     flutterHotReload();
   }
 }

@@ -48,16 +48,17 @@ void loadEnv({
   config._configOutputTemplates();
 
   ///'output/assets/l10n'
+  config.outputAndroidLocales = doc['output_android_locales'] ?? true;
   config.entryFile = doc['entry_file'] ?? '';
-  config.dartOutputDir = doc?['dart']?['output_dir'] ?? '';
-  config.dartOutputFtsUtils = doc?['dart']['output_fts_utils'] ?? false;
-  config.dartTKeysId = doc?['dart']?['keys_id'] ?? '';
-  config.useDartMaps = doc?['dart']?['use_maps'] ?? false;
-  config.dartTranslationsId = doc?['dart']?['translations_id'] ?? '';
-  config.paramOutputPattern = doc?['param_output_pattern'] ?? '{*}';
-  config.resolveLinkedKeys = doc?['resolve_linked_keys'] ?? false;
+  config.dartOutputDir = doc['dart']?['output_dir'] ?? '';
+  config.dartOutputFtsUtils = doc['dart']['output_fts_utils'] ?? false;
+  config.dartTKeysId = doc['dart']?['keys_id'] ?? '';
+  config.useDartMaps = doc['dart']?['use_maps'] ?? false;
+  config.dartTranslationsId = doc['dart']?['translations_id'] ?? '';
+  config.paramOutputPattern = doc['param_output_pattern'] ?? '{*}';
+  config.resolveLinkedKeys = doc['resolve_linked_keys'] ?? false;
   config.paramFtsUtilsArgsPattern =
-      doc?['dart']?['fts_utils_args_pattern'] ?? '%s';
+      doc['dart']?['fts_utils_args_pattern'] ?? '%s';
 
   _configParamOutput();
   if (config.dartOutputDir.isNotEmpty) {
@@ -75,7 +76,7 @@ Please, create your data tree.''');
       exit(32);
     }
   }
-  if (doc?['locales'] != null) {
+  if (doc['locales'] != null) {
     final l = doc['locales'];
     if (l is YamlList) {
       config.locales = List<String>.from(l).toSet().toList(growable: false);
@@ -264,6 +265,7 @@ class EnvConfig {
   String outputJsonTemplate = '';
   String outputArbTemplate = '';
 
+  bool outputAndroidLocales = true;
   String entryFile = '';
   bool resolveLinkedKeys = false;
   String paramFtsUtilsArgsPattern = '%s';
@@ -286,6 +288,10 @@ class EnvConfig {
 
   String get macosDirPath {
     return p.canonicalize(p.join(configProjectDir, 'macos'));
+  }
+
+  String get androidDirPath {
+    return p.canonicalize(p.join(configProjectDir, 'android'));
   }
 
   // String get intlYamlPath {

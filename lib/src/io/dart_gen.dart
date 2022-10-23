@@ -294,6 +294,7 @@ abstract class AppLocales {
   final _fields = locales.map((String key) {
     // key = _cleanLocaleKey(key);
     key = normLocale(key);
+    var varName = _localeVarName(key, snake: false);
     var localName = _localeVarName(key);
     // var data = prettyJson(localeMap);
     // var localeInfo = langInfoFromKey(localeName);
@@ -305,15 +306,15 @@ abstract class AppLocales {
     final flagChar = langObj.emoji;
     final locale = _buildLocaleObjFromType(key);
     return '''
-  static const $localName = LangVo("$nativeName", "$englishName", "$localName", $locale, "$flagChar");''';
+  static const $varName = LangVo("$nativeName", "$englishName", "$localName", $locale, "$flagChar");''';
   }).join('\n');
 
   fileContent += _fields + '\n';
 
   final _supportedLocales =
-      locales.map((String key) => '${_localeVarName(key)}\.locale').join(',');
+      locales.map((String key) => '${_localeVarName(key,snake:false)}\.locale').join(',');
   final _availableLang =
-      locales.map((String key) => '${_localeVarName(key)}').join(',');
+      locales.map((String key) => '${_localeVarName(key,snake: false)}').join(',');
 
   fileContent += '  static const available = <LangVo>[$_availableLang];\n';
   fileContent +=
@@ -327,15 +328,21 @@ abstract class AppLocales {
 ''';
 
   fileContent += '''
-  static LangVo? of(Locale locale, [bool fullMatch = false]) {
+  static LangVo? of(Locale locale) {
+    var hasFullMatch = AppLocales.supportedLocales.contains(locale);
     for (final langVo in AppLocales.available) {
-      if ((!fullMatch && langVo.locale.languageCode == locale.languageCode) ||
-          langVo.locale == locale) {
-        return langVo;
+      if (hasFullMatch) {
+        if (langVo.locale == locale) {
+          return langVo;
+        }
+      } else {
+        if (langVo.locale.languageCode == locale.languageCode) {
+          return langVo;
+        }
       }
     }
     return null;
-  }  
+  }
 ''';
 
   fileContent += '}';
@@ -344,8 +351,12 @@ abstract class AppLocales {
 }
 
 /// Normalize locale [key] to match Flutter's.
-String _localeVarName(String key) {
-  return key.replaceAll('-', '_');
+String _localeVarName(String key, {bool snake=true}) {
+  key = key.replaceAll('-', '_');
+  if(!snake) {
+    key = key.replaceAll('_', '');
+  }
+  return key;
 }
 
 /// Generates the TKeys file from the [map].

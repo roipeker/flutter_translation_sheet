@@ -115,6 +115,29 @@ class UpgradeCommand extends Command<int> {
   }
 }
 
+/// Command logic for `fts locales`
+class LocaleSelectionCommand extends Command<int> {
+  @override
+  final String description = 'Shows the list of supported languages codes for GoogleTranslate';
+
+  @override
+  final String name = 'locales';
+  final Future Function() exec;
+
+  LocaleSelectionCommand(this.exec) {
+    addConfigOption(argParser);
+  }
+
+  @override
+  Future<int> run() async {
+    readPubSpec();
+    setConfig(argResults!);
+    await exec();
+    return 0;
+  }
+}
+
+
 /// Command logic for `fts run`
 class RunCommand extends Command<int> {
   @override

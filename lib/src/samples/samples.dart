@@ -50,6 +50,10 @@ entry_file: strings/sample.yaml
 ## ***?** = {{name}} becomes **name**
 #param_output_pattern: "{*}"
 
+## Writes the locales for Android resources `resConfig()` in app/build.gradle
+## And keeps locales_config.xml updated (for Android 33+)
+#output_android_locales: true
+
 dart:
   ## Output dir for dart files
   output_dir: lib/i18n
@@ -68,11 +72,12 @@ dart:
   use_maps: true
 
 ## see: https://cloud.google.com/translate/docs/languages
-## All locales to be supported.
+## Watch out for the language codes, they are not the same as the locale codes.
+## Follows the ISO-639 standard.
+## List of languages to translate your strings.
 locales:
   - en
   - es
-  - ja
   - ar
 
 ## Google Sheets Configuration
@@ -198,31 +203,44 @@ class _LangPickerCupertinoState extends State<LangPickerCupertino> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   if (widget.showNativeName)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                      child: Text(
-                        vo.nativeName,
-                        style: const TextStyle(fontSize: 14),
+                    Flexible(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                        child: Text(
+                          vo.nativeName,
+                          overflow: TextOverflow.clip,
+                          maxLines: 1,
+                          style: const TextStyle(fontSize: 14),
+                        ),
                       ),
                     ),
                   if (widget.showFlag)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                      child: Text(vo.flagChar),
+                    Flexible(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                        child: Text(vo.flagChar),
+                      ),
                     ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                    child: Text(vo.englishName),
-                  ),
-                  if (widget.showLocaleCode)
-                    Padding(
+                  Flexible(
+                    child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 4.0),
                       child: Text(
-                        vo.locale.toString().toUpperCase(),
-                        style: const TextStyle(
-                          fontSize: 11,
-                          letterSpacing: 1,
-                          fontWeight: FontWeight.w800,
+                        vo.englishName,
+                        maxLines: 1,
+                      ),
+                    ),
+                  ),
+                  if (widget.showLocaleCode)
+                    Flexible(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                        child: Text(
+                          vo.locale.toString().toUpperCase(),
+                          style: const TextStyle(
+                            fontSize: 11,
+                            letterSpacing: 1,
+                            fontWeight: FontWeight.w800,
+                          ),
                         ),
                       ),
                     ),
@@ -455,9 +473,25 @@ class Fts {
   static var _textDirection = TextDirection.ltr;
 
   static set locale(Locale value) {
-    value = _safeLocale(value);
     if (!AppLocales.supportedLocales.contains(value)) {
-      return;
+      Locale? langLocale;
+      for (var supportedLocale in AppLocales.supportedLocales) {
+        if (supportedLocale.languageCode == value.languageCode) {
+          langLocale = supportedLocale;
+        }
+      }
+      if (langLocale != null) {
+        if (kDebugMode) {
+          print(
+              'Full locale "\$value" not found. But a matching language "\$langLocale" was found. Using it');
+        }
+        value = langLocale;
+      } else {
+        if (kDebugMode) {
+          print('No supported locale found for "\$value"');
+        }
+        return;
+      }
     }
     _locale = value;
     _textDirection = _rtlLanguages.contains(value.languageCode)
@@ -546,15 +580,6 @@ class Fts {
   }
 
   static Locale get deviceLocale => _binding.platformDispatcher.locale;
-
-  // only support country code for now.
-  static Locale _safeLocale(Locale value) {
-    var clean = value;
-    if (value.countryCode != null) {
-      clean = Locale(value.languageCode);
-    }
-    return clean;
-  }
 
   ##loadJsonMethod
 }

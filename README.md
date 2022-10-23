@@ -2,9 +2,8 @@
 # Flutter Translation Sheet Generator [fts]
 
 Utility program to make your l10n SUPER fast.
-Compose your strings in yaml/json format and use GoogleSheet for auto translate. 
-Super fast synchronization and code generation. 
-Manage all your Strings and translation from a single place.
+Compose your strings in yaml/json format and use GoogleSheet to auto translate and sync them. 
+Powerful synchronization and code generation tool, to manage all the Strings and translation from a single place.
 
 [![pub package](https://img.shields.io/pub/v/flutter_translation_sheet.svg?label=fts&logo=Dart&color=blue&style=flat)](https://pub.dev/packages/flutter_translation_sheet)
 [![style: pedantic](https://img.shields.io/badge/style-pedantic-blue.svg?&style=flat)](https://pub.dev/packages/pedantic)
@@ -26,7 +25,6 @@ Manage all your Strings and translation from a single place.
 <details>
 <summary>Click to expand</summary>
 
-- [News 📰](#news-)
 - [Wiki 📖](#wiki-)
 - [Install 🔧](#install-)
 - [Usage 🚀](#usage-)
@@ -36,111 +34,9 @@ Manage all your Strings and translation from a single place.
   - [Widgets 📐](#widgets-)
 - [Considerations 📌](#considerations-)
 - [Complementary Plugins 🔌](#complementary-plugins-)
+- [News 📰](#news-)
 - [Contributors ✨](#contributors-)
 </details>
-
-
-## News 📰
-Since v1.0.23:
-
-`fts extract --exclude path1,pathN` excludes paths from the extraction capture.
-`fts extract --clean` removes duplicated text results.
-
-If you capture your text with `extract` from a source code, you could use
-`Fts.useMasterTextAsKey=true`, to use the master text as key for translation, 
-for example `"Hello world".tr()`
- 
-You can detect OS locale changes with
-```dart
-Fts.onSystemLocaleChanged.addListener((){
-  print(Fts.deviceLocale);
-});
-```
-Receives the events when the window detects a locale change (like Android 13 feature)
-
-SimpleLangPicker now is `LangPickerMaterial` and a new iOS flavor, `LangPickerCupertino`.
-
-
-Since v1.0.22:
-
-Now fts automatically adds the `output_json_template` directory to your pubspec.yaml file assets!
-
-
-Add support to use `fts` as dev_dependency.
-
-
-You can include your `fts` config directly in your pubspec.yaml.
-
-
-NEW (experimental) `Fts` class, allows you to test QUICKLY the translations in your app without the need of additional
-setup or packages.
-
-Always use `AppLocales` in your app to play safe with generated Locale.
-
-```dart
-///   `initialLocale` defaults to `systems locale`, or fallbackLocale.
-///   `fallbackLocale` defaults to the master language (1st item in supportedLocales).
-///   No need to call Fts.init(), it's called automatically the first time you retrieve a translated string (unless you wanna persist the language selection).
-
-// Fts.init(
-//  locale: AppLocales.es.locale,
-//  fallbackLocale: AppLocales.en.locale,
-// );
-
-Fts.onLocaleChanged.addListener(() {
-  // listen to `Fts.locale` changes.
-});
-
-// Set and retrieve locale.
-Fts.locale = AppLocales.es.locale;
-
-// Consume in your Strings anytime, no BuildContext needed.
-Keys.title.tr();
-
-'some.var.in.key'.tr( namedArgs: {'name':'John'} );
-
-```
-
-If you work with RTL languages, you can use `Fts.textDirection` to assign the `Directionality`.
-Or better, use the `Fts.delegate` !
-
-```dart
-return MaterialApp(
-  localizationsDelegates: const [Fts.delegate],
-  home: MyHomePage(),
-);
-```
-
-To remove the friction of the setup, you can add your GoogleSheet credentials path to your System Environment.
-For example in your `.bashrc` or `.zshrc` file add:
-```bash
-FTS_CREDENTIALS="absolute/path/here"
-```
-And you are good to go!
-Also, fts guides you through the process in case of an error, so it tells you what email you have to "share" your Sheet with.
-
-
-Using `Fts.tr(args:[])`, for positional arguments, you can define how to parse the String: (by default is "%s")
-```yaml
-dart:
-  output_fts_utils: true
-  fts_utils_args_pattern: {}
-```
-
-To consume it:
-```dart
-"hello my name is {}, and my age is {}".tr(args: ['John', 30]);
-```
-
-Added linked keys support (similar to EasyLocalization) you should use `{{@:full.path}}` symbol to link keys.
-Resolves at runtime with `Fts.tr()` or at build time when using `resolve_linked_keys` (`false` by default) in config:
-
-```yaml
-resolve_linked_keys: true
-entry_file: strings/sample.yaml
-dart:
-  # ...
-```
 
 ## Wiki 📖
 
@@ -509,6 +405,10 @@ locales:
 
 ## Complementary Plugins 🔌
 
+Thanks to the community, we have some great plugins:
+
+[fts_system_locale](https://pub.dev/packages/fts_system_locale) allows you to write the system locale from Flutter. Is a simple solution to use per-app Settings Locale on iOS/Android/macOS. 
+
 You can use **fts extractor** plugin to get Strings with auto-generated keys in a tree-like structure, based on Groups and Layers of your design files.
 Similar to [`fts extract` command](#utilities-).
 
@@ -526,6 +426,119 @@ Similar to [`fts extract` command](#utilities-).
 </div>
 </a>
 
+
+---
+
+## News 📰
+
+
+Since v1.0.26:
+`fts extract` outputs cleaner results, skipping captured strings without grapheme.
+`fts locales` shows the list of supported language codes for a valid translation result.
+Fts now sanitizes the config locales for the sheets, so you can use language code + country codes, and the GSheet cells formula will use the proper ISO-639 code.
+Sync locales to Android: [App's Languages](https://developer.android.com/guide/topics/resources/app-languages) on [build.gradle resConfig()](https://developer.android.com/guide/topics/resources/app-languages#gradle-config), and xml/locales_config.xml. Detects if your app has compileSdk > 33.  
+
+
+Since v1.0.23:
+
+`fts extract --exclude path1,pathN` excludes paths from the extraction capture.
+`fts extract --clean` removes duplicated text results.
+
+If you capture your text with `extract` from a source code, you could use
+`Fts.useMasterTextAsKey=true`, to use the master text as key for translation,
+for example `"Hello world".tr()`
+
+You can detect OS locale changes with
+```dart
+Fts.onSystemLocaleChanged.addListener((){
+  print(Fts.deviceLocale);
+});
+```
+Receives the events when the window detects a locale change (like Android 13 feature)
+
+SimpleLangPicker now is `LangPickerMaterial` and a new iOS flavor, `LangPickerCupertino`.
+
+
+Since v1.0.22:
+
+Now fts automatically adds the `output_json_template` directory to your pubspec.yaml file assets!
+
+
+Add support to use `fts` as dev_dependency.
+
+
+You can include your `fts` config directly in your pubspec.yaml.
+
+
+NEW (experimental) `Fts` class, allows you to test QUICKLY the translations in your app without the need of additional
+setup or packages.
+
+Always use `AppLocales` in your app to play safe with generated Locale.
+
+```dart
+///   `initialLocale` defaults to `systems locale`, or fallbackLocale.
+///   `fallbackLocale` defaults to the master language (1st item in supportedLocales).
+///   No need to call Fts.init(), it's called automatically the first time you retrieve a translated string (unless you wanna persist the language selection).
+
+// Fts.init(
+//  locale: AppLocales.es.locale,
+//  fallbackLocale: AppLocales.en.locale,
+// );
+
+Fts.onLocaleChanged.addListener(() {
+  // listen to `Fts.locale` changes.
+});
+
+// Set and retrieve locale.
+Fts.locale = AppLocales.es.locale;
+
+// Consume in your Strings anytime, no BuildContext needed.
+Keys.title.tr();
+
+'some.var.in.key'.tr( namedArgs: {'name':'John'} );
+
+```
+
+If you work with RTL languages, you can use `Fts.textDirection` to assign the `Directionality`.
+Or better, use the `Fts.delegate` !
+
+```dart
+return MaterialApp(
+  localizationsDelegates: const [Fts.delegate],
+  home: MyHomePage(),
+);
+```
+
+To remove the friction of the setup, you can add your GoogleSheet credentials path to your System Environment.
+For example in your `.bashrc` or `.zshrc` file add:
+```bash
+FTS_CREDENTIALS="absolute/path/here"
+```
+And you are good to go!
+Also, fts guides you through the process in case of an error, so it tells you what email you have to "share" your Sheet with.
+
+
+Using `Fts.tr(args:[])`, for positional arguments, you can define how to parse the String: (by default is "%s")
+```yaml
+dart:
+  output_fts_utils: true
+  fts_utils_args_pattern: {}
+```
+
+To consume it:
+```dart
+"hello my name is {}, and my age is {}".tr(args: ['John', 30]);
+```
+
+Added linked keys support (similar to EasyLocalization) you should use `{{@:full.path}}` symbol to link keys.
+Resolves at runtime with `Fts.tr()` or at build time when using `resolve_linked_keys` (`false` by default) in config:
+
+```yaml
+resolve_linked_keys: true
+entry_file: strings/sample.yaml
+dart:
+  # ...
+```
 
 ---
 
