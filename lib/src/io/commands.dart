@@ -1,10 +1,13 @@
 import 'dart:io';
 
+import 'package:args/args.dart';
 import 'package:args/command_runner.dart';
 import 'package:dcli/dcli.dart';
 import 'package:flutter_translation_sheet/flutter_translation_sheet.dart';
-import 'package:yaml/yaml.dart';
 import 'package:path/path.dart' as p;
+import 'package:path/path.dart';
+import 'package:yaml/yaml.dart';
+
 import '../runner.dart';
 
 /// Command logic for `fts extract`
@@ -24,13 +27,10 @@ class ExtractStringCommand extends Command<int> {
     argParser.addOption('exclude',
         defaultsTo: null,
         abbr: 'r',
-        help:
-            'Comma separated list of files and folders to be excluded from the extraction.');
+        help: 'Comma separated list of files and folders to be excluded from the extraction.');
 
     argParser.addFlag('clean',
-        defaultsTo: false,
-        abbr: 'c',
-        help: 'Clean results, preventing duplicates');
+        defaultsTo: false, abbr: 'c', help: 'Clean results, preventing duplicates');
 
     argParser.addOption('output',
         defaultsTo: 'strings.yaml',
@@ -39,12 +39,9 @@ class ExtractStringCommand extends Command<int> {
     argParser.addOption('ext',
         defaultsTo: 'dart',
         abbr: 'e',
-        help:
-            'Comma separated list of allowed file extensions types to analyze for strings.');
+        help: 'Comma separated list of allowed file extensions types to analyze for strings.');
     argParser.addFlag('permissive',
-        abbr: 's',
-        help:
-            'Toggles permissive mode, capturing strings without spaces in it.');
+        abbr: 's', help: 'Toggles permissive mode, capturing strings without spaces in it.');
     // addConfigOption(argParser);
   }
 
@@ -137,7 +134,6 @@ class LocaleSelectionCommand extends Command<int> {
   }
 }
 
-
 /// Command logic for `fts run`
 class RunCommand extends Command<int> {
   @override
@@ -175,8 +171,7 @@ class RunCommand extends Command<int> {
 /// Command logic for `fts init`
 class InitCommand extends Command<int> {
   @override
-  final String description =
-      'generates and setup the trconfig.yaml and templates';
+  final String description = 'generates and setup the trconfig.yaml and templates';
 
   @override
   final String name = 'init';
@@ -258,7 +253,7 @@ void addAssetsToPubSpec() {
   if (pubSpecStr.isEmpty) {
     readPubSpec();
   }
-  var addAsset = p.dirname(config.outputJsonTemplate) + '/';
+  var addAsset = '${p.dirname(config.outputJsonTemplate)}/';
   var out = pubSpecStr;
   var assets = pubSpecMap['flutter']?['assets'];
   var replacer = '';
@@ -299,8 +294,7 @@ void readPubSpec() {
 /// Initializes the supplied configuration from [path]
 void startConfig(String path) {
   if (path.isEmpty) {
-    error(
-        'Pass the trconfig.yaml path to --config, or add `fts` to pubspec.yaml');
+    error('Pass the trconfig.yaml path to --config, or add `fts` to pubspec.yaml');
     exit(1);
   }
   var f = File(path);
@@ -309,8 +303,7 @@ void startConfig(String path) {
 
     /// ask to create from template.
     var useCreateTemplate = confirm(
-        yellow(
-            'Do you wanna create the template (trconfig.yaml) in the current directory?'),
+        yellow('Do you wanna create the template (trconfig.yaml) in the current directory?'),
         defaultValue: true);
     if (!useCreateTemplate) {
       var m1 = grey('${CliConfig.cliName} run', background: AnsiColor.black);

@@ -85,9 +85,9 @@ Please, create your data tree.''');
 
       /// validate locale existence?
       print('Using config locales:');
-      const _sep = ' - ';
+      const sep = ' - ';
       for (var locale in config.locales) {
-        trace(_sep, langInfoFromKey(locale));
+        trace(sep, langInfoFromKey(locale));
       }
       // config.locales.removeWhere((element) => element.isEmpty);
       // trace('config locales: ', config.locales);
@@ -103,31 +103,29 @@ See https://cloud.google.com/translate/docs/languages for a list of supported tr
     exit(2);
   }
 
-  if (doc is YamlMap) {
-    if (doc['gsheets'] != null) {
-      _parseSheets(doc['gsheets']);
-      if (config.sheetId == null) {
-        trace(
-            'ERROR: $defaultConfigEnvPath: [gsheets:spreadsheet_id] not defined, get it from the GoogleSheet url: '
-            'https://docs.google.com/spreadsheets/d/{HERE}');
-        exit(2);
-      }
-      if (config.tableId == null) {
-        config.tableId = 'Sheet1';
-        trace(
-            '$defaultConfigEnvPath: [gsheets:worksheet] not defined, will default to "Sheet1", make sure it matches.');
-      }
-      var _sheetUrl =
-          'https://docs.google.com/spreadsheets/d/${config.sheetId}/edit#gid=0';
-      print('spreadsheet id:\n - ' + magenta(config.sheetId!));
-      // trace('Worksheet title: "', config.tableId, '"');
-      trace('worksheet title:\n - ' + magenta(config.tableId!));
-      trace('🔗 click to edit sheet:\n - $_sheetUrl');
-    } else {
+  if (doc['gsheets'] != null) {
+    _parseSheets(doc['gsheets']);
+    if (config.sheetId == null) {
       trace(
-          'ERROR: $defaultConfigEnvPath: [ghseets] configuration not found, please edit $defaultConfigEnvPath.');
-      exit(1);
+          'ERROR: $defaultConfigEnvPath: [gsheets:spreadsheet_id] not defined, get it from the GoogleSheet url: '
+          'https://docs.google.com/spreadsheets/d/{HERE}');
+      exit(2);
     }
+    if (config.tableId == null) {
+      config.tableId = 'Sheet1';
+      trace(
+          '$defaultConfigEnvPath: [gsheets:worksheet] not defined, will default to "Sheet1", make sure it matches.');
+    }
+    var sheetUrl =
+        'https://docs.google.com/spreadsheets/d/${config.sheetId}/edit#gid=0';
+    print('spreadsheet id:\n - ${magenta(config.sheetId!)}');
+    // trace('Worksheet title: "', config.tableId, '"');
+    trace('worksheet title:\n - ${magenta(config.tableId!)}');
+    trace('🔗 click to edit sheet:\n - $sheetUrl');
+  } else {
+    trace(
+        'ERROR: $defaultConfigEnvPath: [ghseets] configuration not found, please edit $defaultConfigEnvPath.');
+    exit(1);
   }
 
   if (config.useIterativeCache) {
@@ -169,11 +167,11 @@ See https://cloud.google.com/translate/docs/languages for a list of supported tr
 /// Parses trconfig.yaml `param_output_pattern`.
 void _configParamOutput() {
   /// fix param output to valid string.
-  var _paramOutput = config.paramOutputPattern;
-  if (_paramOutput.isEmpty) {
-    _paramOutput = '{*}';
+  var paramOutput = config.paramOutputPattern;
+  if (paramOutput.isEmpty) {
+    paramOutput = '{*}';
   }
-  if (_paramOutput.isNotEmpty && !_paramOutput.contains('*')) {
+  if (paramOutput.isNotEmpty && !paramOutput.contains('*')) {
     trace('''Wrong usage of config:[param_output_pattern:], has to enclose *.
 Example: using "name":
 (*) = (name) 
@@ -182,27 +180,27 @@ Example: using "name":
 If you need the "*" char in your pattern use "*?" as splitter:
 ***?** = **name** 
 Using default {*}''');
-    _paramOutput = '{*}';
+    paramOutput = '{*}';
   }
 
   /// check if its special split?
-  late List<String> _params;
-  if (_paramOutput.contains('*?')) {
-    _params = _paramOutput.split('*?');
+  late List<String> params;
+  if (paramOutput.contains('*?')) {
+    params = paramOutput.split('*?');
   } else {
-    _params = _paramOutput.split('*');
+    params = paramOutput.split('*');
   }
-  if (_params.length == 1) {
+  if (params.length == 1) {
     /// using empty string.
     config.paramOutputPattern1 = '';
     config.paramOutputPattern2 = '';
   } else {
-    if (_params.length == 2) {
-      config.paramOutputPattern1 = _params[0];
-      config.paramOutputPattern2 = _params[1] == '*' ? '' : _params[1];
+    if (params.length == 2) {
+      config.paramOutputPattern1 = params[0];
+      config.paramOutputPattern2 = params[1] == '*' ? '' : params[1];
     } else {
-      config.paramOutputPattern1 = _params[0];
-      config.paramOutputPattern2 = _params[2];
+      config.paramOutputPattern1 = params[0];
+      config.paramOutputPattern2 = params[2];
     }
   }
 }
@@ -243,9 +241,7 @@ void setCredentials({String? path, Map? json}) {
     final sysPath = Platform.environment['FTS_CREDENTIALS'];
     if (sysPath != null) {
       // print('spreadsheet id:\n - ' + magenta(config.sheetId!));
-      trace('fts detected ' +
-          magenta('FTS_CREDENTIALS') +
-          ' variable in your system environment. Using it.');
+      trace('fts detected ${magenta('FTS_CREDENTIALS')} variable in your system environment. Using it.');
       var credentialsString = openString(sysPath);
       config.sheetCredentials = credentialsString;
     }
@@ -326,7 +322,7 @@ class EnvConfig {
   }
 
   String get dartTranslationPath {
-    final filename = dartTranslationsId.snakeCase + '.dart';
+    final filename = '${dartTranslationsId.snakeCase}.dart';
     return joinDir([dartOutputDir, filename]);
   }
 
@@ -335,7 +331,7 @@ class EnvConfig {
   }
 
   String get dartTkeysPath {
-    final filename = dartTKeysId.snakeCase + '.dart';
+    final filename = '${dartTKeysId.snakeCase}.dart';
     return joinDir([dartOutputDir, filename]);
   }
 

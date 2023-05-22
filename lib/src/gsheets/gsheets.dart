@@ -10,7 +10,6 @@ import 'dart:math';
 import 'package:collection/collection.dart' show IterableExtension;
 import 'package:googleapis/sheets/v4.dart';
 import 'package:googleapis_auth/auth_io.dart';
-import 'package:googleapis_auth/googleapis_auth.dart';
 import 'package:http/http.dart' as http;
 
 import 'utils.dart';
@@ -167,8 +166,8 @@ class GSheets {
     final renderOption = _parseRenderOption(render);
     final inputOption = _parseInputOption(input);
     final spreadsheetId = jsonDecode(response.body)['spreadsheetId'];
-    final _json = jsonDecode(response.body);
-    final sheets = (_json['sheets'] as List)
+    final json = jsonDecode(response.body);
+    final sheets = (json['sheets'] as List)
         .map((json) => Worksheet._fromJson(
               json,
               client,
@@ -183,7 +182,7 @@ class GSheets {
       sheets,
       renderOption,
       inputOption,
-      _json['properties'],
+      json['properties'],
     );
   }
 
@@ -214,8 +213,8 @@ class GSheets {
     // print("RESULT! ${response.body}");
     final renderOption = _parseRenderOption(render);
     final inputOption = _parseInputOption(input);
-    final _json = jsonDecode(response.body);
-    final sheets = (_json['sheets'] as List)
+    final json = jsonDecode(response.body);
+    final sheets = (json['sheets'] as List)
         .where(gridSheetsFilter)
         .map((json) => Worksheet._fromJson(
               json,
@@ -231,7 +230,7 @@ class GSheets {
       sheets,
       renderOption,
       inputOption,
-      _json['properties']!,
+      json['properties']!,
     );
   }
 
@@ -241,9 +240,9 @@ class GSheets {
       _client = null;
       return this.client;
     });
-    final _url = 'https://www.googleapis.com/drive/v3/files';
-    final _query = "q=mimeType='application/vnd.google-apps.spreadsheet'";
-    final response = await client.get('$_url?$_query'.toUri());
+    final url = 'https://www.googleapis.com/drive/v3/files';
+    final query = "q=mimeType='application/vnd.google-apps.spreadsheet'";
+    final response = await client.get('$url?$query'.toUri());
     checkResponse(response);
     // FileResource
     return (jsonDecode(response.body)['files'] as List)
@@ -493,7 +492,9 @@ class Spreadsheet {
       renderOption,
       inputOption,
     );
-    sheets.forEach((sheet) => sheet._incrementIndex(ws.index - 1));
+    for (var sheet in sheets) {
+      sheet._incrementIndex(ws.index - 1);
+    }
     sheets.add(ws);
     return ws;
   }
@@ -529,7 +530,9 @@ class Spreadsheet {
       renderOption,
       inputOption,
     );
-    sheets.forEach((sheet) => sheet._incrementIndex(ws.index - 1));
+    for (var sheet in sheets) {
+      sheet._incrementIndex(ws.index - 1);
+    }
     sheets.add(ws);
     return ws;
   }
@@ -566,7 +569,9 @@ class Spreadsheet {
       renderOption,
       inputOption,
     );
-    sheets.forEach((sheet) => sheet._incrementIndex(duplicate.index - 1));
+    for (var sheet in sheets) {
+      sheet._incrementIndex(duplicate.index - 1);
+    }
     sheets.add(duplicate);
     return duplicate;
   }
@@ -583,7 +588,9 @@ class Spreadsheet {
       }
     ]);
     sheets.remove(ws);
-    sheets.forEach((sheet) => sheet._decrementIndex(ws.index));
+    for (var sheet in sheets) {
+      sheet._decrementIndex(ws.index);
+    }
     return true;
   }
 
@@ -1288,9 +1295,9 @@ class Worksheet {
             .toUri();
     final response = await _client.get(url);
     var obj = jsonDecode(response.body);
-    var _ranges = List.from(obj['valueRanges']);
+    var ranges0 = List.from(obj['valueRanges']);
     var output = <List<String>>[];
-    _ranges.forEach((e) {
+    for (var e in ranges0) {
       var values = e['values'][0];
       if (values is List) {
         output.add(values.map<String>((e) => '$e').toList());
@@ -1298,7 +1305,7 @@ class Worksheet {
         print('Error with values: $values');
       }
       // var values = List<String>.from(List.from(e['values'])[0].toString());
-    });
+    }
     // print(response.body);
     checkResponse(response);
     return output;
@@ -1309,7 +1316,7 @@ class Worksheet {
     for (var k in rows.keys) {
       var rowIndex = k;
       var maxCol = rows[k]!.length + 1;
-      var from = title + '!' + getColumnLetter(1);
+      var from = '$title!${getColumnLetter(1)}';
       var to = getColumnLetter(maxCol);
       var obj = {
         'range': '$from$rowIndex:$to$rowIndex',

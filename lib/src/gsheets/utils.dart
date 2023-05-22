@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:math';
+
 import 'package:http/http.dart';
+
 import 'gsheets.dart';
 
 const dimenRows = 'ROWS';
@@ -9,24 +11,23 @@ const defaultRowsCount = 1000;
 const defaultColumnCount = 26;
 const gsheetsCellsLimit = 5000000;
 
-final int _char_a = 'A'.codeUnitAt(0);
+final int _charA = 'A'.codeUnitAt(0);
 
 String getColumnLetter(int index) {
   checkIndex('index', index);
   var number = index - 1;
   final remainder = number % 26;
-  var label = String.fromCharCode(_char_a + remainder);
+  var label = String.fromCharCode(_charA + remainder);
   number = number ~/ 26;
   while (number > 0) {
     var remainder = number % 26 - 1;
-    label = '${String.fromCharCode(_char_a + remainder)}$label';
+    label = '${String.fromCharCode(_charA + remainder)}$label';
     number = number ~/ 26;
   }
   return label;
 }
 
-void checkIndex(String name, int value) =>
-    except(value < 1, 'invalid $name ($value)');
+void checkIndex(String name, int value) => except(value < 1, 'invalid $name ($value)');
 
 String parseKey(Object str, [String type = '']) {
   final key = str is String ? str : str.toString();
@@ -44,8 +45,7 @@ String? parseStringOrNull(Object? str) {
   return parseKey(str);
 }
 
-void checkValues(List<Object?> values) =>
-    except(values.isEmpty, 'invalid values ($values)');
+void checkValues(List<Object?> values) => except(values.isEmpty, 'invalid values ($values)');
 
 void checkNotNested(List values) =>
     except(values is List<List>, 'invalid values type (${values.runtimeType})');
@@ -54,8 +54,7 @@ void checkMap(Map map) => except(map.isEmpty, 'invalid map ($map)');
 
 void checkMaps(List<Map> maps) => except(maps.isEmpty, 'invalid maps ($maps)');
 
-void checkMapTo(first, second) =>
-    except(first == second, 'cannot map $first to $second');
+void checkMapTo(first, second) => except(first == second, 'cannot map $first to $second');
 
 void except(bool check, String cause) {
   if (check) throw GSheetsException(cause);
@@ -94,11 +93,9 @@ List<String> extractSublist(
   return list.sublist(start, end);
 }
 
-T? get<T>(List<T> list, {int at = 0, T? or}) =>
-    list.length > at ? list[at] : or;
+T? get<T>(List<T> list, {int at = 0, T? or}) => list.length > at ? list[at] : or;
 
-String getOrEmpty(List<String> list, [int at = 0]) =>
-    get(list, at: at, or: '')!;
+String getOrEmpty(List<String> list, [int at = 0]) => get(list, at: at, or: '')!;
 
 int whereFirst(List<List<String>> lists, String key) =>
     lists.indexWhere((list) => get<String>(list) == key);
@@ -136,8 +133,7 @@ void appendIfShorter<T>(
   }
 }
 
-bool fileSheetsFilter(json) =>
-    json['mimeType'] == 'application/vnd.google-apps.spreadsheet';
+bool fileSheetsFilter(json) => json['mimeType'] == 'application/vnd.google-apps.spreadsheet';
 bool gridSheetsFilter(json) => json['properties']['sheetType'] == 'GRID';
 
 extension StringX on String {

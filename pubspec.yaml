@@ -12,13 +12,13 @@ executables:
   fts: main
 
 environment:
-  sdk: ">=2.18.2 <3.0.0"
+  sdk: ">=3.0.0 <3.1.0"
 
 dependencies:
   args: ^2.3.1
   collection: ^1.16.0
-  dcli: ^1.35.2
-  googleapis: ^9.2.0
+  dcli: ^2.2.2
+  googleapis: ^11.1.0
   googleapis_auth: ^1.3.1
   http: ^0.13.5
   io: ^1.0.3

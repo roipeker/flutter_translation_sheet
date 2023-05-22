@@ -83,7 +83,7 @@ void saveJson(String filepath, dynamic json, {bool beautify = false}) {
   if (json is! String) {
     str = beautify ? prettyJson(json) : jsonEncode(json);
   } else {
-    str = '$json';
+    str = json;
   }
   saveString(filepath, str);
 }
@@ -116,12 +116,8 @@ bool _matchExtension(String path) {
 Future<void> watchChanges() async {
   /// listen to changes in trconfig.yaml
   trace(
-      '👀 watch mode enabled for:\n - 📁 ${config.inputYamlDir}: and\n - 🗒 $configPath\:');
-  print('Press ' +
-      yellow('q') +
-      ' then ' +
-      yellow('Enter') +
-      ' to exit the program');
+      '👀 watch mode enabled for:\n - 📁 ${config.inputYamlDir}: and\n - 🗒 $configPath:');
+  print('Press ${yellow('q')} then ${yellow('Enter')} to exit the program');
   _listenConfigChanges();
   _listenMasterStringsFilesChanges();
   await stdin.firstWhere((e) {

@@ -37,13 +37,13 @@ void buildArb(Map<String, Map<String, String>> map) {
 
   /// look for base locales.
   var sublist = config.locales.where((element) => element.contains('_'));
-  sublist.forEach((e) {
+  for (var e in sublist) {
     var langCode = e.split('_').first;
     if (!map.containsKey(langCode)) {
       trace('Adding base langCode: $langCode for arb generation');
       map[langCode] = map[e]!;
     }
-  });
+  }
 
   for (var localeKey in map.keys) {
     // trace('my locale key: ', localeKey);
@@ -51,7 +51,7 @@ void buildArb(Map<String, Map<String, String>> map) {
       '@@last_modified': DateTime.now().toIso8601String(),
       '@@locale': localeKey,
       // special case for countryCode, add base language as well zh-tw
-      if (appName.isNotEmpty) 'appName': '$appName',
+      if (appName.isNotEmpty) 'appName': appName,
     };
     var localeMap = map[localeKey]!;
     final pluralMaps = <String, dynamic>{};
@@ -119,7 +119,7 @@ void _addSimpleVarsMetadata(
   String value,
   Map<String, dynamic> output,
 ) {
-  var metaKey = '@' + targetKey;
+  var metaKey = '@$targetKey';
   if (varsByKeys.containsKey(originalKey)) {
     output[metaKey] = <String, dynamic>{
       'description': 'Auto-generated for $originalKey',
@@ -156,16 +156,16 @@ void _customModifier({
     return;
   }
   if (!(targetMap[targetKey] as Map).containsKey('var')) {
-    final _parts = mainToken.split(':');
-    targetMap[targetKey]['var'] = _parts[1];
-    if (_parts.length > 2) {
-      targetMap[targetKey]['varType'] = _parts[2];
+    final parts = mainToken.split(':');
+    targetMap[targetKey]['var'] = parts[1];
+    if (parts.length > 2) {
+      targetMap[targetKey]['varType'] = parts[2];
     }
   }
   String varToken = targetMap[targetKey]['var']!;
   var varTokenType = targetMap[targetKey]['varType'];
   var selectorKey = keys.last;
-  var metaKey = '@' + targetKey;
+  var metaKey = '@$targetKey';
   metaFallbackProperties[metaKey] ??= <String, dynamic>{
     'description': 'Auto-generated for $targetKey',
   };
@@ -173,18 +173,18 @@ void _customModifier({
   /// get variables from message if any.
   metaFallbackProperties[metaKey]!['placeholders'] ??= <String, dynamic>{};
   if (!metaFallbackProperties[metaKey]!['placeholders'].containsKey(varToken)) {
-    var _map = metaFallbackProperties[metaKey]!['placeholders'];
-    _map[varToken] = <String, dynamic>{};
+    var map = metaFallbackProperties[metaKey]!['placeholders'];
+    map[varToken] = <String, dynamic>{};
     if (metaVarType != null) {
-      _map[varToken]!['type'] = metaVarType;
+      map[varToken]!['type'] = metaVarType;
     } else if (varTokenType != null) {
       /// fallback type in key definition.
       /// "selector:gender:String:"
-      _map[varToken]!['type'] = varTokenType;
+      map[varToken]!['type'] = varTokenType;
     }
   }
-  var _map = metaFallbackProperties[metaKey]!['placeholders'];
-  value = _saveVarsFromString(value, _map);
+  var map = metaFallbackProperties[metaKey]!['placeholders'];
+  value = _saveVarsFromString(value, map);
   targetMap[targetKey][selectorKey] = value;
 }
 
@@ -251,7 +251,7 @@ Map<String, dynamic> _varsFromString(String text) {
     var res = _captureArbSet(text);
     if (res.isNotEmpty) {
       var output = <String, dynamic>{};
-      res.forEach((e) {
+      for (var e in res) {
         /// todo: Analyze more data in the var type.
         if (e.contains(':')) {
           var propData = _buildMetaVarProperties(e);
@@ -259,7 +259,7 @@ Map<String, dynamic> _varsFromString(String text) {
         } else {
           output[e] = {};
         }
-      });
+      }
       return output;
     }
   }
@@ -302,11 +302,11 @@ Map<String, dynamic> _buildMetaVarProperties(String text) {
         /// replace the escaped quotes.
         msg = msg.replaceAll('"', '');
         var params = msg.split(',');
-        params.forEach((param) {
+        for (var param in params) {
           var keyVal = param.split(':');
           if (keyVal.length > 1) {
             final key = keyVal[0].trim();
-            final _val = keyVal[1].toLowerCase();
+            final val = keyVal[1].toLowerCase();
             // late Object? val;
             // if (type == 'num' || type == 'number') {
             //   val = num.tryParse(_val) ?? _val;
@@ -319,11 +319,11 @@ Map<String, dynamic> _buildMetaVarProperties(String text) {
             // } else {
             //   val = _val;
             // }
-            vo['optionalParameters'][key] = _val;
+            vo['optionalParameters'][key] = val;
           } else {
             error('Invalid placeholder format.optionalParameters for $text');
           }
-        });
+        }
       }
     } else {
       vo['format'] = msg;

@@ -121,9 +121,9 @@ void _inspectRecursive(String path) {
           continue;
         }
 
-        var _key = key + 'text${j + 1}';
+        var key0 = '${key}text${j + 1}';
         ++j;
-        canoMap[_key] = val;
+        canoMap[key0] = val;
       }
     }
   }
@@ -171,14 +171,14 @@ void _inspectRecursive(String path) {
 String _getKey(String filepath) {
   /// all path (keys) relative to the -p (libFolder)
   var sub = p.relative(filepath, from: libFolder);
-  sub = p.withoutExtension(sub) + '.';
+  sub = '${p.withoutExtension(sub)}.';
   return p.split(sub).join('.');
 }
 
-var _regex4 = RegExp("\'.*?\'|\".*?\"", dotAll: false);
+var _regex4 = RegExp("'.*?'|\".*?\"", dotAll: false);
 var _regexMultiline = RegExp("('''.+''')|(\"\"\".+\"\"\")", dotAll: true);
 var _regexR1 = RegExp(r'(import|export) .*?;');
-var _pathRegExp = RegExp('(\/|.*\/)');
+var _pathRegExp = RegExp('(/|.*/)');
 final varMatching = RegExp(
   r'\$([^ ]*)',
   caseSensitive: false,

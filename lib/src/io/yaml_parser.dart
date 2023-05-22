@@ -109,7 +109,7 @@ KeyMap _canoMap(Map<String, dynamic> content) {
     for (var k in inner.keys) {
       if (k.startsWith('@')) {
         /// build meta key, for ARB files.
-        var metaKey = '@' + (prop + '.' + k.substring(1)).camelCase;
+        var metaKey = '@${('$prop.${k.substring(1)}').camelCase}';
         metaProperties[metaKey] = inner[k];
         trace('found metadata $k skip');
         continue;
@@ -118,7 +118,7 @@ KeyMap _canoMap(Map<String, dynamic> content) {
         trace('"$k" has a null value');
       }
       var val = inner[k];
-      var p2 = prop.isEmpty ? k : prop + '.' + k;
+      var p2 = prop.isEmpty ? k : '$prop.$k';
       if (val is Map) {
         buildKeys(val.cast(), p2);
       } else {
@@ -154,8 +154,7 @@ void putVarsInMap(Map<String, Map<String, String>> map) {
   //// convert to regular map.
   final varsMap = <String, Map<String, String>>{};
   varsYaml.forEach((key, value) {
-    varsMap['$key'] =
-        Map.from(value).map((key, value) => MapEntry('$key', '$value'));
+    varsMap['$key'] = Map.from(value).map((key, value) => MapEntry('$key', '$value'));
   });
   var linkedKeys = [];
   for (var localeKey in map.keys) {
@@ -179,8 +178,7 @@ void putVarsInMap(Map<String, Map<String, String>> map) {
           final toReplace = match.group(0)!;
           var findKey = match.group(1)!;
           if (!localeMap.containsKey(findKey)) {
-            error(
-                'Can\'t find linked key "$findKey" to replace, make sure is correct.');
+            error('Can\'t find linked key "$findKey" to replace, make sure is correct.');
             exit(3);
           }
           text = text.replaceAll(toReplace, localeMap[findKey]!);
@@ -214,8 +212,7 @@ void buildVarsInMap(Map<String, String> map) {
 //     trace('Vars content: ', varsContent);
 
     saveString(config.inputVarsFile, varsContent);
-    trace(
-        'Found ${varsKeys.keys.length} key(s) with placeholders.\n - ${config.inputVarsFile}:');
+    trace('Found ${varsKeys.keys.length} key(s) with placeholders.\n - ${config.inputVarsFile}:');
   }
 }
 
@@ -227,11 +224,11 @@ final _captureGoogleTranslateVar = RegExp(
   multiLine: false,
   caseSensitive: false,
 );
-final _captureInnerDigitVar = RegExp(
-  r'\d+',
-  multiLine: false,
-  caseSensitive: false,
-);
+// final _captureInnerDigitVar = RegExp(
+//   r'\d+',
+//   multiLine: false,
+//   caseSensitive: false,
+// );
 final _replaceAndLeaveDigitVar = RegExp(
   r'({+)|(}+)',
   multiLine: false,
@@ -251,20 +248,20 @@ String replaceVars(VarsCap vars) {
     // Replacing
     var words = wordset.toList();
     for (var i = 0; i < words.length; i++) {
-      var _key = words[i];
-      var key = _key.replaceAll(_replaceAndLeaveDigitVar, '');
+      var key0 = words[i];
+      var key = key0.replaceAll(_replaceAndLeaveDigitVar, '');
       var value = vars.vars[key]!;
       if (value.startsWith('@:')) {
         /// If we resolve linked keys we play safe with the key.
         if (config.resolveLinkedKeys) {
-          str = str.replaceAll(_key, '$value#');
+          str = str.replaceAll(key0, '$value#');
         } else {
-          str = str.replaceAll(_key, '$value');
+          str = str.replaceAll(key0, value);
         }
       } else {
         //// special characters taken in account?
         // value = value.replaceAll(r'$', '\\\$');
-        str = str.replaceAll(_key, '$start$value$end');
+        str = str.replaceAll(key0, '$start$value$end');
       }
     }
   }
