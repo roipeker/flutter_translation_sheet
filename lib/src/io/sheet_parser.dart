@@ -1,3 +1,5 @@
+// ignore_for_file: dead_code
+
 import 'dart:convert';
 import 'dart:io';
 
@@ -16,8 +18,7 @@ class SheetParser {
   // late List<List<Cell>> _initialCellRows;
   late List<String> colsHeaders;
 
-  String get spritesheetUrl =>
-      'https://docs.google.com/spreadsheets/d/${config.sheetId!}';
+  String get spritesheetUrl => 'https://docs.google.com/spreadsheets/d/${config.sheetId!}';
 
   String get credentialEmail =>
       _api.credentials?.email ?? 'somesheet@someid.iam.gserviceaccount.com';
@@ -54,12 +55,11 @@ class SheetParser {
     if (table != null) {
       _table = table;
     } else {
-      final _availableTables =
-          _sheet!.sheets.map((element) => '  - ' + element.title).join('\n');
+      final availableTables = _sheet!.sheets.map((element) => '  - ${element.title}').join('\n');
       error('''Worksheet "${config.tableId}" doesn't exists.
 Please check your sheet and update your configuration @[gsheets:worksheet:].
 Available worksheets:
-$_availableTables
+$availableTables
 
 Open $spritesheetUrl and check the available tabs at the bottom.
 ''');
@@ -124,7 +124,7 @@ Open $spritesheetUrl and check the available tabs at the bottom.
 
   String _getTranslateCell(int row, String toLocale) {
     var masterCol = remoteHeader.indexOf(masterLanguage) + 1;
-    var label = _getColumnLetter(masterCol) + '$row';
+    var label = '${_getColumnLetter(masterCol)}$row';
     String cellData;
     var sanitizedFromLocale = sanitizeLocale(masterLanguage);
     var sanitizedToLocale = sanitizeLocale(toLocale);
@@ -134,7 +134,7 @@ Open $spritesheetUrl and check the available tabs at the bottom.
     } else {
       var formula = 'GOOGLETRANSLATE($label, "$sanitizedFromLocale", "$sanitizedToLocale")';
       var toColumnLetter = remoteHeader.indexOf(toLocale) + 1;
-      var currentCell = _getColumnLetter(toColumnLetter) + '$row';
+      var currentCell = '${_getColumnLetter(toColumnLetter)}$row';
       cellData = '=IF(IFERROR($currentCell)<>0,$currentCell, $formula)';
     }
     return cellData;
@@ -176,9 +176,9 @@ Open $spritesheetUrl and check the available tabs at the bottom.
     // bool _headersInited = false;
   }
 
-  bool _isValidLocale(String locale) {
-    return config.locales.contains(locale);
-  }
+  // bool _isValidLocale(String locale) {
+  //   return config.locales.contains(locale);
+  // }
 
   /// final for easy access.
   List<String> remoteHeader = [];
@@ -198,7 +198,7 @@ Open $spritesheetUrl and check the available tabs at the bottom.
   Future<void> _initHeaders() async {
     if (_headersInited) return;
     remoteHeader = await _headerModel();
-    print('remote headers:\n - ' + magenta(remoteHeader.join(' | ')));
+    print('remote headers:\n - ${magenta(remoteHeader.join(' | '))}');
     localHeader = ['keys', ...config.locales];
     _headersInited = true;
   }
@@ -255,9 +255,7 @@ Open $spritesheetUrl and check the available tabs at the bottom.
     for (var i = 0; i < rowsData[1].length; ++i) {
       var colData = rowsData[1][i];
       var headerValue = rowsData[0][i];
-      if (colData.isEmpty &&
-          headerValue.isNotEmpty &&
-          localHeader.contains(headerValue)) {
+      if (colData.isEmpty && headerValue.isNotEmpty && localHeader.contains(headerValue)) {
         if (headerValue == masterLanguage) {
           trace('Master language ($headerValue) is corrupt, regenerating.');
           await _table.clearColumn(masterLanguageCol, fromRow: 2);
@@ -267,8 +265,7 @@ Open $spritesheetUrl and check the available tabs at the bottom.
             fromRow: 2,
           );
         } else {
-          trace(
-              'Auto translate column ${i + 1} ($headerValue) x $lastRow rows');
+          trace('Auto translate column ${i + 1} ($headerValue) x $lastRow rows');
           var data = _generateGoogleTranslateColumn(
             fromRow: 2,
             fromLocaleCol: masterLanguageCol,
@@ -283,13 +280,13 @@ Open $spritesheetUrl and check the available tabs at the bottom.
 
     /// --- now let's see what changed.
     /// load remote key + master
-    print(yellow('❯') + ' checking changes with the remote keys...');
+    print('${yellow('❯')} checking changes with the remote keys...');
     var remoteMap = await _getRemoteMap(masterLanguageCol);
-    print(yellow('❯') + ' remote keys received ' + green('✓'));
+    print('${yellow('❯')} remote keys received ${green('✓')}');
 
     /// check master language text changes
     trace('Checking remote master String changes...');
-    final _rowsToUpdate = <int, List<String>>{};
+    final rowsToUpdate = <int, List<String>>{};
 
     List<String> buildGTRow({
       required int row,
@@ -323,7 +320,7 @@ Open $spritesheetUrl and check the available tabs at the bottom.
       var remoteText = remoteMap[k]!;
       if (remoteText != localText) {
         var row = remoteKeys.indexOf(k) + 1;
-        _rowsToUpdate[row] = buildGTRow(
+        rowsToUpdate[row] = buildGTRow(
           row: row,
           masterText: localText,
           keyText: k,
@@ -331,10 +328,10 @@ Open $spritesheetUrl and check the available tabs at the bottom.
         trace('- row $row: \n\t', remoteText, '\n\t != \n\t', localText);
       }
     }
-    if (_rowsToUpdate.isNotEmpty) {
-      trace('Updating ${_rowsToUpdate.length} rows...');
-      trace(_rowsToUpdate);
-      await _table.batchUpdateRows(_rowsToUpdate);
+    if (rowsToUpdate.isNotEmpty) {
+      trace('Updating ${rowsToUpdate.length} rows...');
+      trace(rowsToUpdate);
+      await _table.batchUpdateRows(rowsToUpdate);
       trace('Done updating rows with mismatch text.');
     }
 
@@ -370,17 +367,16 @@ Open $spritesheetUrl and check the available tabs at the bottom.
         }
 
         if (clearRows.isNotEmpty) {
-          trace(
-              '${clearRows.length} rows will be cleared ( ${clearRows.join((', '))} )');
+          trace('${clearRows.length} rows will be cleared ( ${clearRows.join((', '))} )');
           var result = await _table.batchClearRows(clearRows);
           trace('Clear rows result:', result);
           if (result) {
-            clearRows.forEach((row) {
+            for (var row in clearRows) {
               var k = remoteKeys[row - 1];
               remoteMap.remove(k);
               remoteKeys[row - 1] = '';
               // remoteKeys.remove(k);
-            });
+            }
             clearRows.clear();
             trace('Rows clearing successful');
           }
@@ -412,7 +408,7 @@ Open $spritesheetUrl and check the available tabs at the bottom.
       /// we will add the rows to their positions?
       // var addToEnd = addedKeys.length > 4;
       var addToEnd = true;
-      final _keys = map.keys.toList(growable: false);
+      final keys0 = map.keys.toList(growable: false);
       if (addToEnd) {
         var lastRow = await _getLastRemoteRow() + 1;
         trace('We will add new records at the end.');
@@ -450,7 +446,7 @@ Open $spritesheetUrl and check the available tabs at the bottom.
         trace('🙂 Append rows complete');
       } else {
         for (var k in addedKeys) {
-          var row = _keys.indexOf(k) + 2;
+          var row = keys0.indexOf(k) + 2;
           await _table.insertRow(row);
           var rowData = _getNewRowKey(
             row: row,
@@ -473,9 +469,7 @@ Open $spritesheetUrl and check the available tabs at the bottom.
       if (numBlankSpaces > 1) {
         trace('Empty keys detected: $numBlankSpaces');
         var result = await _removeTableWhitespaces();
-        var count = result['replies']?.first['deleteDuplicates']
-                ?['duplicatesRemovedCount'] ??
-            0;
+        var count = result['replies']?.first['deleteDuplicates']?['duplicatesRemovedCount'] ?? 0;
         trace('Duplicated rows deleted: $count');
       }
 
@@ -484,7 +478,7 @@ Open $spritesheetUrl and check the available tabs at the bottom.
       if (firstCleanIndex > 1) {
         var row = firstCleanIndex + 1;
         await _table.deleteRow(row);
-        print('Empty row ' + red('$row') + ' deleted.');
+        print('Empty row ${red('$row')} deleted.');
       }
     }
 
@@ -510,7 +504,7 @@ Open $spritesheetUrl and check the available tabs at the bottom.
       var col = remoteHeader.indexOf(k) + 1;
       // trace( "key: ", k, " index: ", col , ' col: ', _getColumnLetter(col));
       var colLetter = _getColumnLetter(col);
-      var range = colLetter + '1:' + colLetter;
+      var range = '${colLetter}1:$colLetter';
       ranges.add(range);
     }
     // var res = await _table.batchGet(['A1:A', 'C1:C', 'E1:E2000']);
@@ -536,8 +530,7 @@ Open $spritesheetUrl and check the available tabs at the bottom.
       for (var i = 0; i < keys.length; ++i) {
         var key = keys[i];
         var value = i >= langCol.length ? '' : langCol[i];
-        if (value.contains(loadingTranslation) &&
-            mapLoading[headerKey] == false) {
+        if (value.contains(loadingTranslation) && mapLoading[headerKey] == false) {
           mapLoading[headerKey] = true;
           trace('$headerKey still is loading translations...');
           isLoadingTranslations = true;
@@ -547,8 +540,7 @@ Open $spritesheetUrl and check the available tabs at the bottom.
     }
 
     if (isLoadingTranslations) {
-      trace(
-          'Translations are still loading in the sheet, please, run the cli again.');
+      trace('Translations are still loading in the sheet, please, run the cli again.');
     }
 
     return output;
@@ -615,18 +607,17 @@ Please follow https://medium.com/@a.marenkov/how-to-get-credentials-for-google-s
     }
 
     var missingLocales = <String>[];
-    configLocales.forEach((c) {
+    for (var c in configLocales) {
       if (!sheetLocales.contains(c)) {
         missingLocales.add(c);
       }
-    });
+    }
 
     /// add missing locales to the end.
     if (missingLocales.isNotEmpty) {
       var lastColumn = sheetLocales.length + 1;
       trace('adding missing locales columns: ', missingLocales);
-      var result = await _table.values
-          .insertRow(1, missingLocales, fromColumn: lastColumn);
+      var result = await _table.values.insertRow(1, missingLocales, fromColumn: lastColumn);
       if (!result) {
         throw 'Error adding new locale columns';
       }
@@ -640,7 +631,7 @@ Please follow https://medium.com/@a.marenkov/how-to-get-credentials-for-google-s
     return await _table.values.row(1, fromColumn: 1);
   }
 
-  Future<void> _deleteEmptyColumns(List<String> sheetLocales) async {
+  /*Future<void> _deleteEmptyColumns(List<String> sheetLocales) async {
     /// delete empty spaces.
     var deleteColList = [];
     for (var i = 0; i < sheetLocales.length; ++i) {
@@ -649,18 +640,16 @@ Please follow https://medium.com/@a.marenkov/how-to-get-credentials-for-google-s
       }
     }
     sheetLocales.removeWhere((element) => element.trim().isEmpty);
-    var deleteCalls =
-        deleteColList.reversed.map((colId) => _table.deleteColumn(colId + 1));
+    var deleteCalls = deleteColList.reversed.map((colId) => _table.deleteColumn(colId + 1));
     return await Future.forEach(
       deleteCalls,
       (element) => element,
     );
-  }
+  }*/
 
   Future<int> _getLastRemoteRow() async {
-    var _lastRowInKeys =
-        await _table.cells.lastRow(fromColumn: 1, length: 1, inRange: true);
-    return _lastRowInKeys!.first.row;
+    var lastRowInKeys = await _table.cells.lastRow(fromColumn: 1, length: 1, inRange: true);
+    return lastRowInKeys!.first.row;
   }
 
   Future<Map<String, dynamic>> _removeTableWhitespaces() async {
@@ -723,15 +712,14 @@ Optionally, follow the steps on https://support.google.com/docs/answer/58515
 /// https://cloud.google.com/translate/docs/languages
 /// Full locales are usually not allowed and will display an ERROR.
 
-final _sanitizeLocaleCached = <String, String>{
+final _sanitizeLocaleCached = <String, String>{};
 
-};
-
-String sanitizeLocale(String locale, {bool throwOnError = false, bool verbose=true}) {
-  if(_sanitizeLocaleCached[locale] != null) {
+String sanitizeLocale(String locale, {bool throwOnError = false, bool verbose = true}) {
+  if (_sanitizeLocaleCached[locale] != null) {
     return _sanitizeLocaleCached[locale]!;
   }
   var originalLocale = locale;
+
   /// ISO-639 codes
   locale = locale.replaceAll('_', '-');
   if (locale.contains('-')) {
@@ -755,7 +743,7 @@ String sanitizeLocale(String locale, {bool throwOnError = false, bool verbose=tr
         return lang;
       }
     }
-    if(verbose){
+    if (verbose) {
       trace('Using code ISO-639 "$lang" for locale "$originalLocale"');
     }
     _sanitizeLocaleCached[originalLocale] = lang;
@@ -908,16 +896,16 @@ const kGoogleLanguages = {
   'zu': 'Zulu',
 };
 
-final int _char_a = 'A'.codeUnitAt(0);
+final int _charA = 'A'.codeUnitAt(0);
 
 String _getColumnLetter(int index) {
   var number = index - 1;
   final remainder = number % 26;
-  var label = String.fromCharCode(_char_a + remainder);
+  var label = String.fromCharCode(_charA + remainder);
   number = number ~/ 26;
   while (number > 0) {
     var remainder = number % 26 - 1;
-    label = '${String.fromCharCode(_char_a + remainder)}$label';
+    label = '${String.fromCharCode(_charA + remainder)}$label';
     number = number ~/ 26;
   }
   return label;

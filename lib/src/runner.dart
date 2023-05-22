@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:args/args.dart';
 import 'package:args/command_runner.dart';
-import 'package:dcli/dcli.dart';
 import 'package:io/io.dart';
 
 import 'data/strings.dart';
@@ -41,8 +40,8 @@ class FTSCommandRunner extends CommandRunner<int> {
   @override
   Future<int> run(Iterable<String> args) async {
     try {
-      final _args = parse(args);
-      return await runCommand(_args) ?? ExitCode.success.code;
+      final args0 = parse(args);
+      return await runCommand(args0) ?? ExitCode.success.code;
       // final cmd = _args.command?.name;
       // if (cmd != 'upgrade') {
       //   await checkUpdate(false);

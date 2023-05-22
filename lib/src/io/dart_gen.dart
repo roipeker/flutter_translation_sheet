@@ -69,7 +69,7 @@ abstract class $className {
   static const Map<String,String> data = $data;
 }
 ''';
-      var fileName = localeName.toLowerCase().snakeCase + '.dart';
+      var fileName = '${localeName.toLowerCase().snakeCase}.dart';
       var filePath = joinDir([config.dartOutputDir, fileName]);
       saveString(filePath, fileData);
       translateImports.add('import "$fileName";');
@@ -106,7 +106,7 @@ void createFtsUtilsFile() {
 
   var resolveTranslationCode = '';
   var imports = [
-    p.basename(config.dartOutputDir) + '.dart',
+    '${p.basename(config.dartOutputDir)}.dart',
     "package:flutter/widgets.dart",
     "package:flutter/foundation.dart",
   ];
@@ -125,7 +125,7 @@ void createFtsUtilsFile() {
     var loadJsonString = kLoadJsonMethod;
 
     // var jsonOutput = config.outputJsonTemplate;
-    var jsonOutputDir = p.dirname(config.outputJsonTemplate) + '/';
+    var jsonOutputDir = '${p.dirname(config.outputJsonTemplate)}/';
     loadJsonString = loadJsonString.replaceAll('##jsonDir', jsonOutputDir);
     fileContent = fileContent.replaceAll('##loadJsonMethod', loadJsonString);
 
@@ -182,7 +182,7 @@ void createDartExportFile(List<String> exportPaths) {
   var fileContents = exportPaths
       .map((path) => 'export "${p.relative(path, from: dir)}";')
       .join('\n');
-  var exportFilePath = p.join(dir, p.basename(dir) + '.dart');
+  var exportFilePath = p.join(dir, '${p.basename(dir)}.dart');
 
   /// export the file.
   saveString(exportFilePath, fileContents);
@@ -199,25 +199,25 @@ String createTranslationFile(
   if (locales.isEmpty) {
     locales.add('en');
   }
-  var _classAppLocales = _buildAppLocalesFileContent(locales);
+  var classAppLocales = _buildAppLocalesFileContent(locales);
   var hasTranslationMaps = imports.isNotEmpty;
-  var _imports = imports.join('\n');
-  var _translateClassString = '';
+  var imports0 = imports.join('\n');
+  var translateClassString = '';
 
   /// TData file
-  final _tClassName = config.dartTranslationClassname;
-  var _tLocalesCode = '';
+  final tClassName = config.dartTranslationClassname;
+  var tLocalesCode = '';
 
   /// only add locale codes if user asks for useMaps:true
   if (hasTranslationMaps) {
     /// Translation File.
-    var _transKeysString = '{\n';
-    _transKeysString += translationMaps.join('\n');
-    _transKeysString += '  };\n';
+    var transKeysString = '{\n';
+    transKeysString += translationMaps.join('\n');
+    transKeysString += '  };\n';
 
-    _tLocalesCode = '''
+    tLocalesCode = '''
   static Map<String, Map<String, String>> byKeys = getByKeys();
-  static Map<String, Map<String, String>> getByKeys() => $_transKeysString
+  static Map<String, Map<String, String>> getByKeys() => $transKeysString
   
   static Map<String, Map<String, String>>? _byText;
   static Map<String, Map<String, String>> get byText {
@@ -241,19 +241,19 @@ String createTranslationFile(
   } else {
     /// keep the fields for easy map access, if the user wants to cache
     /// the json somewhere.
-    _tLocalesCode = '''
+    tLocalesCode = '''
   static Map<String, Map<String, String>> byKeys = {};
   static Map<String, Map<String, String>> byText = {};
 ''';
   }
 
-  _translateClassString = '''
+  translateClassString = '''
 //ignore: avoid_classes_with_only_static_members
-abstract class $_tClassName {
+abstract class $tClassName {
   
-  $_tLocalesCode
+  $tLocalesCode
   
-  ${getCodeMapLocaleKeysToMasterText(_tClassName)}
+  ${getCodeMapLocaleKeysToMasterText(tClassName)}
 }''';
 
   // final _transImportsString = transImports.join('\n');
@@ -263,11 +263,11 @@ abstract class $_tClassName {
 import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-$_imports
+$imports0
 
-$_translateClassString
+$translateClassString
 
-$_classAppLocales
+$classAppLocales
 
 $_kLangVoTemplate
 
@@ -291,7 +291,7 @@ String _buildAppLocalesFileContent(List<String> locales) {
 //ignore: avoid_classes_with_only_static_members
 abstract class AppLocales {
 ''';
-  final _fields = locales.map((String key) {
+  final fields = locales.map((String key) {
     // key = _cleanLocaleKey(key);
     key = normLocale(key);
     var varName = _localeVarName(key, snake: false);
@@ -309,16 +309,16 @@ abstract class AppLocales {
   static const $varName = LangVo("$nativeName", "$englishName", "$localName", $locale, "$flagChar");''';
   }).join('\n');
 
-  fileContent += _fields + '\n';
+  fileContent += '$fields\n';
 
-  final _supportedLocales =
-      locales.map((String key) => '${_localeVarName(key,snake:false)}\.locale').join(',');
-  final _availableLang =
-      locales.map((String key) => '${_localeVarName(key,snake: false)}').join(',');
+  final supportedLocales =
+      locales.map((String key) => '${_localeVarName(key,snake:false)}.locale').join(',');
+  final availableLang =
+      locales.map((String key) => _localeVarName(key,snake: false)).join(',');
 
-  fileContent += '  static const available = <LangVo>[$_availableLang];\n';
+  fileContent += '  static const available = <LangVo>[$availableLang];\n';
   fileContent +=
-      '  static List<Locale> get supportedLocales => [$_supportedLocales];\n';
+      '  static List<Locale> get supportedLocales => [$supportedLocales];\n';
   // '  static List<Locale> get supportedLocales => _supportedLocales;\n';
   // fileContent +=
   //     '  static final _supportedLocales = <Locale>[$_supportedLocales];\n';
@@ -377,7 +377,9 @@ String createTKeyFileFromMap(
     print(
       'These following keys have been changed with a prefix ${cyan("t + key")} because they are reserved words:',
     );
-    changedWords.forEach((e) => print('- $e > t$e'));
+    for (var e in changedWords) {
+      print('- $e > t$e');
+    }
   }
   final fileContent =
       '// ignore_for_file: lines_longer_than_80_chars\n\n ${_translateKeyClasses.join('\n\n')}';
@@ -462,22 +464,22 @@ String _buildTKeyMap({
     }
     fieldName = fieldName.camelCase;
     var localPath = path + k;
-    String _fieldModifier;
+    String fieldModifier;
 
     /// no constants.
     // _fieldModifier = 'static const';
     if (isRoot) {
-      _fieldModifier = 'static';
+      fieldModifier = 'static';
     } else {
-      _fieldModifier = 'final';
+      fieldModifier = 'final';
     }
 
     /// fields
     // print('key: $k - ${v.runtimeType}');
     if (v is String) {
-      tostrKeys.add('$fieldName');
+      tostrKeys.add(fieldName);
       classCanBeConst = false;
-      fields.add('$_fieldModifier String $fieldName = \'$localPath\';');
+      fields.add('$fieldModifier String $fieldName = \'$localPath\';');
     } else {
       if (v is Map) {
         final fieldType = _buildTKeyMap(
@@ -486,10 +488,10 @@ String _buildTKeyMap({
           path: localPath,
           toString: toString,
         );
-        tostrFields.add('$fieldName');
-        final _modifier = isRoot || !classCanBeConst ? '' : ' const';
+        tostrFields.add(fieldName);
+        final modifier = isRoot || !classCanBeConst ? '' : ' const';
         fields.add(
-            '$_fieldModifier $fieldType $fieldName = $_modifier $fieldType._();');
+            '$fieldModifier $fieldType $fieldName = $modifier $fieldType._();');
       }
     }
   }

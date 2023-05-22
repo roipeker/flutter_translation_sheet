@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:dcli/dcli.dart';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart' as p;
+import 'package:path/path.dart';
 import 'package:yaml/yaml.dart';
 
 import '../data/strings.dart';
@@ -13,8 +14,7 @@ import 'utils.dart';
 Future<void> upgrade() async {
   if (which('flutter').found) {
     trace(green('Upgrading fts (global package) ...\n'));
-    final result =
-        'flutter pub global activate flutter_translation_sheet'.start(
+    final result = 'flutter pub global activate flutter_translation_sheet'.start(
       runInShell: true,
       progress: Progress(
         (e) => trace(yellow(e, bold: false)),
@@ -57,13 +57,12 @@ String? currentVersion() {
     if (str.isEmpty) return null;
     final data = loadYaml(str);
     if (data is YamlMap) {
-      return 'dev-' + data['version'];
+      return 'dev-${data['version']}';
     }
     return 'Could not find pubspec.yaml version in local enviroment.';
   }
   // trace('script file: ', basename(scriptFile));
-  var pathToPubLock =
-      canonicalize(join(dirname(scriptFile), '../pubspec.lock'));
+  var pathToPubLock = canonicalize(join(dirname(scriptFile), '../pubspec.lock'));
   var str = openString(pathToPubLock);
   if (str.isEmpty) {
     return null;
@@ -71,8 +70,7 @@ String? currentVersion() {
   var yaml = loadYaml(str);
   if (yaml['packages'][CliConfig.packageName] == null) {
     /// running local version? might read the pubspec here.
-    var pathToPubSpec =
-        canonicalize(join(dirname(pathToPubLock), 'pubspec.yaml'));
+    var pathToPubSpec = canonicalize(join(dirname(pathToPubLock), 'pubspec.yaml'));
     str = openString(pathToPubSpec);
     if (str.isEmpty) {
       /// Impossible scenario. But just in case.
