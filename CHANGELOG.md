@@ -1,3 +1,7 @@
+## [1.0.27]
+- upgrade dependencies to work on latest Dart version (^3.0.1). 
+- upgrade sdk, packages and fix lint issues
+
 ## [1.0.26]
 - fix posix path issue (plutil cli call on macos when absolute paths have spaces)
 - improved `fts extract`, now skips captured text that's only number, a variable, or a group of chars that have no grapheme (in any charset). 
