@@ -29,6 +29,3 @@ dependencies:
 
 dev_dependencies:
   lints: ^2.1.0
-
-dependency_overrides:
-  _discoveryapis_commons: ^1.0.5

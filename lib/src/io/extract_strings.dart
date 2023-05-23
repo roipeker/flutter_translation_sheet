@@ -111,12 +111,16 @@ void _inspectRecursive(String path) {
         if (num.tryParse(val) != null) {
           continue;
         }
+
         /// skip only var text.
-        if(val.startsWith('{{') && val.endsWith('}}') && val.lastIndexOf('{{')==0){
+        if (val.startsWith('{{') &&
+            val.endsWith('}}') &&
+            val.lastIndexOf('{{') == 0) {
           continue;
         }
+
         /// skip whatever has no grapheme character in any text (like $21.99, --** #$!@ etc)
-        if(!_anyKindOfLetterRegExp.hasMatch(val)){
+        if (!_anyKindOfLetterRegExp.hasMatch(val)) {
           // print("skip $val");
           continue;
         }
@@ -188,7 +192,9 @@ final varMatching = RegExp(
 final varReplacer = RegExp(r'[\$|\{\}]');
 
 /// matches any charset, but only graphemes (glyphs) are captured.
-final _anyKindOfLetterRegExp = RegExp(r'\p{L}', unicode: true, dotAll: true, caseSensitive: false);
+final _anyKindOfLetterRegExp =
+    RegExp(r'\p{L}', unicode: true, dotAll: true, caseSensitive: false);
+
 /// Reads [file] from the extraction recursion, using [populate] List to store
 /// the matching Strings.
 void _takeFile(File file, List<String> populate) {

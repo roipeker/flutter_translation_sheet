@@ -154,7 +154,8 @@ void putVarsInMap(Map<String, Map<String, String>> map) {
   //// convert to regular map.
   final varsMap = <String, Map<String, String>>{};
   varsYaml.forEach((key, value) {
-    varsMap['$key'] = Map.from(value).map((key, value) => MapEntry('$key', '$value'));
+    varsMap['$key'] =
+        Map.from(value).map((key, value) => MapEntry('$key', '$value'));
   });
   var linkedKeys = [];
   for (var localeKey in map.keys) {
@@ -178,7 +179,8 @@ void putVarsInMap(Map<String, Map<String, String>> map) {
           final toReplace = match.group(0)!;
           var findKey = match.group(1)!;
           if (!localeMap.containsKey(findKey)) {
-            error('Can\'t find linked key "$findKey" to replace, make sure is correct.');
+            error(
+                'Can\'t find linked key "$findKey" to replace, make sure is correct.');
             exit(3);
           }
           text = text.replaceAll(toReplace, localeMap[findKey]!);
@@ -212,7 +214,8 @@ void buildVarsInMap(Map<String, String> map) {
 //     trace('Vars content: ', varsContent);
 
     saveString(config.inputVarsFile, varsContent);
-    trace('Found ${varsKeys.keys.length} key(s) with placeholders.\n - ${config.inputVarsFile}:');
+    trace(
+        'Found ${varsKeys.keys.length} key(s) with placeholders.\n - ${config.inputVarsFile}:');
   }
 }
 

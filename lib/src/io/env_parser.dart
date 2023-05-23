@@ -241,7 +241,8 @@ void setCredentials({String? path, Map? json}) {
     final sysPath = Platform.environment['FTS_CREDENTIALS'];
     if (sysPath != null) {
       // print('spreadsheet id:\n - ' + magenta(config.sheetId!));
-      trace('fts detected ${magenta('FTS_CREDENTIALS')} variable in your system environment. Using it.');
+      trace(
+          'fts detected ${magenta('FTS_CREDENTIALS')} variable in your system environment. Using it.');
       var credentialsString = openString(sysPath);
       config.sheetCredentials = credentialsString;
     }

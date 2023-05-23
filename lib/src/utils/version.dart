@@ -14,7 +14,8 @@ import 'utils.dart';
 Future<void> upgrade() async {
   if (which('flutter').found) {
     trace(green('Upgrading fts (global package) ...\n'));
-    final result = 'flutter pub global activate flutter_translation_sheet'.start(
+    final result =
+        'flutter pub global activate flutter_translation_sheet'.start(
       runInShell: true,
       progress: Progress(
         (e) => trace(yellow(e, bold: false)),
@@ -62,7 +63,8 @@ String? currentVersion() {
     return 'Could not find pubspec.yaml version in local enviroment.';
   }
   // trace('script file: ', basename(scriptFile));
-  var pathToPubLock = canonicalize(join(dirname(scriptFile), '../pubspec.lock'));
+  var pathToPubLock =
+      canonicalize(join(dirname(scriptFile), '../pubspec.lock'));
   var str = openString(pathToPubLock);
   if (str.isEmpty) {
     return null;
@@ -70,7 +72,8 @@ String? currentVersion() {
   var yaml = loadYaml(str);
   if (yaml['packages'][CliConfig.packageName] == null) {
     /// running local version? might read the pubspec here.
-    var pathToPubSpec = canonicalize(join(dirname(pathToPubLock), 'pubspec.yaml'));
+    var pathToPubSpec =
+        canonicalize(join(dirname(pathToPubLock), 'pubspec.yaml'));
     str = openString(pathToPubSpec);
     if (str.isEmpty) {
       /// Impossible scenario. But just in case.

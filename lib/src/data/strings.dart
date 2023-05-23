@@ -35,7 +35,6 @@ Example:
 // https://flutter.dev/docs/development/accessibility-and-localization/internationalization#adding-your-own-localized-messages
 //
 // ''';
-
 }
 
 const kHasAssetsKey = '''

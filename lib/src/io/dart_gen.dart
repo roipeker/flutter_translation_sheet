@@ -311,10 +311,11 @@ abstract class AppLocales {
 
   fileContent += '$fields\n';
 
-  final supportedLocales =
-      locales.map((String key) => '${_localeVarName(key,snake:false)}.locale').join(',');
+  final supportedLocales = locales
+      .map((String key) => '${_localeVarName(key, snake: false)}.locale')
+      .join(',');
   final availableLang =
-      locales.map((String key) => _localeVarName(key,snake: false)).join(',');
+      locales.map((String key) => _localeVarName(key, snake: false)).join(',');
 
   fileContent += '  static const available = <LangVo>[$availableLang];\n';
   fileContent +=
@@ -351,9 +352,9 @@ abstract class AppLocales {
 }
 
 /// Normalize locale [key] to match Flutter's.
-String _localeVarName(String key, {bool snake=true}) {
+String _localeVarName(String key, {bool snake = true}) {
   key = key.replaceAll('-', '_');
-  if(!snake) {
+  if (!snake) {
     key = key.replaceAll('_', '');
   }
   return key;

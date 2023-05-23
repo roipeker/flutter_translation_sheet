@@ -30,5 +30,6 @@ void _checkEnvironment() async {
       join(dirname(Platform.script.toFilePath()), '../pubspec.lock'));
   CliConfig.isDev = !File(pathToPubLock).existsSync();
 }
+
 /// for dev:
 /// flutter pub global deactivate flutter_translation_sheet;flutter pub global activate -s path "/Volumes/mydata/dev/repos/flutter_translation_sheet"

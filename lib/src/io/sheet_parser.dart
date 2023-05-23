@@ -18,7 +18,8 @@ class SheetParser {
   // late List<List<Cell>> _initialCellRows;
   late List<String> colsHeaders;
 
-  String get spritesheetUrl => 'https://docs.google.com/spreadsheets/d/${config.sheetId!}';
+  String get spritesheetUrl =>
+      'https://docs.google.com/spreadsheets/d/${config.sheetId!}';
 
   String get credentialEmail =>
       _api.credentials?.email ?? 'somesheet@someid.iam.gserviceaccount.com';
@@ -55,7 +56,8 @@ class SheetParser {
     if (table != null) {
       _table = table;
     } else {
-      final availableTables = _sheet!.sheets.map((element) => '  - ${element.title}').join('\n');
+      final availableTables =
+          _sheet!.sheets.map((element) => '  - ${element.title}').join('\n');
       error('''Worksheet "${config.tableId}" doesn't exists.
 Please check your sheet and update your configuration @[gsheets:worksheet:].
 Available worksheets:
@@ -103,12 +105,14 @@ Open $spritesheetUrl and check the available tabs at the bottom.
       var label = '$fromColumnLetter$row';
       var cellData = '';
       if (!config.useIterativeCache) {
-        cellData = 'GOOGLETRANSLATE($label, "$sanitizedFromLocale", "$sanitizedToLocale")';
+        cellData =
+            'GOOGLETRANSLATE($label, "$sanitizedFromLocale", "$sanitizedToLocale")';
         // cellData = 'IF(ISBLANK(TRIM($label)), "", $cellData)';
         cellData = 'IF(LEN(TRIM($label)), $cellData, "")';
         cellData = '=$cellData';
       } else {
-        var formula = 'GOOGLETRANSLATE($label, "$sanitizedFromLocale", "$sanitizedToLocale")';
+        var formula =
+            'GOOGLETRANSLATE($label, "$sanitizedFromLocale", "$sanitizedToLocale")';
         var currentCell = '$toColumnLetter$row';
         cellData = '=IF(IFERROR($currentCell)<>0,$currentCell, $formula)';
         // var cellData = '=IF($currentCell<>"",$currentCell, $formula)';
@@ -130,9 +134,11 @@ Open $spritesheetUrl and check the available tabs at the bottom.
     var sanitizedToLocale = sanitizeLocale(toLocale);
 
     if (!config.useIterativeCache) {
-      cellData = '=GOOGLETRANSLATE($label, "$sanitizedFromLocale", "$sanitizedToLocale")';
+      cellData =
+          '=GOOGLETRANSLATE($label, "$sanitizedFromLocale", "$sanitizedToLocale")';
     } else {
-      var formula = 'GOOGLETRANSLATE($label, "$sanitizedFromLocale", "$sanitizedToLocale")';
+      var formula =
+          'GOOGLETRANSLATE($label, "$sanitizedFromLocale", "$sanitizedToLocale")';
       var toColumnLetter = remoteHeader.indexOf(toLocale) + 1;
       var currentCell = '${_getColumnLetter(toColumnLetter)}$row';
       cellData = '=IF(IFERROR($currentCell)<>0,$currentCell, $formula)';
@@ -255,7 +261,9 @@ Open $spritesheetUrl and check the available tabs at the bottom.
     for (var i = 0; i < rowsData[1].length; ++i) {
       var colData = rowsData[1][i];
       var headerValue = rowsData[0][i];
-      if (colData.isEmpty && headerValue.isNotEmpty && localHeader.contains(headerValue)) {
+      if (colData.isEmpty &&
+          headerValue.isNotEmpty &&
+          localHeader.contains(headerValue)) {
         if (headerValue == masterLanguage) {
           trace('Master language ($headerValue) is corrupt, regenerating.');
           await _table.clearColumn(masterLanguageCol, fromRow: 2);
@@ -265,7 +273,8 @@ Open $spritesheetUrl and check the available tabs at the bottom.
             fromRow: 2,
           );
         } else {
-          trace('Auto translate column ${i + 1} ($headerValue) x $lastRow rows');
+          trace(
+              'Auto translate column ${i + 1} ($headerValue) x $lastRow rows');
           var data = _generateGoogleTranslateColumn(
             fromRow: 2,
             fromLocaleCol: masterLanguageCol,
@@ -367,7 +376,8 @@ Open $spritesheetUrl and check the available tabs at the bottom.
         }
 
         if (clearRows.isNotEmpty) {
-          trace('${clearRows.length} rows will be cleared ( ${clearRows.join((', '))} )');
+          trace(
+              '${clearRows.length} rows will be cleared ( ${clearRows.join((', '))} )');
           var result = await _table.batchClearRows(clearRows);
           trace('Clear rows result:', result);
           if (result) {
@@ -469,7 +479,9 @@ Open $spritesheetUrl and check the available tabs at the bottom.
       if (numBlankSpaces > 1) {
         trace('Empty keys detected: $numBlankSpaces');
         var result = await _removeTableWhitespaces();
-        var count = result['replies']?.first['deleteDuplicates']?['duplicatesRemovedCount'] ?? 0;
+        var count = result['replies']?.first['deleteDuplicates']
+                ?['duplicatesRemovedCount'] ??
+            0;
         trace('Duplicated rows deleted: $count');
       }
 
@@ -530,7 +542,8 @@ Open $spritesheetUrl and check the available tabs at the bottom.
       for (var i = 0; i < keys.length; ++i) {
         var key = keys[i];
         var value = i >= langCol.length ? '' : langCol[i];
-        if (value.contains(loadingTranslation) && mapLoading[headerKey] == false) {
+        if (value.contains(loadingTranslation) &&
+            mapLoading[headerKey] == false) {
           mapLoading[headerKey] = true;
           trace('$headerKey still is loading translations...');
           isLoadingTranslations = true;
@@ -540,7 +553,8 @@ Open $spritesheetUrl and check the available tabs at the bottom.
     }
 
     if (isLoadingTranslations) {
-      trace('Translations are still loading in the sheet, please, run the cli again.');
+      trace(
+          'Translations are still loading in the sheet, please, run the cli again.');
     }
 
     return output;
@@ -617,7 +631,8 @@ Please follow https://medium.com/@a.marenkov/how-to-get-credentials-for-google-s
     if (missingLocales.isNotEmpty) {
       var lastColumn = sheetLocales.length + 1;
       trace('adding missing locales columns: ', missingLocales);
-      var result = await _table.values.insertRow(1, missingLocales, fromColumn: lastColumn);
+      var result = await _table.values
+          .insertRow(1, missingLocales, fromColumn: lastColumn);
       if (!result) {
         throw 'Error adding new locale columns';
       }
@@ -648,7 +663,8 @@ Please follow https://medium.com/@a.marenkov/how-to-get-credentials-for-google-s
   }*/
 
   Future<int> _getLastRemoteRow() async {
-    var lastRowInKeys = await _table.cells.lastRow(fromColumn: 1, length: 1, inRange: true);
+    var lastRowInKeys =
+        await _table.cells.lastRow(fromColumn: 1, length: 1, inRange: true);
     return lastRowInKeys!.first.row;
   }
 
@@ -714,7 +730,8 @@ Optionally, follow the steps on https://support.google.com/docs/answer/58515
 
 final _sanitizeLocaleCached = <String, String>{};
 
-String sanitizeLocale(String locale, {bool throwOnError = false, bool verbose = true}) {
+String sanitizeLocale(String locale,
+    {bool throwOnError = false, bool verbose = true}) {
   if (_sanitizeLocaleCached[locale] != null) {
     return _sanitizeLocaleCached[locale]!;
   }
