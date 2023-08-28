@@ -1,3 +1,6 @@
+## [1.0.29]
+- add another override to posix, trying to comply with dcli dependencies.
+
 ## [1.0.28]
 - upgrade to Dart SDK 3.1.0
 - upgrade dependencies.
