@@ -1,3 +1,7 @@
+## [1.0.28]
+- upgrade to Dart SDK 3.1.0
+- upgrade dependencies.
+
 ## [1.0.27]
 - upgrade dependencies to work on latest Dart version (^3.0.1). 
 - upgrade sdk, packages and fix lint issues
