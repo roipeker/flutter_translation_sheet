@@ -75,14 +75,14 @@ flutter pub global activate flutter_translation_sheet
 
 If you use dev_dependency, just run in your flutter project's root dir.
 ```bash
-flutter pub run flutter_translation_sheet:main
+dart run flutter_translation_sheet:main
 ```
 By default, when you pass no parameters, it will execute the `run` command. 
 
 So, for example, if you wanna run the `fetch` command:
 
 ```bash
-flutter pub run flutter_translation_sheet:main fetch
+dart run flutter_translation_sheet:main fetch
 ```
 
 ---
