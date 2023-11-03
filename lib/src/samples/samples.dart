@@ -55,6 +55,9 @@ entry_file: strings/sample.yaml
 #output_android_locales: true
 
 dart:
+  ## Change default dart format line length on file generation.
+  #format_line_length: 100
+
   ## Output dir for dart files
   output_dir: lib/i18n
 
@@ -346,6 +349,7 @@ class LangPickerMaterial extends StatelessWidget {
 
 /// Generates `mapLocaleKeysToMasterText()` string using the
 /// specified [theClassName].
+/// Only valid when `use_maps: true`
 String getCodeMapLocaleKeysToMasterText(String theClassName) {
   return '''
   static Map<String, String> mapLocaleKeysToMasterText(
@@ -427,6 +431,80 @@ class _##classNameDelegate extends LocalizationsDelegate<##className> {
 
 ''';
 
+const kTrKeysUtils = '''
+  
+  static bool useMasterTextAsKey = false;
+  
+  static Map<String, Map<String, String>> get _translations {
+    ##resolveTranslations
+  }
+  static String tr(
+    String key, {
+    Map<String, Object>? namedArgs,
+    List<Object>? args,
+  }) {
+    if (Fts._locale == null) {
+      init();
+    }
+    late String text;
+    final map = _translations;
+    if (hasTr(key)) {
+      text = map['\$_locale']![key]!;
+    } else {
+      var fallback = '\$fallbackLocale';
+      if (map.containsKey(fallback)) {
+        text = map[fallback]![key] ?? key;
+      } else {
+        text = key;
+      }
+    }
+    
+    if (text.contains('@:')) {
+      RegExp(r'@:(\\S+)').allMatches(text).forEach((match) {
+        final toReplace = match.group(0)!;
+        final findKey = match.group(1)!;
+        if (!hasTr(findKey)) {
+          print('Fts, linked key not found: \$findKey');
+        } else {
+          text = text.replaceAll(toReplace, findKey.tr());
+        }
+      });
+    }
+    
+    if (namedArgs != null && namedArgs.isNotEmpty) {
+      namedArgs.forEach((key, value) {
+        // text = text.replaceAll('{\$key}', '\$value');
+        text = text.replaceAll('##namedArgsPattern', '\$value');
+      });
+    }
+
+    if (args != null && args.isNotEmpty) {
+      for (final a in args) {
+        text = text.replaceFirst(RegExp(r'##argsPattern'), '\$a');
+      }
+    }
+    return text;
+  }
+
+  static bool hasTr(String key) {
+    final map = _translations;
+    return map['\$_locale']?.containsKey(key) == true;
+  }
+
+''';
+
+/// only used when `config.use_maps:true`
+///
+const kFtsStringExtensionSource = '''
+extension FtsStringExtension on String {
+  String tr({
+    Map<String, Object>? namedArgs,
+    List<Object>? args,
+  }) =>
+      Fts.tr(this, namedArgs: namedArgs, args: args);
+}
+''';
+
 // import 'dart:convert';
 // import 'package:flutter/foundation.dart';
 // import 'package:flutter/material.dart';
@@ -447,10 +525,8 @@ class Fts {
   static const FtsDelegate delegate = FtsDelegate();
   
   static WidgetsBinding get _binding => WidgetsFlutterBinding.ensureInitialized();
-  static bool useMasterTextAsKey = false;
-  static Map<String, Map<String, String>> get _translations {
-    ##resolveTranslations
-  }
+  
+  ##translationMapUtils
   
   static Locale? _locale;
   
@@ -508,59 +584,6 @@ class Fts {
     });
   }
 
-  static String tr(
-    String key, {
-    Map<String, Object>? namedArgs,
-    List<Object>? args,
-  }) {
-    if (Fts._locale == null) {
-      init();
-    }
-    late String text;
-    final map = _translations;
-    if (hasTr(key)) {
-      text = map['\$_locale']![key]!;
-    } else {
-      var fallback = '\$fallbackLocale';
-      if (map.containsKey(fallback)) {
-        text = map[fallback]![key] ?? key;
-      } else {
-        text = key;
-      }
-    }
-    
-    if (text.contains('@:')) {
-      RegExp(r'@:(\\S+)').allMatches(text).forEach((match) {
-        final toReplace = match.group(0)!;
-        final findKey = match.group(1)!;
-        if (!hasTr(findKey)) {
-          print('Fts, linked key not found: \$findKey');
-        } else {
-          text = text.replaceAll(toReplace, findKey.tr());
-        }
-      });
-    }
-    
-    if (namedArgs != null && namedArgs.isNotEmpty) {
-      namedArgs.forEach((key, value) {
-        // text = text.replaceAll('{\$key}', '\$value');
-        text = text.replaceAll('##namedArgsPattern', '\$value');
-      });
-    }
-
-    if (args != null && args.isNotEmpty) {
-      for (final a in args) {
-        text = text.replaceFirst(RegExp(r'##argsPattern'), '\$a');
-      }
-    }
-    return text;
-  }
-
-  static bool hasTr(String key) {
-    final map = _translations;
-    return map['\$_locale']?.containsKey(key) == true;
-  }
-
   static void init({
     Locale? locale,
     Locale? fallbackLocale,
@@ -586,17 +609,11 @@ class Fts {
 
 ##decodeTranslationMethod
 
-extension FtsStringExtension on String {
-  String tr({
-    Map<String, Object>? namedArgs,
-    List<Object>? args,
-  }) =>
-      Fts.tr(this, namedArgs: namedArgs, args: args);
-}
+##ftsStringExtensionSource
 
 /// Use `MaterialApp.localizationsDelegates: const [FtsDelegate()],`
 /// Basic delegate for TextDirection
-class _FtsLocalization implements WidgetsLocalizations {
+class _FtsLocalization extends DefaultWidgetsLocalizations {
   const _FtsLocalization();
 
   @override

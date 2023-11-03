@@ -138,12 +138,28 @@ void createFtsUtilsFile() {
     fileContent = fileContent.replaceAll('##loadJsonFallback', '');
     fileContent = fileContent.replaceAll('##loadJsonMethod', '');
     fileContent = fileContent.replaceAll('##decodeTranslationMethod', '');
-    resolveTranslationCode = kResolveTranslationMap;
+    if (config.useDartMaps == false) {
+      resolveTranslationCode = kResolveTranslationJson;
+    } else {
+      resolveTranslationCode = kResolveTranslationMap;
+    }
   }
 
+  /// only when using `keys_id: true`
+  fileContent = fileContent.replaceAll(
+    '##translationMapUtils',
+    config.validTKeyFile ? kTrKeysUtils : '',
+  );
+  fileContent = fileContent.replaceAll(
+    '##ftsStringExtensionSource',
+    config.validTKeyFile ? kFtsStringExtensionSource : '',
+  );
+
+  // --
   fileContent =
       fileContent.replaceAll('##resolveTranslations', resolveTranslationCode);
 
+  // --
   fileContent = fileContent.replaceFirst(
     '##argsPattern',
     config.paramFtsUtilsArgsPattern,
@@ -247,7 +263,10 @@ String createTranslationFile(
 ''';
   }
 
-  translateClassString = '''
+  // only applies when `use_maps: true`
+  // if (config.useDartMaps) {
+  if (config.validTKeyFile) {
+    translateClassString = '''
 //ignore: avoid_classes_with_only_static_members
 abstract class $tClassName {
   
@@ -255,6 +274,7 @@ abstract class $tClassName {
   
   ${getCodeMapLocaleKeysToMasterText(tClassName)}
 }''';
+  }
 
   // final _transImportsString = transImports.join('\n');
 // $_transImportsString
@@ -555,9 +575,16 @@ void runPubGet() {
 void formatDartFiles() {
   /// format dart files.
   if (config.validTranslationFile || config.validTKeyFile) {
-    if (which('flutter').found) {
-      // 'dartfmt -w ${config.dartOutputDir}'.start(
-      'flutter format --fix ${config.dartOutputDir}'.start(
+    var lineLength = '';
+    if (config.dartFormatLineLength > 0) {
+      lineLength = '--line-length ${config.dartFormatLineLength}';
+    }
+    final cmd = 'dart format --fix $lineLength ${config.dartOutputDir}';
+
+    print('running dart format...');
+    print(cmd);
+    if (which('dart').found) {
+      cmd.start(
         // workingDirectory: config.dartOutputDir,
         detached: true,
         runInShell: true,

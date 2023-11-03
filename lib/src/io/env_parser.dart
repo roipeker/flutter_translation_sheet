@@ -54,6 +54,7 @@ void loadEnv({
   config.dartOutputFtsUtils = doc['dart']['output_fts_utils'] ?? false;
   config.dartTKeysId = doc['dart']?['keys_id'] ?? '';
   config.useDartMaps = doc['dart']?['use_maps'] ?? false;
+  config.dartFormatLineLength = doc['dart']?['format_line_length'] ?? 0;
   config.dartTranslationsId = doc['dart']?['translations_id'] ?? '';
   config.paramOutputPattern = doc['param_output_pattern'] ?? '{*}';
   config.resolveLinkedKeys = doc['resolve_linked_keys'] ?? false;
@@ -278,6 +279,8 @@ class EnvConfig {
 
   // param_output_pattern
   bool useDartMaps = false;
+
+  int dartFormatLineLength = 0;
 
   String get iosDirPath {
     return p.canonicalize(p.join(configProjectDir, 'ios'));

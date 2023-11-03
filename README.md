@@ -57,7 +57,7 @@ We have 2 flavours:
 
 ```yaml
 dev_dependencies:
-    flutter_translation_sheet: ^1.0.22
+    flutter_translation_sheet: ^1.0.31
 ```
 
 use the latest version of the package:
