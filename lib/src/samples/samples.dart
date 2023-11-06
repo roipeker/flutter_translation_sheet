@@ -104,8 +104,11 @@ gsheets:
 }
 
 const kLangPickerCupertino = r'''
+
 /// Simple language picker (Cupertino style).
+
 typedef SimpleLangPicker = LangPickerCupertino;
+
 class LangPickerCupertino extends StatefulWidget {
   final Locale selected;
   final ValueChanged<Locale> onSelected;
@@ -369,8 +372,13 @@ String getCodeMapLocaleKeysToMasterText(String theClassName) {
 }
 
 const kAppLocalizations = '''
-import 'dart:async';
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+
+/// You can learn more about `flutter_translation_sheet` in the Wiki:
+/// https://github.com/roipeker/flutter_translation_sheet/
+
+import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -511,9 +519,22 @@ extension FtsStringExtension on String {
 // import 'package:flutter/services.dart';
 // import 'dart:ui';
 const kFtsUtils = '''
+
+// GENERATED CODE - DO NOT MODIFY BY HAND
+
+/// You can learn more about `flutter_translation_sheet` in the Wiki:
+/// https://github.com/roipeker/flutter_translation_sheet/
+
 ##imports
 
+
+
+// **************************************************************************
+// Fts main utils class
+// **************************************************************************
+
 class Fts {
+  /// List of known right to left languages.  
   static const List<String> _rtlLanguages = <String>[
     'ar',
     'fa',
@@ -522,6 +543,7 @@ class Fts {
     'ur'
   ];
 
+  /// Delegate used for [MaterialApp]  
   static const FtsDelegate delegate = FtsDelegate();
   
   static WidgetsBinding get _binding => WidgetsFlutterBinding.ensureInitialized();
@@ -532,14 +554,18 @@ class Fts {
   
   static late Locale fallbackLocale;
   
+  /// Notifies for system locale changes.
   static final onSystemLocaleChanged = ValueNotifier(
     deviceLocale,
   );
-
+  
+  /// You can wrap the [MaterialApp] in a [ListenableBuilder] to notify about changes
+  /// when using the setter for `Fts.locale`.
   static final onLocaleChanged = ValueNotifier(
     AppLocales.supportedLocales.first,
   );
 
+  /// current TextDirection
   static TextDirection get textDirection => _textDirection;
 
   static Locale get locale {
@@ -548,6 +574,7 @@ class Fts {
 
   static var _textDirection = TextDirection.ltr;
 
+  /// Notifies globally about a manual Locale change. 
   static set locale(Locale value) {
     if (!AppLocales.supportedLocales.contains(value)) {
       Locale? langLocale;

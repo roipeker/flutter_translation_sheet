@@ -1,3 +1,6 @@
+## [1.0.32]
+- added comments to the auto-generated files.
+
 ## [1.0.31]
 
 - ability to change default dart format line length on file generation on trconfig.yaml
