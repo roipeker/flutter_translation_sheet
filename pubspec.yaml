@@ -20,7 +20,7 @@ dependencies:
   googleapis: ^11.4.0
   googleapis_auth: ^1.4.1
   io: ^1.0.4
-  http: ^0.13.5
+  http: ^1.1.2
   path: ^1.8.3
   recase: ^4.1.0
   watcher: ^1.1.0
