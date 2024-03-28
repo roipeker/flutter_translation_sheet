@@ -118,8 +118,10 @@ void createFtsUtilsFile() {
       "package:flutter/services.dart",
     ]);
 
-    fileContent = fileContent.replaceAll('##loadJsonSetLocale', kLoadJsonSetLocale);
-    fileContent = fileContent.replaceAll('##loadJsonFallback', kLoadJsonFallback);
+    fileContent =
+        fileContent.replaceAll('##loadJsonSetLocale', kLoadJsonSetLocale);
+    fileContent =
+        fileContent.replaceAll('##loadJsonFallback', kLoadJsonFallback);
     var loadJsonString = kLoadJsonMethod;
 
     // var jsonOutput = config.outputJsonTemplate;
@@ -127,10 +129,12 @@ void createFtsUtilsFile() {
     loadJsonString = loadJsonString.replaceAll('##jsonDir', jsonOutputDir);
     fileContent = fileContent.replaceAll('##loadJsonMethod', loadJsonString);
 
-    fileContent = fileContent.replaceAll('##decodeTranslationMethod', kDecodeTranslationMethod);
+    fileContent = fileContent.replaceAll(
+        '##decodeTranslationMethod', kDecodeTranslationMethod);
     resolveTranslationCode = kResolveTranslationJson;
   } else {
-    fileContent = fileContent.replaceAll('##loadJsonSetLocale', '_notifyUpdate();');
+    fileContent =
+        fileContent.replaceAll('##loadJsonSetLocale', '_notifyUpdate();');
     fileContent = fileContent.replaceAll('##loadJsonFallback', '');
     fileContent = fileContent.replaceAll('##loadJsonMethod', '');
     fileContent = fileContent.replaceAll('##decodeTranslationMethod', '');
@@ -152,14 +156,16 @@ void createFtsUtilsFile() {
   );
 
   // --
-  fileContent = fileContent.replaceAll('##resolveTranslations', resolveTranslationCode);
+  fileContent =
+      fileContent.replaceAll('##resolveTranslations', resolveTranslationCode);
 
   // --
   fileContent = fileContent.replaceFirst(
     '##argsPattern',
     config.paramFtsUtilsArgsPattern,
   );
-  fileContent = fileContent.replaceAll('##tData', config.dartTranslationClassname);
+  fileContent =
+      fileContent.replaceAll('##tData', config.dartTranslationClassname);
 
   var patt = config.paramOutputPattern;
   if (patt.isEmpty || patt == '*') {
@@ -189,8 +195,9 @@ void createFtsUtilsFile() {
 void createDartExportFile(List<String> exportPaths) {
   final dir = config.dartOutputDir;
   exportPaths.sort();
-  var fileContents =
-      exportPaths.map((path) => 'export "${p.relative(path, from: dir)}";').join('\n');
+  var fileContents = exportPaths
+      .map((path) => 'export "${p.relative(path, from: dir)}";')
+      .join('\n');
   var exportFilePath = p.join(dir, '${p.basename(dir)}.dart');
 
   /// export the file.
@@ -330,12 +337,15 @@ abstract class AppLocales {
 
   fileContent += '$fields\n';
 
-  final supportedLocales =
-      locales.map((String key) => '${_localeVarName(key, snake: false)}.locale').join(',');
-  final availableLang = locales.map((String key) => _localeVarName(key, snake: false)).join(',');
+  final supportedLocales = locales
+      .map((String key) => '${_localeVarName(key, snake: false)}.locale')
+      .join(',');
+  final availableLang =
+      locales.map((String key) => _localeVarName(key, snake: false)).join(',');
 
   fileContent += '  static const available = <LangVo>[$availableLang];\n';
-  fileContent += '  static List<Locale> get supportedLocales => [$supportedLocales];\n';
+  fileContent +=
+      '  static List<Locale> get supportedLocales => [$supportedLocales];\n';
   // '  static List<Locale> get supportedLocales => _supportedLocales;\n';
   // fileContent +=
   //     '  static final _supportedLocales = <Locale>[$_supportedLocales];\n';
@@ -507,7 +517,8 @@ String _buildTKeyMap({
         );
         tostrFields.add(fieldName);
         final modifier = isRoot || !classCanBeConst ? '' : ' const';
-        fields.add('$fieldModifier $fieldType $fieldName = $modifier $fieldType._();');
+        fields.add(
+            '$fieldModifier $fieldType $fieldName = $modifier $fieldType._();');
       }
     }
   }

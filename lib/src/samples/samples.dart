@@ -1,6 +1,6 @@
 /// const strings for templates.
 class SampleYamls {
-  static const home = ''' 
+  static const home = '''
 ## Sample home section.
 ---
 title: Home screen

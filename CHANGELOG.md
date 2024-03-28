@@ -1,3 +1,6 @@
+## [1.0.33-dev.1]
+- upgraded dependencies to make it work with the latest version of dart (3.3.2). We are forced to upgrade to a prerelease of dcli, so we are publishing a prerelease of fts as well in the meantime (Thanks to [@fotiDim](https://github.com/fotiDim) for [PR#32](https://github.com/roipeker/flutter_translation_sheet/pull/32)).
+
 ## [1.0.32]
 - added comments to the auto-generated files.
 
